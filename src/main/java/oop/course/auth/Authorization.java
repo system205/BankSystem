@@ -15,9 +15,8 @@ public class Authorization implements Process {
     }
 
     public Authorization() {
-        this.next = Optional.empty();
+        this(Optional.empty());
     }
-
 
     @Override
     public Response act(Request request) {
