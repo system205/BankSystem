@@ -1,5 +1,8 @@
 package oop.course.server;
 
+import oop.course.implementations.*;
+import oop.course.interfaces.*;
+
 import java.io.*;
 import java.net.*;
 
@@ -20,10 +23,11 @@ public class Server implements Runnable, Closeable {
 
     @Override
     public void run() {
-        try { // process the request here
-            System.out.println(in.readLine());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        try {
+            // process the request here
+            Request request = new HttpRequest(in.lines());
+        } finally {
+            close();
         }
     }
 

@@ -20,13 +20,10 @@ public class Client {
 
     public void start() {
         try (Socket client = new Socket(this.ip, this.port);
-             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))
-             ) {
-                System.out.println("Input text:");
-                out.println(new Scanner(System.in).nextLine());
-             } catch(UnknownHostException e) {
-            throw new RuntimeException(e);
+             PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            System.out.println("Input text:");
+            out.println(new Scanner(System.in).nextLine());
+            out.println(new Scanner(System.in).nextLine());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
