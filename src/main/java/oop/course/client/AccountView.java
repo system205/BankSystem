@@ -8,11 +8,11 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 import java.util.List;
 
-public class LoginView implements View {
+public class AccountView implements View {
     private final Screen screen;
     private ViewType nextView;
 
-    public LoginView(Terminal terminal) throws IOException {
+    public AccountView(Terminal terminal) throws IOException {
         screen = new TerminalScreen(terminal);
         nextView = ViewType.NoView;
     }
@@ -21,28 +21,33 @@ public class LoginView implements View {
     public ViewType show() throws IOException {
         screen.startScreen();
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
-        Window window = new BasicWindow("BankSystem authentication");
+        Window window = new BasicWindow("Account");
         window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        Label welcomeText = new Label("Welcome to the BankSystem client application!\nPlease, register or login into your existing account.");
-        contentPanel.addComponent(welcomeText);
-        contentPanel.addComponent(new Label("Username"));
-        contentPanel.addComponent(new TextBox());
-        contentPanel.addComponent(new Label("Password"));
-        contentPanel.addComponent(new TextBox().setMask('*'));
 
-        contentPanel.addComponent(new Button("Login", () -> {
-            nextView = ViewType.AccountView;
+        contentPanel.addComponent(new Label("Welcome to your account."));
+        contentPanel.addComponent(new Label("Name:"));
+        contentPanel.addComponent(new Label("Ivan Ivanov"));
+        contentPanel.addComponent(new Label("Account number:"));
+        contentPanel.addComponent(new Label("123456"));
+        contentPanel.addComponent(new Label("Balance"));
+        contentPanel.addComponent(new Label("120.0$"));
+
+        contentPanel.addComponent(new Button("Transfer money", () -> {
+            nextView = ViewType.TransferView;
             window.close();
         }));
-        contentPanel.addComponent(new Button("Register page", () -> {
-            nextView = ViewType.RegisterView;
+
+        contentPanel.addComponent(new Button("Logout", () -> {
+            nextView = ViewType.LoginView;
             window.close();
         }));
-        contentPanel.addComponent(new Button("Exit", () -> {
+
+        contentPanel.addComponent(new Button("Logout & exit", () -> {
             nextView = ViewType.NoView;
             window.close();
         }));
+
         window.setComponent(contentPanel);
         textGUI.addWindowAndWait(window);
         return nextView;

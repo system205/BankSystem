@@ -36,6 +36,8 @@ public class Client
                 boolean close = false;
                 switch (next)
                 {
+                    case AccountView -> currentView = new AccountView(terminal);
+                    case TransferView -> currentView = new TransferView(terminal);
                     case NoView -> {
                         terminal.close();
                         close = true;
