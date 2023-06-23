@@ -12,4 +12,9 @@ public class Customer {
         this.surname = surname;
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return String.format("email: %s, name: %s, surname: %s", this.email, this.name, this.surname);
+    }
 }
