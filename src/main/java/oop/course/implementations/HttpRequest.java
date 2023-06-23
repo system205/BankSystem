@@ -16,13 +16,23 @@ public class HttpRequest implements Request {
     public Collection<String> headers() {
         // a part of the data
         Collection<String> headers = new ArrayList<>();
+        for (String line : this.data) {
+            if (line.isEmpty()) break;
+            headers.add(line);
+        }
         return headers;
     }
 
     @Override
     public Iterable<String> body() {
         // a payload of the data
-        Iterable<String> payload = new ArrayList<>();
+        ArrayList<String> payload = new ArrayList<>();
+        boolean flag = false;
+        for (String line : data) {
+            if (!line.isEmpty() && !flag) continue;
+            else if (line.isEmpty() && !flag) flag = true;
+            if (!line.isEmpty()) payload.add(line);
+        }
         return payload;
     }
 }
