@@ -4,36 +4,43 @@ import oop.course.entity.*;
 import org.postgresql.util.*;
 
 import java.sql.*;
-import java.util.*;
 
-public class CustomerDB implements Entity<Customer> {
+public class CustomerDB implements Database<Customer> {
     private final Connection connection;
+    private final String table;
 
-    public CustomerDB(Connection connection) {
+    public CustomerDB(Connection connection, String table) {
         this.connection = connection;
+        this.table = table;
     }
 
     @Override
-    public Optional<Customer> read(long id) {
+    public Customer read(long id) {
         try (ResultSet result = new PreparedStatementWithId(connection, "SELECT * FROM customer WHERE id=?;", id).execute()) {
             result.next();
-            Customer customer = new Customer(
+            final Customer customer = new Customer(
                     result.getString(2),
                     result.getString(3),
                     result.getString(4),
                     result.getString(4));
-            return Optional.of(customer);
+            return customer;
         } catch (PSQLException e) {
-            System.out.println("PSQLException occurred. Maybe the customer was not found in DB");
+            System.out.println("PSQLException occurred. Maybe the customer was not found in DB. Error: " + e);
         } catch (SQLException e) {
             System.out.println("Some sql exception occurred");
             throw new RuntimeException(e);
         }
-        return Optional.empty();
+        throw new RuntimeException("Customer with id " + id + " was not found.");
     }
 
     @Override
-    public void write(Customer object) {
+    public void write(Customer customer) {
         // How to get data from customer?
+        try (Statement statement = connection.createStatement()){
+            statement.execute(customer.toSqlInsert(this.table));
+        } catch (SQLException e) {
+            System.err.println("Failed to insert a customer into database");
+            throw new RuntimeException(e);
+        }
     }
 }
