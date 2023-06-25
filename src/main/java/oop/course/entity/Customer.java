@@ -2,6 +2,7 @@ package oop.course.entity;
 
 import oop.course.interfaces.*;
 import oop.course.storage.*;
+import oop.course.tools.interfaces.*;
 
 public class Customer implements Entity {
     private final long id;
@@ -11,11 +12,7 @@ public class Customer implements Entity {
     private final String password;
 
     public Customer(String email, String name, String surname, String password) {
-        this.email = email;
-        this.name = name;
-        this.surname = surname;
-        this.password = password;
-        this.id = 0;
+        this(0, email, name, surname, password);
     }
 
     public Customer(Database<Customer> db, long id) {
@@ -26,6 +23,23 @@ public class Customer implements Entity {
         this.password = entity.password;
         this.id = entity.id;
     }
+
+    public Customer(long id, String email, String name, String surname, String password) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.password = password;
+    }
+
+    public Customer(Form form) {
+        this.id = form.extractLong("id");
+        this.email = form.extractString("email");
+        this.name = form.extractString("name");
+        this.surname = form.extractString("surname");
+        this.password = form.extractString("password");
+    }
+
 
     @Override
     public String toString() {

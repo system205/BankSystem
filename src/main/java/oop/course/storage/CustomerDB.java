@@ -19,6 +19,7 @@ public class CustomerDB implements Database<Customer> {
         try (ResultSet result = new PreparedStatementWithId(connection, "SELECT * FROM customer WHERE id=?;", id).execute()) {
             result.next();
             final Customer customer = new Customer(
+                    result.getLong(1),
                     result.getString(2),
                     result.getString(3),
                     result.getString(4),
