@@ -13,7 +13,12 @@ public class Main {
         final int port = 6666;
         final Authorization authorization = new Authorization();
         try(ServerSocket socket = new ServerSocket(port)){
-            while (true) new Thread(new Server(socket.accept(), authorization)).start();
+            while (true)
+                new Thread(
+                        new Server(
+                                socket.accept(),
+                                authorization))
+                        .start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
