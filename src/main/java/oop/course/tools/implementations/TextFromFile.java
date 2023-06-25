@@ -1,6 +1,6 @@
 package oop.course.tools.implementations;
 
-import oop.course.tools.inerfaces.*;
+import oop.course.tools.interfaces.*;
 
 import java.io.*;
 import java.util.stream.*;

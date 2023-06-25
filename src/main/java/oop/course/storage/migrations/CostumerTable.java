@@ -1,6 +1,6 @@
 package oop.course.storage.migrations;
 
-import oop.course.tools.inerfaces.*;
+import oop.course.tools.interfaces.*;
 
 public class CostumerTable implements Sql {
     private final Source source;

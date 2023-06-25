@@ -1,4 +1,4 @@
-package oop.course.tools.inerfaces;
+package oop.course.tools.interfaces;
 
 public interface Source {
     String text();
