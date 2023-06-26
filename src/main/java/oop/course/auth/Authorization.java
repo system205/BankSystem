@@ -23,10 +23,16 @@ public class Authorization implements Process {
     @Override
     public Response act(Request request) {
         // Internal logic
-        String url = request.headers().iterator().next().split(" ")[1];
 
-        if (!securityConfiguration.check(url)) {
+        // TODO - headers should be a collection that retains the order of the elements
+        Path path = new Path(request.headers());
+        String url = path.url();
+
+        if (!securityConfiguration.isAccessibleUrl(url)) {
             return new ForbiddenResponse("Authentication is required");
+        }
+        if (!securityConfiguration.isValidToken(path.authToken())) {
+            return new ForbiddenResponse("Authentication token is invalid");
         }
         // Process next if OK so far
         if (this.next.isPresent()) {

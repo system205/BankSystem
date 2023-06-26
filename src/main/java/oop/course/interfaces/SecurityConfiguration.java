@@ -1,5 +1,6 @@
 package oop.course.interfaces;
 
 public interface SecurityConfiguration {
-    boolean check(String url);
+    boolean isAccessibleUrl(String url);
+    boolean isValidToken(String token);
 }
