@@ -28,7 +28,9 @@ public class Server implements Runnable, Closeable {
     public void run() {
         try {
             // process the request here
-            this.process.act(new HttpRequest(in.lines())).print(out);
+            this.process.act(new HttpRequest(in)).print(out);
+        } catch (IOException e) {
+            System.out.println("Exception when receiving a request");
         } finally {
             close();
         }

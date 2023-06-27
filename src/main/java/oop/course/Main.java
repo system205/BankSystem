@@ -24,7 +24,7 @@ public class Main {
                 Optional.of(new Fork(
                         new FakeUrl(),
                         new MainRoute(),
-                        new LoginRoute()
+                        new LoginRoute(new DBLoginCheck())
                 )));
         try (ServerSocket socket = new ServerSocket(port)) {
             while (true)
