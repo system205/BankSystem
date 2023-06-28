@@ -1,11 +1,13 @@
 package oop.course.routes;
 
+import oop.course.implementations.*;
 import oop.course.interfaces.*;
 
 public class MainRoute implements Route {
     @Override
     public Response act(Request request) {
-        return null;
+        System.out.println("Start main route");
+        return new EmptyResponse();
     }
 
     @Override

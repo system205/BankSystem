@@ -18,7 +18,7 @@ public class Fork implements Process {
 
     @Override
     public Response act(Request request) {
-        final String path = this.url.path();
+        final String path = this.url.path(request);
         for (Route route : routes) {
             if (route.accept(path))
                 return route.act(request);
