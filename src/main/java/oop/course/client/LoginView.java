@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class LoginView implements View {
+public class LoginView implements IView {
     private final Screen screen;
     private Consumer<Type> onSceneChange;
 

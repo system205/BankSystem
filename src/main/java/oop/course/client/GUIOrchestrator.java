@@ -1,23 +1,18 @@
 package oop.course.client;
 
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.screen.Screen;
 
 import java.io.IOException;
 
 public class GUIOrchestrator {
     private IView.Type currentView;
-    private final WindowBasedTextGUI textGUI;
     private boolean changePending;
-
-    public GUIOrchestrator(Screen screen) {
+    public GUIOrchestrator() {
         currentView = IView.Type.Login;
-        changePending = true;
-        textGUI = new MultiWindowTextGUI(screen);
+        changePending = false;
     }
 
-    public void mainLoop()
+    public void mainLoop(Screen screen)
     {
         try {
             currentView = IView.Type.Login;
@@ -27,19 +22,20 @@ public class GUIOrchestrator {
                     changePending = false;
                     if (currentView == IView.Type.None)
                     {
+                        screen.stopScreen();
                         break;
                     }
                     IView view = switch (currentView) {
-                        case Account -> new AccountView();
-                        case Transfer -> new TransferView();
-                        case Login -> new LoginView();
-                        case Register -> new RegisterView();
+                        case Account -> new AccountView(screen);
+                        case Transfer -> new TransferView(screen);
+                        case Login -> new LoginView(screen);
+                        case Register -> new RegisterView(screen);
                         case None -> throw new RuntimeException();
                     };
                     view.registerChangeViewHandler(this::changeView);
-                    view.show(textGUI);
+                    view.show();
                 }
-                textGUI.getGUIThread().processEventsAndUpdate();
+
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
