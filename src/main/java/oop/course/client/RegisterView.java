@@ -34,18 +34,18 @@ public class RegisterView implements View {
         new TerminalPasswordBox().attachTo(contentPanel);
         new TerminalText("Repeat password").attachTo(contentPanel);
         new TerminalPasswordBox().attachTo(contentPanel);
-
-        contentPanel.addComponent(new Button("Register", () -> MessageDialog.showMessageDialog(textGUI, "Success", "You may now login into your account.", MessageDialogButton.OK)));
-
-        contentPanel.addComponent(new Button("Back to login page", () -> {
+        new TerminalButton("Register", () ->
+                MessageDialog.showMessageDialog(textGUI, "Success", "You may now login into your account.", MessageDialogButton.OK)
+        ).attachTo(contentPanel);
+        new TerminalButton("Back to login page", () -> {
             nextView = Type.Login;
             window.close();
-        }));
+        }).attachTo(contentPanel);
 
-        contentPanel.addComponent(new Button("Exit", () -> {
+        new TerminalButton("Exit", () -> {
             nextView = Type.None;
             window.close();
-        }));
+        });
 
         window.setComponent(contentPanel);
         textGUI.addWindowAndWait(window);
