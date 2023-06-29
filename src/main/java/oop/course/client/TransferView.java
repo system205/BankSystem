@@ -12,15 +12,15 @@ import java.util.List;
 
 public class TransferView implements View {
     private final Screen screen;
-    private ViewType nextView;
+    private Type nextView;
 
     public TransferView(Terminal terminal) throws IOException {
         screen = new TerminalScreen(terminal);
-        nextView = ViewType.NoView;
+        nextView = Type.None;
     }
 
     @Override
-    public ViewType show() throws IOException {
+    public Type show() throws IOException {
         screen.startScreen();
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
         Window window = new BasicWindow("Money transfer");
@@ -34,13 +34,13 @@ public class TransferView implements View {
         contentPanel.addComponent(new TextBox());
 
         contentPanel.addComponent(new Button("Transfer money", () -> {
-            nextView = ViewType.AccountView;
+            nextView = Type.Account;
             MessageDialog.showMessageDialog(textGUI, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             window.close();
         }));
 
         contentPanel.addComponent(new Button("Cancel", () -> {
-            nextView = ViewType.AccountView;
+            nextView = Type.Account;
             window.close();
         }));
 

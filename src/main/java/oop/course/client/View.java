@@ -3,13 +3,13 @@ package oop.course.client;
 import java.io.IOException;
 
 public interface View {
-    enum ViewType
+    enum Type
     {
-        LoginView,
-        RegisterView,
-        AccountView,
-        TransferView,
-        NoView
+        Login,
+        Register,
+        Account,
+        Transfer,
+        None
     }
-    ViewType show() throws IOException;
+    Type show() throws IOException;
 }
