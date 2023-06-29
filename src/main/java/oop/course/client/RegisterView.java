@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class RegisterView implements View {
+public class RegisterView implements IView {
     private final Screen screen;
     private Consumer<Type> onSceneChange;
 

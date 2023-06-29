@@ -10,7 +10,6 @@ import java.io.IOException;
 public class TerminalGUI implements GUI {
     private final Terminal terminal;
     private final Screen screen;
-    private View.Type currentView;
 
     public TerminalGUI() throws IOException {
         terminal = new DefaultTerminalFactory().createTerminal();
@@ -24,37 +23,11 @@ public class TerminalGUI implements GUI {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        new GUIOrchestrator().mainLoop(screen);
         try {
-            currentView = View.Type.Login;
-            while (true) {
-                boolean close = false;
-                switch (currentView) {
-                    case Account -> new AccountView(screen).registerChangeViewHandler(this::changeView);
-                    case Transfer -> new TransferView(screen).registerChangeViewHandler(this::changeView);
-                    case None -> {
-                        screen.stopScreen();
-                        terminal.close();
-                        close = true;
-                    }
-                    case Login -> new LoginView(screen).registerChangeViewHandler(this::changeView);
-                    case Register -> new RegisterView(screen).registerChangeViewHandler(this::changeView);
-                }
-                if (close) {
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            System.exit(-1);
-        }
-        try {
-            screen.stopScreen();
+            terminal.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void changeView(View.Type type) {
-        currentView = type;
     }
 }
