@@ -3,21 +3,29 @@ package oop.course.client;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.List;
 
-public class RegisterView implements IView {
-    private Consumer<Type> onSceneChange;
+public class RegisterView implements View {
+    private final Screen screen;
+    private Type nextView;
 
 
-    public RegisterView() throws IOException {
-        onSceneChange = (Type type) -> {};
+    public RegisterView(Terminal terminal) throws IOException {
+        screen = new TerminalScreen(terminal);
+        nextView = Type.None;
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("BankSystem registration");
+    public Type show() throws IOException {
+        screen.startScreen();
+        WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        Window window = new BasicWindow("BankSystem registration");
+        window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         new TerminalText("Please enter your data for registration.").attachTo(contentPanel);
         new TerminalText("Username").attachTo(contentPanel);
@@ -26,26 +34,21 @@ public class RegisterView implements IView {
         new TerminalPasswordBox().attachTo(contentPanel);
         new TerminalText("Repeat password").attachTo(contentPanel);
         new TerminalPasswordBox().attachTo(contentPanel);
-        new TerminalButton("Register", () ->
-                MessageDialog.showMessageDialog(gui, "Success", "You may now login into your account.", MessageDialogButton.OK)
-        ).attachTo(contentPanel);
-        new TerminalButton("Back to login page", () -> {
+
+        contentPanel.addComponent(new Button("Register", () -> MessageDialog.showMessageDialog(textGUI, "Success", "You may now login into your account.", MessageDialogButton.OK)));
+
+        contentPanel.addComponent(new Button("Back to login page", () -> {
+            nextView = Type.Login;
             window.close();
-            onSceneChange.accept(Type.Login);
-        }).attachTo(contentPanel);
+        }));
 
-        new TerminalButton("Exit", () -> {
+        contentPanel.addComponent(new Button("Exit", () -> {
+            nextView = Type.None;
             window.close();
-            onSceneChange.accept(Type.None);
-        });
+        }));
 
-        window.setContent(contentPanel);
-        window.addToGui(gui);
-        window.open();
-    }
-
-    @Override
-    public void registerChangeViewHandler(Consumer<Type> consumer) {
-        onSceneChange = consumer;
+        window.setComponent(contentPanel);
+        textGUI.addWindowAndWait(window);
+        return nextView;
     }
 }

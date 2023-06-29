@@ -3,46 +3,49 @@ package oop.course.client;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.List;
 
-public class TransferView implements IView {
-    private Consumer<Type> onSceneChange;
+public class TransferView implements View {
+    private final Screen screen;
+    private Type nextView;
 
-    public TransferView() throws IOException {
-        onSceneChange = (Type type) -> {};
+    public TransferView(Terminal terminal) throws IOException {
+        screen = new TerminalScreen(terminal);
+        nextView = Type.None;
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Money transfer");
+    public Type show() throws IOException {
+        screen.startScreen();
+        WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        Window window = new BasicWindow("Money transfer");
+        window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        new TerminalText("Please enter the requisites of the recipient.").attachTo(contentPanel);
-        new TerminalText("Account number:").attachTo(contentPanel);
-        new TerminalTextBox().attachTo(contentPanel);
-        new TerminalText("Transfer amount:").attachTo(contentPanel);
-        new TerminalTextBox().attachTo(contentPanel);
+        contentPanel.addComponent(new Label("Please enter the requisites of the recipient."));
+        contentPanel.addComponent(new Label("Account number:"));
+        contentPanel.addComponent(new TextBox());
+        contentPanel.addComponent(new Label("Transfer amount:"));
+        contentPanel.addComponent(new TextBox());
 
-        new TerminalButton("Transfer money", () -> {
-            MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
+        contentPanel.addComponent(new Button("Transfer money", () -> {
+            nextView = Type.Account;
+            MessageDialog.showMessageDialog(textGUI, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             window.close();
-            onSceneChange.accept(Type.Login);
-        }).attachTo(contentPanel);
+        }));
 
-        new TerminalButton("Cancel", () -> {
+        contentPanel.addComponent(new Button("Cancel", () -> {
+            nextView = Type.Account;
             window.close();
-            onSceneChange.accept(Type.Account);
-        }).attachTo(contentPanel);
+        }));
 
-        window.setContent(contentPanel);
-        window.addToGui(gui);
-        window.open();
-    }
-
-    @Override
-    public void registerChangeViewHandler(Consumer<Type> consumer) {
-        onSceneChange = consumer;
+        window.setComponent(contentPanel);
+        textGUI.addWindowAndWait(window);
+        return nextView;
     }
 }

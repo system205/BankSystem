@@ -1,53 +1,50 @@
 package oop.course.client;
 
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.List;
 
-public class LoginView implements IView {
-    private Consumer<Type> onSceneChange;
+public class LoginView implements View {
+    private final Screen screen;
+    private Type nextView;
 
-    public LoginView() throws IOException {
-        onSceneChange = (Type type) -> {};
+    public LoginView(Terminal terminal) throws IOException {
+        screen = new TerminalScreen(terminal);
+        nextView = Type.None;
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("BankSystem authentication");
+    public Type show() throws IOException {
+        screen.startScreen();
+        WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+        Window window = new BasicWindow("BankSystem authentication");
+        window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        new TerminalText(
-                "Welcome to the BankSystem client application!\nPlease, register or login into your existing account."
-        ).attachTo(contentPanel);
-        new TerminalText("Username").attachTo(contentPanel);
-        var userBox = new TerminalTextBox();
-        userBox.attachTo(contentPanel);
-        new TerminalText("Password").attachTo(contentPanel);
-        var passwordBox = new TerminalPasswordBox();
-        passwordBox.attachTo(contentPanel);
+        Label welcomeText = new Label("Welcome to the BankSystem client application!\nPlease, register or login into your existing account.");
+        contentPanel.addComponent(welcomeText);
+        contentPanel.addComponent(new Label("Username"));
+        contentPanel.addComponent(new TextBox());
+        contentPanel.addComponent(new Label("Password"));
+        contentPanel.addComponent(new TextBox().setMask('*'));
 
-        new TerminalButton("Login", () -> {
+        contentPanel.addComponent(new Button("Login", () -> {
+            nextView = Type.Account;
             window.close();
-            onSceneChange.accept(Type.Account);
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Register page", () -> {
+        }));
+        contentPanel.addComponent(new Button("Register page", () -> {
+            nextView = Type.Register;
             window.close();
-            onSceneChange.accept(Type.Register);
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Exit", () -> {
+        }));
+        contentPanel.addComponent(new Button("Exit", () -> {
+            nextView = Type.None;
             window.close();
-            onSceneChange.accept(Type.None);
-        }).attachTo(contentPanel);
-
-        window.setContent(contentPanel);
-        window.addToGui(gui);
-        window.open();
-    }
-
-    @Override
-    public void registerChangeViewHandler(Consumer<Type> consumer) {
-        onSceneChange = consumer;
+        }));
+        window.setComponent(contentPanel);
+        textGUI.addWindowAndWait(window);
+        return nextView;
     }
 }
