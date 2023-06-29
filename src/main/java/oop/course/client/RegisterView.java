@@ -4,25 +4,23 @@ import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TerminalScreen;
-import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class RegisterView implements View {
     private final Screen screen;
-    private Type nextView;
+    private Consumer<Type> onSceneChange;
 
 
-    public RegisterView(Terminal terminal) throws IOException {
-        screen = new TerminalScreen(terminal);
-        nextView = Type.None;
+    public RegisterView(Screen screen) throws IOException {
+        this.screen = screen;
+        onSceneChange = (Type type) -> {};
     }
 
     @Override
-    public Type show() throws IOException {
-        screen.startScreen();
+    public void show() {
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
         Window window = new BasicWindow("BankSystem registration");
         window.setHints(List.of(Window.Hint.CENTERED));
@@ -38,17 +36,21 @@ public class RegisterView implements View {
                 MessageDialog.showMessageDialog(textGUI, "Success", "You may now login into your account.", MessageDialogButton.OK)
         ).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
-            nextView = Type.Login;
             window.close();
+            onSceneChange.accept(Type.Login);
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
-            nextView = Type.None;
             window.close();
+            onSceneChange.accept(Type.None);
         });
 
         window.setComponent(contentPanel);
-        textGUI.addWindowAndWait(window);
-        return nextView;
+        textGUI.addWindow(window);
+    }
+
+    @Override
+    public void registerChangeViewHandler(Consumer<Type> consumer) {
+        onSceneChange = consumer;
     }
 }

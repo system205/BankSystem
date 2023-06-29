@@ -1,6 +1,7 @@
 package oop.course.client;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public interface View {
     enum Type
@@ -11,5 +12,7 @@ public interface View {
         Transfer,
         None
     }
-    Type show() throws IOException;
+    void show() throws IOException;
+
+    void registerChangeViewHandler(Consumer<Type> consumer);
 }
