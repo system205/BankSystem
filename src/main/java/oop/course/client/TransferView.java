@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TransferView implements View {
+public class TransferView implements IView {
     private final Screen screen;
     private Consumer<Type> onSceneChange;
 

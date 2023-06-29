@@ -3,7 +3,7 @@ package oop.course.client;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-public interface View {
+public interface IView {
     enum Type
     {
         Login,
