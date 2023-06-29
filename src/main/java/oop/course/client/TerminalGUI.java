@@ -21,14 +21,14 @@ public class TerminalGUI implements GUI{
                 boolean close = false;
                 switch (next)
                 {
-                    case AccountView -> currentView = new AccountView(terminal);
-                    case TransferView -> currentView = new TransferView(terminal);
-                    case NoView -> {
+                    case Account -> currentView = new AccountView(terminal);
+                    case Transfer -> currentView = new TransferView(terminal);
+                    case None -> {
                         terminal.close();
                         close = true;
                     }
-                    case LoginView -> currentView = new LoginView(terminal);
-                    case RegisterView ->  currentView = new RegisterView(terminal);
+                    case Login -> currentView = new LoginView(terminal);
+                    case Register ->  currentView = new RegisterView(terminal);
                 }
                 if (close) {
                     break;
