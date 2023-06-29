@@ -1,24 +1,21 @@
 package oop.course.client;
 
 import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.screen.Screen;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class LoginView implements IView {
-    private final Screen screen;
     private Consumer<Type> onSceneChange;
 
-    public LoginView(Screen screen) throws IOException {
-        this.screen = screen;
+    public LoginView() throws IOException {
         onSceneChange = (Type type) -> {};
     }
 
     @Override
-    public void show() {
-        WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+    public void show(WindowBasedTextGUI gui) {
+
         Window window = new BasicWindow("BankSystem authentication");
         window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
@@ -42,7 +39,7 @@ public class LoginView implements IView {
             onSceneChange.accept(Type.None);
         }));
         window.setComponent(contentPanel);
-        textGUI.addWindow(window);
+        gui.addWindow(window);
     }
 
     @Override
