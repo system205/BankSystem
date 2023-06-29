@@ -10,15 +10,15 @@ import java.util.List;
 
 public class LoginView implements View {
     private final Screen screen;
-    private ViewType nextView;
+    private Type nextView;
 
     public LoginView(Terminal terminal) throws IOException {
         screen = new TerminalScreen(terminal);
-        nextView = ViewType.NoView;
+        nextView = Type.None;
     }
 
     @Override
-    public ViewType show() throws IOException {
+    public Type show() throws IOException {
         screen.startScreen();
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
         Window window = new BasicWindow("BankSystem authentication");
@@ -32,15 +32,15 @@ public class LoginView implements View {
         contentPanel.addComponent(new TextBox().setMask('*'));
 
         contentPanel.addComponent(new Button("Login", () -> {
-            nextView = ViewType.AccountView;
+            nextView = Type.Account;
             window.close();
         }));
         contentPanel.addComponent(new Button("Register page", () -> {
-            nextView = ViewType.RegisterView;
+            nextView = Type.Register;
             window.close();
         }));
         contentPanel.addComponent(new Button("Exit", () -> {
-            nextView = ViewType.NoView;
+            nextView = Type.None;
             window.close();
         }));
         window.setComponent(contentPanel);

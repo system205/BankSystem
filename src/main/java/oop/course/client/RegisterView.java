@@ -12,38 +12,38 @@ import java.util.List;
 
 public class RegisterView implements View {
     private final Screen screen;
-    private ViewType nextView;
+    private Type nextView;
 
 
     public RegisterView(Terminal terminal) throws IOException {
         screen = new TerminalScreen(terminal);
-        nextView = ViewType.NoView;
+        nextView = Type.None;
     }
 
     @Override
-    public ViewType show() throws IOException {
+    public Type show() throws IOException {
         screen.startScreen();
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
         Window window = new BasicWindow("BankSystem registration");
         window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        contentPanel.addComponent(new Label("Please enter your data for registration."));
-        contentPanel.addComponent(new Label("Username"));
-        contentPanel.addComponent(new TextBox());
-        contentPanel.addComponent(new Label("Password"));
-        contentPanel.addComponent(new TextBox().setMask('*'));
-        contentPanel.addComponent(new Label("Repeat password"));
-        contentPanel.addComponent(new TextBox().setMask('*'));
+        new TerminalText("Please enter your data for registration.").attachTo(contentPanel);
+        new TerminalText("Username").attachTo(contentPanel);
+        new TerminalTextBox().attachTo(contentPanel);
+        new TerminalText("Password").attachTo(contentPanel);
+        new TerminalPasswordBox().attachTo(contentPanel);
+        new TerminalText("Repeat password").attachTo(contentPanel);
+        new TerminalPasswordBox().attachTo(contentPanel);
 
         contentPanel.addComponent(new Button("Register", () -> MessageDialog.showMessageDialog(textGUI, "Success", "You may now login into your account.", MessageDialogButton.OK)));
 
         contentPanel.addComponent(new Button("Back to login page", () -> {
-            nextView = ViewType.LoginView;
+            nextView = Type.Login;
             window.close();
         }));
 
         contentPanel.addComponent(new Button("Exit", () -> {
-            nextView = ViewType.NoView;
+            nextView = Type.None;
             window.close();
         }));
 

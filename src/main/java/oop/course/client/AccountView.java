@@ -10,15 +10,15 @@ import java.util.List;
 
 public class AccountView implements View {
     private final Screen screen;
-    private ViewType nextView;
+    private Type nextView;
 
     public AccountView(Terminal terminal) throws IOException {
         screen = new TerminalScreen(terminal);
-        nextView = ViewType.NoView;
+        nextView = Type.None;
     }
 
     @Override
-    public ViewType show() throws IOException {
+    public Type show() throws IOException {
         screen.startScreen();
         WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
         Window window = new BasicWindow("Account");
@@ -34,17 +34,17 @@ public class AccountView implements View {
         contentPanel.addComponent(new Label("120.0$"));
 
         contentPanel.addComponent(new Button("Transfer money", () -> {
-            nextView = ViewType.TransferView;
+            nextView = Type.Transfer;
             window.close();
         }));
 
         contentPanel.addComponent(new Button("Logout", () -> {
-            nextView = ViewType.LoginView;
+            nextView = Type.Login;
             window.close();
         }));
 
         contentPanel.addComponent(new Button("Logout & exit", () -> {
-            nextView = ViewType.NoView;
+            nextView = Type.None;
             window.close();
         }));
 
