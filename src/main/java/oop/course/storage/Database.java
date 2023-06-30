@@ -1,6 +1,7 @@
 package oop.course.storage;
 
-public interface Database<T> {
-    T read(long id);
+public interface Database<I, T> {
+    T read(I id);
+
     void write(T object);
 }

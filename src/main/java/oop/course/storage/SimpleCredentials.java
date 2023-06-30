@@ -13,7 +13,7 @@ public class SimpleCredentials implements Credentials {
     }
 
     public SimpleCredentials(Form form) {
-        this(form.extractString("username"), form.extractString("password"));
+        this(form.stringField("username"), form.stringField("password"));
     }
 
     @Override

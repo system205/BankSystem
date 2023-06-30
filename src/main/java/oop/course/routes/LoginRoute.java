@@ -17,13 +17,8 @@ public class LoginRoute implements Route {
     public Response act(Request request) {
         // Retrieve credentials from request body and check their presence in database (any kind of validation)
 
-        StringBuilder body = new StringBuilder();
-        for (String line : request.body()) {
-            body.append(line);
-        }
-
         Credentials credentials = new SimpleCredentials(
-                new JsonForm(body.toString())
+                new JsonForm(request.body())
         );
 
         if (this.check.ok(credentials)) {

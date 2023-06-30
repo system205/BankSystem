@@ -15,7 +15,7 @@ public class Customer implements Entity {
         this(0, email, name, surname, password);
     }
 
-    public Customer(Database<Customer> db, long id) {
+    public Customer(Database<Long, Customer> db, long id) {
         final Customer entity = db.read(id);
         this.email = entity.email;
         this.name = entity.name;
@@ -33,11 +33,11 @@ public class Customer implements Entity {
     }
 
     public Customer(Form form) {
-        this.id = form.extractLong("id");
-        this.email = form.extractString("email");
-        this.name = form.extractString("name");
-        this.surname = form.extractString("surname");
-        this.password = form.extractString("password");
+        this.id = form.longField("id");
+        this.email = form.stringField("email");
+        this.name = form.stringField("name");
+        this.surname = form.stringField("surname");
+        this.password = form.stringField("password");
     }
 
 
@@ -48,6 +48,6 @@ public class Customer implements Entity {
 
     public String toSqlInsert(String table) {
         return String.format("INSERT INTO %s (email, name, surname, password) VALUES (%s, %s, %s, %s)",
-                            table, this.email, this.password, this.name, this.surname);
+                table, this.email, this.password, this.name, this.surname);
     }
 }

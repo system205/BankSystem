@@ -6,19 +6,24 @@ import java.util.regex.*;
 
 public class JsonForm implements Form {
     private final String source;
-    private final String regex;
-    private final String stringRegex;
-    private final String integerRegex;
+    private static final String regex = "\"%s\" *: *\"[^\"]*\"";
+    private static final String stringRegex = "\"[^\"]*\"$";
+    private static final String integerRegex = "\"[0-9]*\"$";
 
     public JsonForm(String source) {
         this.source = source;
-        this.regex = "\"%s\" *: *\"[^\"]*\"";
-        this.stringRegex = "\"[^\"]*\"$";
-        this.integerRegex = "\"[0-9]*\"$";
+    }
+
+    public JsonForm(Iterable<String> payload) {
+        StringBuilder data = new StringBuilder();
+        for (String line : payload) {
+            data.append(line);
+        }
+        this.source = data.toString();
     }
 
     @Override
-    public long extractLong(String field) {
+    public long longField(String field) {
         Matcher matcher = Pattern
                 .compile(String.format(regex, field))
                 .matcher(this.source);
@@ -40,7 +45,7 @@ public class JsonForm implements Form {
     }
 
     @Override
-    public String extractString(String field) {
+    public String stringField(String field) {
         Matcher matcher = Pattern
                 .compile(String.format(regex, field))
                 .matcher(this.source);

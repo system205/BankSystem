@@ -1,6 +1,7 @@
 package oop.course.tools.interfaces;
 
 public interface Form {
-    long extractLong(String field);
-    String extractString(String field);
+    long longField(String field);
+
+    String stringField(String field);
 }
