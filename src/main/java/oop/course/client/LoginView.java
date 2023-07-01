@@ -19,25 +19,29 @@ public class LoginView implements IView {
         Window window = new BasicWindow("BankSystem authentication");
         window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        Label welcomeText = new Label("Welcome to the BankSystem client application!\nPlease, register or login into your existing account.");
-        contentPanel.addComponent(welcomeText);
-        contentPanel.addComponent(new Label("Username"));
-        contentPanel.addComponent(new TextBox());
-        contentPanel.addComponent(new Label("Password"));
-        contentPanel.addComponent(new TextBox().setMask('*'));
+        new TerminalText(
+                "Welcome to the BankSystem client application!\nPlease, register or login into your existing account."
+        ).attachTo(contentPanel);
+        new TerminalText("Username").attachTo(contentPanel);
+        new TerminalTextBox().attachTo(contentPanel);
+        new TerminalText("Password").attachTo(contentPanel);
+        new TerminalPasswordBox().attachTo(contentPanel);
 
-        contentPanel.addComponent(new Button("Login", () -> {
+        new TerminalButton("Login", () -> {
             window.close();
             onSceneChange.accept(Type.Account);
-        }));
-        contentPanel.addComponent(new Button("Register page", () -> {
+        }).attachTo(contentPanel);
+
+        new TerminalButton("Register page", () -> {
             window.close();
             onSceneChange.accept(Type.Register);
-        }));
-        contentPanel.addComponent(new Button("Exit", () -> {
+        }).attachTo(contentPanel);
+
+        new TerminalButton("Exit", () -> {
             window.close();
             onSceneChange.accept(Type.None);
-        }));
+        }).attachTo(contentPanel);
+
         window.setComponent(contentPanel);
         gui.addWindow(window);
     }
