@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class Client
-{
+public class Client {
     private GUI clientGui;
-    public Client(GUIFactory guiFactory)
-    {
+    public Client(GUIFactory guiFactory) {
         try {
             clientGui = guiFactory.bestGUIImplementation();
         } catch (IOException e) {

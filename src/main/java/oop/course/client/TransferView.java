@@ -21,22 +21,22 @@ public class TransferView implements IView {
         window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        contentPanel.addComponent(new Label("Please enter the requisites of the recipient."));
-        contentPanel.addComponent(new Label("Account number:"));
-        contentPanel.addComponent(new TextBox());
-        contentPanel.addComponent(new Label("Transfer amount:"));
-        contentPanel.addComponent(new TextBox());
+        new TerminalText("Please enter the requisites of the recipient.").attachTo(contentPanel);
+        new TerminalText("Account number:").attachTo(contentPanel);
+        new TerminalTextBox().attachTo(contentPanel);
+        new TerminalText("Transfer amount:").attachTo(contentPanel);
+        new TerminalTextBox().attachTo(contentPanel);
 
-        contentPanel.addComponent(new Button("Transfer money", () -> {
+        new TerminalButton("Transfer money", () -> {
             MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             window.close();
             onSceneChange.accept(Type.Login);
-        }));
+        }).attachTo(contentPanel);
 
-        contentPanel.addComponent(new Button("Cancel", () -> {
+        new TerminalButton("Cancel", () -> {
             window.close();
             onSceneChange.accept(Type.Account);
-        }));
+        }).attachTo(contentPanel);
 
         window.setComponent(contentPanel);
         gui.addWindow(window);

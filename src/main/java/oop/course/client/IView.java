@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 public interface IView {
-    enum Type
-    {
+    enum Type {
         Login,
         Register,
         Account,
