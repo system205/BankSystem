@@ -1,21 +1,26 @@
 package oop.course.implementations;
 
-import oop.course.entity.*;
 import oop.course.interfaces.*;
+import oop.course.storage.*;
 
 /**
  * A simple bank account
- * */
+ */
 public class CheckingAccount implements Account {
     private final long id;
     private final long balance;
-    private final Customer owner;
 
-    public CheckingAccount(long id, long balance, Customer owner) {
+    public CheckingAccount(long id, long balance) {
         this.id = id;
         this.balance = balance;
-        this.owner = owner;
     }
+
+    public CheckingAccount(Database<String, CheckingAccount> accountDb, String id) {
+        CheckingAccount account = accountDb.read(id);
+        this.id = account.id;
+        this.balance = account.balance;
+    }
+
 
     @Override
     public long balance() {
@@ -30,5 +35,9 @@ public class CheckingAccount implements Account {
     @Override
     public long withdraw() {
         return 0;
+    }
+
+    public String json() {
+        return String.format("{\"id\":\"%s\", \"balance\":\"%s\"}", this.id, this.balance);
     }
 }
