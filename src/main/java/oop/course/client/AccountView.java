@@ -19,28 +19,28 @@ public class AccountView implements IView {
         window.setHints(List.of(Window.Hint.CENTERED));
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        contentPanel.addComponent(new Label("Welcome to your account."));
-        contentPanel.addComponent(new Label("Name:"));
-        contentPanel.addComponent(new Label("Ivan Ivanov"));
-        contentPanel.addComponent(new Label("Account number:"));
-        contentPanel.addComponent(new Label("123456"));
-        contentPanel.addComponent(new Label("Balance"));
-        contentPanel.addComponent(new Label("120.0$"));
+        new TerminalText("Welcome to your account.").attachTo(contentPanel);
+        new TerminalText("Name:").attachTo(contentPanel);
+        new TerminalText("Ivan Ivanov").attachTo(contentPanel);
+        new TerminalText("Account number:").attachTo(contentPanel);
+        new TerminalText("123456").attachTo(contentPanel);
+        new TerminalText("Balance").attachTo(contentPanel);
+        new TerminalText("120.0$").attachTo(contentPanel);
 
-        contentPanel.addComponent(new Button("Transfer money", () -> {
+        new TerminalButton("Transfer money", () -> {
             window.close();
             onSceneChange.accept(Type.Transfer);
-        }));
+        }).attachTo(contentPanel);
 
-        contentPanel.addComponent(new Button("Logout", () -> {
+        new TerminalButton("Logout", () -> {
             window.close();
             onSceneChange.accept(Type.Login);
-        }));
+        });
 
-        contentPanel.addComponent(new Button("Logout & exit", () -> {
+        new TerminalButton("Logout & exit", () -> {
             window.close();
             onSceneChange.accept(Type.None);
-        }));
+        });
 
         window.setComponent(contentPanel);
         gui.addWindow(window);
