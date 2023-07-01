@@ -8,7 +8,6 @@ import oop.course.storage.*;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.*;
 import java.sql.*;
 import java.util.*;
 
@@ -29,14 +28,20 @@ public class Main {
                         new SimpleUrl(),
                         new MainRoute(),
                         new LoginRoute(
-                                new DBLoginCheck(connection)
+                                new CredentialsAccess(
+                                        new DBLoginCheck(connection),
+                                        new TokenReturn("mySecretKey")
+                                )
                         ),
-                        new RegisterRoute(),
+                        new RegisterRoute(
+                                new CustomerDB(connection, "customer")
+                        ),
                         new TransferRoute(),
                         new CheckAccountRoute(
                                 new AccountAccess( // either Forbidden or proceed
                                         new AccountReturn(
-                                                new CheckingAccountDB()
+                                                "checking_account",
+                                                connection
                                         )
                                 )
                         ),

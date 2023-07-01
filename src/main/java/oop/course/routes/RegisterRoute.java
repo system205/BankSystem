@@ -1,13 +1,31 @@
 package oop.course.routes;
 
-import oop.course.implementations.*;
+import oop.course.entity.*;
 import oop.course.interfaces.*;
+import oop.course.responses.*;
+import oop.course.storage.*;
+import oop.course.tools.implementations.*;
 
 public class RegisterRoute implements Route {
+
+    private final Database<Long, Customer> database;
+
+    public RegisterRoute(Database<Long, Customer> database) {
+        this.database = database;
+    }
+
     @Override
     public Response act(Request request) {
         // provide all the necessary information to register new personal account
-        return new EmptyResponse();
+        // email name surname password must be provided
+
+        new Customer(
+                new JsonForm(
+                        request.body()
+                )
+        ).save(this.database);
+
+        return new CreatedResponse();
     }
 
     @Override

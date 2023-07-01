@@ -19,7 +19,6 @@ public class CustomerDB implements Database<Long, Customer> {
         try (ResultSet result = new PreparedStatementWithId(connection, "SELECT * FROM customer WHERE id=?;", id).execute()) {
             result.next();
             return new Customer(
-                    result.getLong(1),
                     result.getString(2),
                     result.getString(3),
                     result.getString(4),
@@ -38,7 +37,14 @@ public class CustomerDB implements Database<Long, Customer> {
         // How to get data from customer?
         try (Statement statement = connection.createStatement()) {
             statement.execute(customer.toSqlInsert(this.table));
+            this.connection.commit();
         } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                System.out.println("Failed to rollback");
+                throw new RuntimeException(ex);
+            }
             System.err.println("Failed to insert a customer into database");
             throw new RuntimeException(e);
         }
