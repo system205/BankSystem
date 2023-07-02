@@ -1,39 +1,32 @@
 package oop.course.routes;
 
+import oop.course.entity.*;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
+import oop.course.responses.*;
 import oop.course.tools.implementations.*;
 import oop.course.tools.interfaces.*;
 
+import java.sql.*;
+
 public class TransferRoute implements Route {
+
+    private final Connection connection;
+
+    public TransferRoute(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public Response act(Request request) {
-        // take current account number and another account number
-        // check with the token that a user is eligible to specify this current account
-        // tell the database to perform a transaction to transfer money from one account to another
-        // if success return response 200
+        Form form = new JsonForm(request.body());
+        Transaction transaction = new Customer(this.connection,
+                new HeaderToken(request.headers()).id())
+                .account(form.stringField("senderAccount"))
+                .transfer(form.stringField("receiverAccount"),
+                        form.bigDecimalField("amount"));
 
-//        // Another process
-//        String token = request.headers().stream()
-//                .filter(header -> header.startsWith("Authorization"))
-//                .map(s -> s.substring("Authorization: Bearer ".length()))
-//                .findFirst().orElseThrow(() -> new RuntimeException("There is not authorization when performing a transaction"));
-//        if (!this.validator.verify(token, senderAccount)) {
-//            return new IllegalAccessResponse("You do not have access to the account: " + senderAccount);
-//        }
-
-        // Probably another process
-//        StringBuilder body = new StringBuilder();
-//        for (String line : request.body()) {
-//            body.append(line);
-//        }
-//        Form form = new JsonForm(body.toString());
-//        String senderAccount = form.stringField("senderAccount");
-//        String receiverAccount = form.stringField("receiverAccount");
-        
-//        Transaction transaction = new TransactionDB();
-//        Response resp = transaction.transfer(senderAccount, receiverAccount);
-        return new EmptyResponse();
+        return new SuccessResponse(transaction.info());
     }
 
     @Override

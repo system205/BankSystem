@@ -34,9 +34,10 @@ public class Main {
                                 )
                         ),
                         new RegisterRoute(
-                                new CustomerDB(connection, "customer")
+                                connection
                         ),
-                        new TransferRoute(),
+                        new TransferRoute(
+                                connection),
                         new CheckAccountRoute(
                                 new AccountAccess( // either Forbidden or proceed
                                         new AccountReturn(

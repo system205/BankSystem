@@ -1,27 +1,33 @@
 package oop.course.implementations;
 
-import oop.course.interfaces.*;
 import oop.course.interfaces.Process;
+import oop.course.interfaces.*;
 import oop.course.requests.*;
 import oop.course.responses.*;
-import oop.course.storage.*;
 import oop.course.tools.implementations.*;
 
-public class AccountReturn implements Process {
-    private final Database<String, CheckingAccount> accountDb;
+import java.sql.*;
 
-    public AccountReturn(Database<String, CheckingAccount> accountDb) {
-        this.accountDb = accountDb;
+public class AccountReturn implements Process {
+
+
+    private final String tableName;
+    private final Connection connection;
+
+    public AccountReturn(String tableName, Connection connection) {
+        this.tableName = tableName;
+        this.connection = connection;
     }
 
     @Override
     public Response act(Request request) {
         return new CheckingResponse(
                 new CheckingAccount(
-                        this.accountDb,
                         new AccountRequest(
                                 new JsonForm(request.body())
-                        ).id()
+                        ).id(),
+                        this.tableName,
+                        this.connection
                 ).json()
         );
     }

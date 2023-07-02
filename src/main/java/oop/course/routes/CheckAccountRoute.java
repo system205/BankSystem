@@ -19,6 +19,6 @@ public class CheckAccountRoute implements Route {
 
     @Override
     public boolean accept(String path) {
-        return "/account".equals(path);
+        return "/accounts".equals(path);
     }
 }

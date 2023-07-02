@@ -3,15 +3,17 @@ package oop.course.routes;
 import oop.course.entity.*;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
-import oop.course.storage.*;
 import oop.course.tools.implementations.*;
+import oop.course.tools.interfaces.*;
+
+import java.sql.*;
 
 public class RegisterRoute implements Route {
 
-    private final Database<Long, Customer> database;
+    private final Connection connection;
 
-    public RegisterRoute(Database<Long, Customer> database) {
-        this.database = database;
+    public RegisterRoute(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -19,11 +21,9 @@ public class RegisterRoute implements Route {
         // provide all the necessary information to register new personal account
         // email name surname password must be provided
 
-        new Customer(
-                new JsonForm(
-                        request.body()
-                )
-        ).save(this.database);
+        Form form = new JsonForm(request.body());
+        new Customer(this.connection, form.stringField("email"))
+                .save(form);
 
         return new CreatedResponse();
     }
