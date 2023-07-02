@@ -3,7 +3,7 @@ package oop.course.client;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
-public class TerminalTextBox implements TerminalGUIElement {
+public class TerminalTextBox implements TerminalInputBox {
     private final TextBox textBox;
     public TerminalTextBox()
     {
@@ -14,5 +14,10 @@ public class TerminalTextBox implements TerminalGUIElement {
     public void attachTo(Panel panel)
     {
         panel.addComponent(textBox);
+    }
+
+    @Override
+    public String text() {
+        return textBox.getText();
     }
 }
