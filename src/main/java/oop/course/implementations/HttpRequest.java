@@ -2,14 +2,19 @@ package oop.course.implementations;
 
 import oop.course.interfaces.*;
 
+import java.io.*;
 import java.util.*;
-import java.util.stream.*;
 
 public class HttpRequest implements Request {
-    private final Iterable<String> data;
+    private final Collection<String> data;
 
-    public HttpRequest(Stream<String> lines) {
-        this.data = lines.toList();
+    public HttpRequest(BufferedReader in) throws IOException {
+        this.data = new LinkedList<>();
+        String line;
+        while (!(line = in.readLine()).equals("EOF")) {
+            this.data.add(line);
+        }
+        System.out.println(this.data);
     }
 
     @Override
@@ -26,12 +31,15 @@ public class HttpRequest implements Request {
     @Override
     public Iterable<String> body() {
         // a payload of the data
-        ArrayList<String> payload = new ArrayList<>();
-        boolean flag = false;
+        Collection<String> payload = new LinkedList<>();
+        boolean foundEmptyLine = false;
         for (String line : data) {
-            if (!line.isEmpty() && !flag) continue;
-            else if (line.isEmpty() && !flag) flag = true;
-            if (!line.isEmpty()) payload.add(line);
+            if (line.isEmpty()) {
+                foundEmptyLine = true;
+                continue;
+            }
+            if (foundEmptyLine)
+                payload.add(line);
         }
         return payload;
     }
