@@ -20,9 +20,11 @@ public class LoginView implements IView {
                 "Welcome to the BankSystem client application!\nPlease, register or login into your existing account."
         ).attachTo(contentPanel);
         new TerminalText("Username").attachTo(contentPanel);
-        new TerminalTextBox().attachTo(contentPanel);
+        var userBox = new TerminalTextBox();
+        userBox.attachTo(contentPanel);
         new TerminalText("Password").attachTo(contentPanel);
-        new TerminalPasswordBox().attachTo(contentPanel);
+        var passwordBox = new TerminalPasswordBox();
+        passwordBox.attachTo(contentPanel);
 
         new TerminalButton("Login", () -> {
             window.close();
