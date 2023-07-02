@@ -17,7 +17,7 @@ public class GUIOrchestrator {
         textGUI = new MultiWindowTextGUI(screen);
     }
 
-    public void mainLoop(Screen screen)
+    public void mainLoop()
     {
         try {
             currentView = IView.Type.Login;
