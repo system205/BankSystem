@@ -5,7 +5,6 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class TransferView implements IView {
