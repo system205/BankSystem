@@ -24,8 +24,7 @@ public class Client {
         new Client(new GUIFactory()).run();
     }
 
-    public void run()
-    {
+    public void run() {
         clientGui.startLooping();
     }
 }

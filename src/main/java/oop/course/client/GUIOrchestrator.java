@@ -27,7 +27,6 @@ public class GUIOrchestrator {
                     changePending = false;
                     if (currentView == IView.Type.None)
                     {
-                        screen.stopScreen();
                         break;
                     }
                     IView view = switch (currentView) {

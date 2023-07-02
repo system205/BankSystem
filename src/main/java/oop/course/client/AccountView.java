@@ -15,8 +15,7 @@ public class AccountView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Window window = new BasicWindow("Account");
-        window.setHints(List.of(Window.Hint.CENTERED));
+        TerminalWindow window = new TerminalWindow("Account");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
         new TerminalText("Welcome to your account.").attachTo(contentPanel);
@@ -35,15 +34,16 @@ public class AccountView implements IView {
         new TerminalButton("Logout", () -> {
             window.close();
             onSceneChange.accept(Type.Login);
-        });
+        }).attachTo(contentPanel);
 
         new TerminalButton("Logout & exit", () -> {
             window.close();
             onSceneChange.accept(Type.None);
-        });
+        }).attachTo(contentPanel);
 
-        window.setComponent(contentPanel);
-        gui.addWindow(window);
+        window.setContent(contentPanel);
+        window.addToGui(gui);
+        window.open();
     }
 
     @Override
