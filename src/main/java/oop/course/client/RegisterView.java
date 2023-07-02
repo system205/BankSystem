@@ -18,8 +18,7 @@ public class RegisterView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Window window = new BasicWindow("BankSystem registration");
-        window.setHints(List.of(Window.Hint.CENTERED));
+        TerminalWindow window = new TerminalWindow("BankSystem registration");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         new TerminalText("Please enter your data for registration.").attachTo(contentPanel);
         new TerminalText("Username").attachTo(contentPanel);
@@ -41,8 +40,9 @@ public class RegisterView implements IView {
             onSceneChange.accept(Type.None);
         });
 
-        window.setComponent(contentPanel);
-        gui.addWindow(window);
+        window.setContent(contentPanel);
+        window.addToGui(gui);
+        window.open();
     }
 
     @Override

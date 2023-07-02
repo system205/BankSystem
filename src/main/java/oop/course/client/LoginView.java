@@ -15,9 +15,7 @@ public class LoginView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-
-        Window window = new BasicWindow("BankSystem authentication");
-        window.setHints(List.of(Window.Hint.CENTERED));
+        TerminalWindow window = new TerminalWindow("BankSystem authentication");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         new TerminalText(
                 "Welcome to the BankSystem client application!\nPlease, register or login into your existing account."
@@ -42,8 +40,9 @@ public class LoginView implements IView {
             onSceneChange.accept(Type.None);
         }).attachTo(contentPanel);
 
-        window.setComponent(contentPanel);
-        gui.addWindow(window);
+        window.setContent(contentPanel);
+        window.addToGui(gui);
+        window.open();
     }
 
     @Override

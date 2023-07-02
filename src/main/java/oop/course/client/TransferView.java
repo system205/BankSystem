@@ -17,8 +17,7 @@ public class TransferView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Window window = new BasicWindow("Money transfer");
-        window.setHints(List.of(Window.Hint.CENTERED));
+        TerminalWindow window = new TerminalWindow("Money transfer");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
         new TerminalText("Please enter the requisites of the recipient.").attachTo(contentPanel);
@@ -38,8 +37,9 @@ public class TransferView implements IView {
             onSceneChange.accept(Type.Account);
         }).attachTo(contentPanel);
 
-        window.setComponent(contentPanel);
-        gui.addWindow(window);
+        window.setContent(contentPanel);
+        window.addToGui(gui);
+        window.open();
     }
 
     @Override

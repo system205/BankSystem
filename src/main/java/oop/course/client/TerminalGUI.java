@@ -25,6 +25,7 @@ public class TerminalGUI implements GUI {
         }
         new GUIOrchestrator(screen).mainLoop(screen);
         try {
+            screen.stopScreen();
             terminal.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
