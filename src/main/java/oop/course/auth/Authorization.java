@@ -1,5 +1,6 @@
 package oop.course.auth;
 
+import oop.course.auth.interfaces.SecurityConfiguration;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.interfaces.Process;
@@ -23,15 +24,9 @@ public class Authorization implements Process {
     @Override
     public Response act(Request request) {
         // Internal logic
-
-        // TODO - headers should be a collection that retains the order of the elements
-        Path path = new Path(request.headers());
-        String url = path.url();
-
-        if (!securityConfiguration.isAccessibleUrl(url)) {
-            return new ForbiddenResponse("Authentication is required");
-        }
-        if (!securityConfiguration.isValidToken(path.authToken())) {
+        AuthMeta authMeta = new AuthMeta(request);
+        String url = new SimpleUrl().path(request);
+        if (!securityConfiguration.isValidToken(authMeta.authToken(), url)) {
             return new ForbiddenResponse("Authentication token is invalid");
         }
         // Process next if OK so far
