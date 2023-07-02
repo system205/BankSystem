@@ -23,7 +23,7 @@ public class TerminalGUI implements GUI {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        new GUIOrchestrator(screen).mainLoop(screen);
+        new GUIOrchestrator(screen).mainLoop();
         try {
             screen.stopScreen();
             terminal.close();
