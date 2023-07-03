@@ -5,6 +5,7 @@ import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
 
 import java.sql.*;
+import java.util.*;
 
 public class Customer {
     private final String email;
@@ -57,5 +58,21 @@ public class Customer {
             throw new RuntimeException(e);
         }
         return new CheckingAccount(id, this.connection);
+    }
+
+    public Collection<String> roles() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT role FROM roles INNER JOIN customer ON id=customer_id WHERE email=?"
+        )) {
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            Collection<String> roles = new LinkedList<>();
+            while (result.next()) {
+                roles.add(result.getString(1));
+            }
+            return roles;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
