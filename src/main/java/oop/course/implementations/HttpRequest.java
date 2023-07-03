@@ -43,4 +43,18 @@ public class HttpRequest implements Request {
         }
         return payload;
     }
+
+    @Override
+    public String url() {
+        return headers().stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("Http is malformed"))
+                .split(" ")[1]; // the very first word
+    }
+
+    @Override
+    public String method() {
+        return headers().stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("Http is malformed"))
+                .split(" ")[0]; // the very first word
+    }
 }

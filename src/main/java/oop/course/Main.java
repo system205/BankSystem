@@ -8,7 +8,6 @@ import oop.course.storage.*;
 
 import java.io.*;
 import java.net.*;
-import java.nio.file.*;
 import java.sql.*;
 import java.util.*;
 
@@ -26,25 +25,30 @@ public class Main {
         // Processes
         final Authorization authorization = new Authorization(
                 Optional.of(new Fork(
-                                new SimpleUrl(),
-                                new MainRoute(),
-                                new LoginRoute(
-                                        new DBLoginCheck(connection)
+                        new SimpleUrl(),
+                        new MainRoute(),
+                        new LoginRoute(
+                                new CredentialsAccess(
+                                        new DBLoginCheck(connection),
+                                        new TokenReturn("mySecretKey")
+                                )
+                        ),
+                        new RegisterRoute(
+                                connection
+                        ),
+                        new TransferRoute(new MakeTransaction(
+                                connection)
+                        ),
+                        new CheckAccountRoute(
+                                new GetAccount(
+                                        connection
                                 ),
-                                new RegisterRoute(),
-                                new TransferRoute(),
-                                new CheckAccountRoute(
-                                        new AccountAccess( // either Forbidden or proceed
-                                                new AccountReturn(
-                                                        new CheckingAccountDB()
-                                                )
-                                        )
-                                ),
-                                new NotFoundRoute()
-                        )
-                ),
-                new AuthSecurityConfiguration("secret-key")
-        );
+                                new PutAccount(
+                                        connection
+                                )
+                        ),
+                        new NotFoundRoute()
+                )), new AuthSecurityConfiguration("secret-key"));
 
         final int port = 6666;
         try (ServerSocket socket = new ServerSocket(port)) {

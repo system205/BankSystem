@@ -19,8 +19,7 @@ public class DBLoginCheck implements CheckCredentials {
         final String username = credentials.username();
         final String password = credentials.password();
 
-
-        try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM customer WHERE name = ? AND password = ?")) {
+        try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM customer WHERE email = ? AND password = ?")) {
             statement.setString(1, username);
             statement.setString(2, password);
             return statement.executeQuery().next();
