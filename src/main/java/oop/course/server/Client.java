@@ -2,7 +2,6 @@ package oop.course.server;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 public class Client {
 
@@ -26,8 +25,10 @@ public class Client {
                     POST /register HTTP/1.1
 
                     {
-                      "username": "admin2",
-                      "password": "admin2"
+                      "email": "admin",
+                      "name": "admin",
+                      "surname": "admin",
+                      "password": "123"
                     }
                     EOF""";
 
@@ -35,17 +36,26 @@ public class Client {
                     POST /login HTTP/1.1
 
                     {
-                      "username": "admin2",
-                      "password": "admin2"
+                      "email": "admin",
+                      "password": "123"
                     }
                     EOF""";
 
             String check = """
-                    POST /account HTTP/1.1
+                    GET /accounts HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
 
                     {
-                      "username": "admin",
-                      "password": "admin"
+                      "accountNumber": "1234567890",
+                    }
+                    EOF""";
+
+            String putAccount = """
+                    PUT /accounts HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
+
+                    {
+                      "accountNumber": "123456789F",
                     }
                     EOF""";
 
@@ -58,11 +68,12 @@ public class Client {
                     }
                     EOF""";
 
+
             String random = """
                     POST /random HTTP/1.1
                     EOF""";
 
-            final String request = register;
+            final String request = putAccount;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

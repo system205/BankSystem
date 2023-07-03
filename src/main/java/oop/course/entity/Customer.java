@@ -53,23 +53,6 @@ public class Customer {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new CheckingAccount(id, "checking_account", this.connection);
+        return new CheckingAccount(id, this.connection);
     }
-
-//    public Customer read(Long id) {
-//        try (ResultSet result = new PreparedStatementWithId(connection, "SELECT * FROM customer WHERE id=?;", id).execute()) {
-//            result.next();
-//            return new Customer(
-//                    result.getString(2),
-//                    result.getString(3),
-//                    result.getString(4),
-//                    result.getString(4));
-//        } catch (PSQLException e) {
-//            System.out.println("PSQLException occurred. Maybe the customer was not found in DB. Error: " + e);
-//        } catch (SQLException e) {
-//            System.out.println("Some sql exception occurred");
-//            throw new RuntimeException(e);
-//        }
-//        throw new RuntimeException("Customer with id " + id + " was not found.");
-//    }
 }

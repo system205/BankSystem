@@ -36,14 +36,15 @@ public class Main {
                         new RegisterRoute(
                                 connection
                         ),
-                        new TransferRoute(
-                                connection),
+                        new TransferRoute(new MakeTransaction(
+                                connection)
+                        ),
                         new CheckAccountRoute(
-                                new AccountAccess( // either Forbidden or proceed
-                                        new AccountReturn(
-                                                "checking_account",
-                                                connection
-                                        )
+                                new GetAccount(
+                                        connection
+                                ),
+                                new PutAccount(
+                                        connection
                                 )
                         ),
                         new NotFoundRoute()

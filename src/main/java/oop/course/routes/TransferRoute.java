@@ -1,33 +1,28 @@
 package oop.course.routes;
 
-import oop.course.entity.*;
-import oop.course.implementations.*;
 import oop.course.interfaces.*;
-import oop.course.responses.*;
-import oop.course.tools.implementations.*;
-import oop.course.tools.interfaces.*;
-
-import java.sql.*;
 
 public class TransferRoute implements Route {
+    private final ProcessMethod[] next;
 
-    private final Connection connection;
-
-    public TransferRoute(Connection connection) {
-        this.connection = connection;
+    public TransferRoute(ProcessMethod... processes) {
+        this.next = processes;
     }
 
     @Override
     public Response act(Request request) {
-        Form form = new JsonForm(request.body());
-        Transaction transaction = new Customer(this.connection,
-                new HeaderToken(request.headers()).id())
-                .account(form.stringField("senderAccount"))
-                .transfer(form.stringField("receiverAccount"),
-                        form.bigDecimalField("amount"));
+        // fork depending on the http method
+        String method = request.method();
 
-        return new SuccessResponse(transaction.info());
+        for (ProcessMethod process : next) {
+            if (process.accept(method)) {
+                return process.act(request);
+            }
+        }
+
+        throw new RuntimeException("Unsupported method " + method);
     }
+
 
     @Override
     public boolean accept(String path) {

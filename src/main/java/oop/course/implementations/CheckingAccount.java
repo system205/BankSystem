@@ -11,19 +11,17 @@ import java.sql.*;
 public class CheckingAccount implements Account {
     private final String number;
 
-    private final String table;
     private final Connection connection;
 
-    public CheckingAccount(String id, String table, Connection connection) {
+    public CheckingAccount(String id, Connection connection) {
         this.number = id;
-        this.table = table;
         this.connection = connection;
     }
 
     @Override
     public long balance() {
         try (PreparedStatement statement = this.connection.prepareStatement(
-                String.format("SELECT balance from %s where account_number=?", this.table));
+                "SELECT balance from checking_account where account_number=?");
         ) {
             statement.setString(1, this.number);
             ResultSet results = statement.executeQuery();
@@ -75,5 +73,35 @@ public class CheckingAccount implements Account {
 
     public String json() {
         return String.format("{\"accountNumber\":\"%s\", \"balance\":\"%s\"}", this.number, balance());
+    }
+
+    @Override
+    public void save(String customerEmail) {
+        try (PreparedStatement accountStatement = this.connection.prepareStatement(
+                "INSERT INTO checking_account (customer_id, bank_name, account_number) VALUES (?, ?, ?)");
+             PreparedStatement customerStatement = this.connection.prepareStatement(
+                     "SELECT id FROM customer WHERE email=?")
+        ) {
+            // Identify customer in DB
+            customerStatement.setString(1, customerEmail);
+            ResultSet result = customerStatement.executeQuery();
+            if (!result.next())
+                throw new RuntimeException("Customer with the email: " + customerEmail + " was not found");
+            final long id = result.getLong(1);
+
+            // Save new checking account
+            accountStatement.setLong(1, id);
+            accountStatement.setString(2, "AKG");
+            accountStatement.setString(3, this.number);
+            accountStatement.execute();
+            this.connection.commit();
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 }
