@@ -5,6 +5,8 @@ import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Customer {
     private final String email;
@@ -57,5 +59,11 @@ public class Customer {
             throw new RuntimeException(e);
         }
         return new CheckingAccount(id, this.connection);
+    }
+
+    public List<String> getRoles() {
+        // TODO - implement this method
+        // return list of all the roles
+        return List.of("admin", "customer");
     }
 }

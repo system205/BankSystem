@@ -11,6 +11,8 @@ import java.net.*;
 import java.sql.*;
 import java.util.*;
 
+import static java.util.Map.entry;
+
 public class Main {
     public static void main(String[] args) throws IOException, SQLException {
 //        System.out.println(Files.walk(Paths.get(".")).filter(Files::isRegularFile).filter(p -> p.getFileName().toString().endsWith("java")).map(path -> {try {return Files.lines(path).filter(s -> s.trim().length() > 0 && !s.trim().startsWith("/") && !s.trim().startsWith("*")).count();} catch (IOException e) {throw new RuntimeException(e);}}).reduce(Long::sum).orElse(0L));
@@ -48,7 +50,17 @@ public class Main {
                                 )
                         ),
                         new NotFoundRoute()
-                )), new AuthSecurityConfiguration("secret-key"));
+                )),
+                new AuthSecurityConfiguration(
+                        connection, new RolesConfiguration(
+                                Map.ofEntries(
+                                    entry("/admin", List.of("admin")),
+                                    entry("/register", List.of("admin", "customer"))
+                                )
+                        )
+                )
+        );
+
 
         final int port = 6666;
         try (ServerSocket socket = new ServerSocket(port)) {

@@ -24,9 +24,8 @@ public class Authorization implements Process {
     @Override
     public Response act(Request request) {
         // Internal logic
-        AuthMeta authMeta = new AuthMeta(request);
         String url = new SimpleUrl().path(request);
-        if (!securityConfiguration.isValidToken(authMeta.authToken(), url)) {
+        if (!securityConfiguration.isValidToken(request.headers(), url)) {
             return new ForbiddenResponse("Authentication token is invalid");
         }
         // Process next if OK so far

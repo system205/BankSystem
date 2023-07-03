@@ -1,17 +1,20 @@
 package oop.course.auth;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import oop.course.auth.interfaces.SecurityConfiguration;
+import oop.course.entity.Customer;
+import oop.course.implementations.HeaderToken;
+
+import java.sql.Connection;
+import java.util.Collection;
+import java.util.List;
 
 public class AuthSecurityConfiguration implements SecurityConfiguration {
-    private final String secretKey;
+    private final Connection connection;
+    private final RolesConfiguration rolesConfiguration;
 
-    public AuthSecurityConfiguration(String secretKey) {
-        this.secretKey = secretKey;
+    public AuthSecurityConfiguration(Connection connection, RolesConfiguration rolesConfiguration) {
+        this.connection = connection;
+        this.rolesConfiguration = rolesConfiguration;
     }
 
     public boolean isAccessibleUrl(String url) {
@@ -20,16 +23,20 @@ public class AuthSecurityConfiguration implements SecurityConfiguration {
     }
 
     @Override
-    public boolean isValidToken(String token, String url) {
-        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey)).withIssuer("Test").build();
+    public boolean isValidToken(Collection<String> headers, String url) {
         try {
-            DecodedJWT decodedJWT = verifier.verify(token);
-            String username = decodedJWT.getSubject();
-            // TODO - fetch user role from database
-            // TODO - check whether the user role is correct for this url
-            return true;
-        } catch (JWTVerificationException e) {
-            System.out.println(e.getMessage());
+            final String userId = new HeaderToken(headers).id();
+            final List<String> roles = new Customer(connection, userId).getRoles();
+            boolean isAllowed = false;
+            for (String role : roles) {
+                if (rolesConfiguration.isAllowedToGo(role, url)) {
+                    isAllowed = true;
+                    break;
+                }
+            }
+            return isAllowed;
+        } catch (Exception e) {
+//            System.out.println(e.getMessage());
             return false;
         }
     }
