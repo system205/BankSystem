@@ -6,9 +6,11 @@ import java.nio.file.Paths;
 
 public class Client {
     private GUI clientGui;
-    public Client(GUIFactory guiFactory) {
+    private ServerBridge serverBridge;
+    public Client(GUIFactory guiFactory, ServerBridgeFactory serverFactory) {
         try {
             clientGui = guiFactory.bestGUIImplementation();
+            serverBridge = serverFactory.bestServerImplementation();
         } catch (IOException e) {
             System.err.println("Unable to create GUI");
             System.exit(-1);
@@ -21,7 +23,7 @@ public class Client {
         } catch (IOException e) {
             System.out.println("Unable to calculate line counts, not critical, still proceeding.");
         }
-        new Client(new GUIFactory()).run();
+        new Client(new GUIFactory(), new ServerBridgeFactory("127.0.0.1", 6666)).run();
     }
 
     public void run() {
