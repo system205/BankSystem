@@ -18,7 +18,6 @@ public class PutAccount implements ProcessMethod {
     public Response act(Request request) {
         // Create and save new account
         Account account = new CheckingAccount(
-                new JsonForm(request.body()).stringField("accountNumber"),
                 this.connection
         );
         account.save(

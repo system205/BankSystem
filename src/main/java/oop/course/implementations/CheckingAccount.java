@@ -13,9 +13,24 @@ public class CheckingAccount implements Account {
 
     private final Connection connection;
 
+    /**
+     * Creates an account with the specified id
+     */
     public CheckingAccount(String id, Connection connection) {
         this.number = id;
         this.connection = connection;
+    }
+
+    /**
+     * Creates not saved account
+     */
+    public CheckingAccount(Connection connection) {
+        this(generateId(), connection);
+    }
+
+    private static String generateId() {
+        String id = String.valueOf(System.currentTimeMillis());
+        return id.substring(id.length() - 10);
     }
 
     @Override
@@ -71,6 +86,7 @@ public class CheckingAccount implements Account {
         return new SimpleTransaction(this.number, accountNumber, amount);
     }
 
+    @Override
     public String json() {
         return String.format("{\"accountNumber\":\"%s\", \"balance\":\"%s\"}", this.number, balance());
     }

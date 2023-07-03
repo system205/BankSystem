@@ -54,17 +54,16 @@ public class Client {
                     PUT /accounts HTTP/1.1
                     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
 
-                    {
-                      "accountNumber": "123456789F",
-                    }
                     EOF""";
 
             String transfer = """
-                    POST /transfer HTTP/1.1
+                    PUT /transfer HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2OTkwMSwiZXhwIjoxNjg4NDU2MzAxfQ.8GqmuA22hLQVBISaHZ7hTkSbsuUlBtTaLwZ9D3vzEUQ
 
                     {
                       "senderAccount": "admin",
-                      "receiverAccount": "admin"
+                      "receiverAccount": "admin",
+                      "amount": "100"
                     }
                     EOF""";
 

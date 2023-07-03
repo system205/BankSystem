@@ -41,11 +41,14 @@ public class Customer {
     }
 
     public Account account(String id) {
+        // Check that customer ownes the account and then return.
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "SELECT 1 FROM customer LEFT JOIN checking_account on customer_id = id WHERE email = ?"
+                "SELECT 1 FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ? AND account_number=?"
         )) {
             statement.setString(1, this.email);
-            if (!statement.execute()) {
+            statement.setString(2, id);
+            ResultSet result = statement.executeQuery();
+            if (!result.next()) {
                 throw new RuntimeException(
                         String.format("The account with number %s is not owned by customer %s", id, this.email)
                 );
