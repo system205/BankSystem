@@ -5,6 +5,7 @@ import oop.course.implementations.*;
 import oop.course.routes.*;
 import oop.course.server.*;
 import oop.course.storage.*;
+import oop.course.storage.migrations.*;
 
 import java.io.*;
 import java.net.*;
@@ -21,6 +22,11 @@ public class Main {
                 "bank"
         ).connect();
         connection.setAutoCommit(false);
+
+        new DatabaseStartUp(new SimpleSqlExecutor(connection),
+                new MigrationDirectory("migrations")
+                        .scan()
+        ).init();
 
         // Processes
         final Authorization authorization = new Authorization(
