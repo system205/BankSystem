@@ -1,53 +1,78 @@
 package oop.course.entity;
 
+import oop.course.implementations.*;
 import oop.course.interfaces.*;
-import oop.course.storage.*;
 import oop.course.tools.interfaces.*;
 
-public class Customer implements Entity {
-    private final long id;
+import java.sql.*;
+import java.util.*;
+
+public class Customer {
     private final String email;
-    private final String name;
-    private final String surname;
-    private final String password;
+    private final Connection connection;
 
-    public Customer(String email, String name, String surname, String password) {
-        this(0, email, name, surname, password);
+    public Customer(Connection connection, String id) {
+        this.connection = connection;
+        this.email = id;
     }
-
-    public Customer(Database<Long, Customer> db, long id) {
-        final Customer entity = db.read(id);
-        this.email = entity.email;
-        this.name = entity.name;
-        this.surname = entity.surname;
-        this.password = entity.password;
-        this.id = entity.id;
-    }
-
-    public Customer(long id, String email, String name, String surname, String password) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.surname = surname;
-        this.password = password;
-    }
-
-    public Customer(Form form) {
-        this.id = form.longField("id");
-        this.email = form.stringField("email");
-        this.name = form.stringField("name");
-        this.surname = form.stringField("surname");
-        this.password = form.stringField("password");
-    }
-
 
     @Override
     public String toString() {
-        return String.format("email: %s, name: %s, surname: %s", this.email, this.name, this.surname);
+        return String.format("Customer with email: %s", this.email);
     }
 
-    public String toSqlInsert(String table) {
-        return String.format("INSERT INTO %s (email, name, surname, password) VALUES (%s, %s, %s, %s)",
-                table, this.email, this.password, this.name, this.surname);
+    public void save(Form details) {
+        try (PreparedStatement statement = this.connection
+                .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)")) {
+            statement.setString(1, this.email);
+            statement.setString(2, details.stringField("name"));
+            statement.setString(3, details.stringField("surname"));
+            statement.setString(4, details.stringField("password"));
+            statement.execute();
+            this.connection.commit();
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            System.err.println("Error when saving a customer");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Account account(String id) {
+        // Check that customer ownes the account and then return.
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT 1 FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ? AND account_number=?"
+        )) {
+            statement.setString(1, this.email);
+            statement.setString(2, id);
+            ResultSet result = statement.executeQuery();
+            if (!result.next()) {
+                throw new RuntimeException(
+                        String.format("The account with number %s is not owned by customer %s", id, this.email)
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return new CheckingAccount(id, this.connection);
+    }
+
+    public Collection<String> roles() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT role FROM roles INNER JOIN customer ON id=customer_id WHERE email=?"
+        )) {
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            Collection<String> roles = new LinkedList<>();
+            while (result.next()) {
+                roles.add(result.getString(1));
+            }
+            return roles;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

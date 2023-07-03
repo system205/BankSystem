@@ -5,6 +5,7 @@ import oop.course.implementations.*;
 import oop.course.routes.*;
 import oop.course.server.*;
 import oop.course.storage.*;
+import oop.course.storage.migrations.*;
 import org.slf4j.*;
 
 import java.io.*;
@@ -28,6 +29,11 @@ public class Main {
         connection.setAutoCommit(false);
         logger.info("The connection to database is set up");
 
+        new DatabaseStartUp(new SimpleSqlExecutor(connection),
+                new MigrationDirectory("migrations")
+                        .scan()
+        ).init();
+
         // Processes
         logger.debug("Start creating processes");
         final Authorization authorization = new Authorization(
@@ -35,15 +41,23 @@ public class Main {
                         new SimpleUrl(),
                         new MainRoute(),
                         new LoginRoute(
-                                new DBLoginCheck(connection)
+                                new CredentialsAccess(
+                                        new DBLoginCheck(connection),
+                                        new TokenReturn("mySecretKey")
+                                )
                         ),
-                        new RegisterRoute(),
-                        new TransferRoute(),
+                        new RegisterRoute(
+                                connection
+                        ),
+                        new TransferRoute(new MakeTransaction(
+                                connection)
+                        ),
                         new CheckAccountRoute(
-                                new AccountAccess( // either Forbidden or proceed
-                                        new AccountReturn(
-                                                new CheckingAccountDB()
-                                        )
+                                new GetAccount(
+                                        connection
+                                ),
+                                new PutAccount(
+                                        connection
                                 )
                         ),
                         new NotFoundRoute()

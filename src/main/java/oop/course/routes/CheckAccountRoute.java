@@ -1,24 +1,29 @@
 package oop.course.routes;
 
 import oop.course.interfaces.*;
-import oop.course.interfaces.Process;
 
 public class CheckAccountRoute implements Route {
 
-    private final Process next;
+    private final ProcessMethod[] next;
 
-    public CheckAccountRoute(Process next) {
-        this.next = next;
+    public CheckAccountRoute(ProcessMethod... processMethods) {
+        this.next = processMethods;
     }
 
 
     @Override
     public Response act(Request request) {
-        return next.act(request);
+        final String method = request.method();
+        for (ProcessMethod process : next) {
+            if (process.accept(method)) {
+                return process.act(request);
+            }
+        }
+        throw new RuntimeException("Unsupported exception");
     }
 
     @Override
     public boolean accept(String path) {
-        return "/account".equals(path);
+        return "/accounts".equals(path);
     }
 }
