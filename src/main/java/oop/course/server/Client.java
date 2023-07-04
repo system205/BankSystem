@@ -72,7 +72,7 @@ public class Client {
                     POST /random HTTP/1.1
                     EOF""";
 
-            final String request = register;
+            final String request = putAccount;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
