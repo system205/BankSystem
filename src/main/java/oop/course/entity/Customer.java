@@ -3,11 +3,13 @@ package oop.course.entity;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
+import org.slf4j.*;
 
 import java.sql.*;
 import java.util.*;
 
 public class Customer {
+    private static final Logger log = LoggerFactory.getLogger(Customer.class);
     private final String email;
     private final Connection connection;
 
@@ -72,6 +74,26 @@ public class Customer {
             }
             return roles;
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Account> accounts() {
+        log.debug("Retrieving account from the database");
+        final String sql = "SELECT account_number FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ?";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setString(1, this.email);
+            ResultSet resultSet = statement.executeQuery();
+            log.debug("Executing: {}. Parameter: {}", sql, this.email);
+            List<Account> accounts = new LinkedList<>();
+            while (resultSet.next())
+                accounts.add(
+                        new CheckingAccount(resultSet.getString(1), this.connection)
+                );
+            log.info("Found {} accounts.", accounts.size());
+            return accounts;
+        } catch (SQLException e) {
+            log.error("Error when retrieving accounts", e);
             throw new RuntimeException(e);
         }
     }

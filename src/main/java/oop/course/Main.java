@@ -17,8 +17,6 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException, SQLException {
-//        System.out.println(Files.walk(Paths.get(".")).filter(Files::isRegularFile).filter(p -> p.getFileName().toString().endsWith("java")).map(path -> {try {return Files.lines(path).filter(s -> s.trim().length() > 0 && !s.trim().startsWith("/") && !s.trim().startsWith("*")).count();} catch (IOException e) {throw new RuntimeException(e);}}).reduce(Long::sum).orElse(0L));
-
         logger.debug("Create postgres connection");
         Connection connection = new Postgres(
                 new SimpleNetAddress("127.0.0.1", 5432),
@@ -59,6 +57,9 @@ public class Main {
                                 new PutAccount(
                                         connection
                                 )
+                        ),
+                        new AllAccounts(
+                                connection
                         ),
                         new NotFoundRoute()
                 )));
