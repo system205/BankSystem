@@ -5,8 +5,7 @@ import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Customer {
     private final String email;
@@ -61,9 +60,19 @@ public class Customer {
         return new CheckingAccount(id, this.connection);
     }
 
-    public List<String> getRoles() {
-        // TODO - implement this method
-        // return list of all the roles
-        return List.of("admin", "customer");
+    public Collection<String> roles() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT role FROM roles INNER JOIN customer ON id=customer_id WHERE email=?"
+        )) {
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            Collection<String> roles = new LinkedList<>();
+            while (result.next()) {
+                roles.add(result.getString(1));
+            }
+            return roles;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
