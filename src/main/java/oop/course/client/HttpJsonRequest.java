@@ -30,8 +30,9 @@ public class HttpJsonRequest {
         }
         httpText.append("\n");
         httpText.append(json);
+        httpText.append("EOF");
         String req = httpText.toString();
-        printWriter.print(req);
+        printWriter.println(req);
     }
 
     public Object sendWithToken(PrintWriter printWriter, String token) {

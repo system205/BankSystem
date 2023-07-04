@@ -3,18 +3,24 @@ package oop.course.client;
 import java.util.List;
 
 public class TerminalForm {
-    private final String method;
     private final List<TerminalFormKeyValuePair> values;
-    public TerminalForm(String method, List<TerminalFormKeyValuePair> values) {
-        this.method = method;
+    public TerminalForm(List<TerminalFormKeyValuePair> values) {
         this.values = values;
     }
 
     public String json() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
+        int i = values.size();
         for (var value : values) {
+            --i;
             builder.append(value.json());
+            if (i == 0) {
+                builder.append("\n");
+            }
+            else {
+                builder.append(",\n");
+            }
         }
         builder.append("}\n");
         return builder.toString();

@@ -1,6 +1,8 @@
 package oop.course.client;
 
-public class TerminalFormKeyValuePair {
+import com.googlecode.lanterna.gui2.Panel;
+
+public class TerminalFormKeyValuePair implements TerminalGUIElement {
     private final String key;
     private final TerminalInputPair pair;
     public TerminalFormKeyValuePair(String key, TerminalInputPair pair) {
@@ -14,5 +16,10 @@ public class TerminalFormKeyValuePair {
         builder.append(" : ");
         builder.append('"').append(pair.json()).append('"');
         return builder.toString();
+    }
+
+    @Override
+    public void attachTo(Panel panel) {
+        pair.attachTo(panel);
     }
 }

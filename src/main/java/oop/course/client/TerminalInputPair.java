@@ -1,6 +1,8 @@
 package oop.course.client;
 
-public class TerminalInputPair {
+import com.googlecode.lanterna.gui2.Panel;
+
+public class TerminalInputPair implements TerminalGUIElement {
     private final TerminalText text;
     private final TerminalInputBox inputBox;
 
@@ -11,5 +13,11 @@ public class TerminalInputPair {
 
     public String json() {
         return inputBox.text();
+    }
+
+    @Override
+    public void attachTo(Panel panel) {
+        text.attachTo(panel);
+        inputBox.attachTo(panel);
     }
 }
