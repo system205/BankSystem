@@ -13,6 +13,8 @@ import java.net.*;
 import java.sql.*;
 import java.util.*;
 
+import static java.util.Map.entry;
+
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
@@ -37,31 +39,45 @@ public class Main {
         // Processes
         logger.debug("Start creating processes");
         final Authorization authorization = new Authorization(
-                Optional.of(new Fork(
-                        new SimpleUrl(),
-                        new MainRoute(),
-                        new LoginRoute(
-                                new CredentialsAccess(
-                                        new DBLoginCheck(connection),
-                                        new TokenReturn("mySecretKey")
-                                )
-                        ),
-                        new RegisterRoute(
-                                connection
-                        ),
-                        new TransferRoute(new MakeTransaction(
-                                connection)
-                        ),
-                        new CheckAccountRoute(
-                                new GetAccount(
+                Optional.of(
+                        new Fork(
+                                new SimpleUrl(),
+                                new MainRoute(),
+                                new LoginRoute(
+                                        new CredentialsAccess(
+                                                new DBLoginCheck(connection),
+                                                new TokenReturn("mySecretKey")
+                                        )
+                                ),
+                                new RegisterRoute(
                                         connection
                                 ),
-                                new PutAccount(
-                                        connection
+                                new TransferRoute(
+                                        new MakeTransaction(
+                                                connection
+                                        )
+                                ),
+                                new CheckAccountRoute(
+                                        new GetAccount(
+                                                connection
+                                        ),
+                                        new PutAccount(
+                                                connection
+                                        )
+                                ),
+                                new NotFoundRoute()
+                        )
+                ),
+                new AuthSecurityConfiguration(
+                        connection,
+                        new RolesConfiguration(
+                                Map.ofEntries(
+                                        entry("/login", List.of("customer", "admin")),
+                                        entry("/admin", List.of("admin"))
                                 )
-                        ),
-                        new NotFoundRoute()
-                )));
+                        )
+                )
+        );
         logger.debug("All processes are created");
 
         final int port = 6666;
