@@ -6,13 +6,13 @@ public class HttpJsonRequest {
     private final Method method;
     private final String json;
     private final String route;
-    private final boolean auth;
+    private final String token;
 
-    HttpJsonRequest(Method method, String json, String route, boolean auth) {
+    HttpJsonRequest(Method method, String json, String route, String token) {
         this.method = method;
         this.json = json;
         this.route = route;
-        this.auth = auth;
+        this.token = token;
     }
 
     public void send(PrintWriter printWriter) {
@@ -24,9 +24,9 @@ public class HttpJsonRequest {
             httpText.append("POST ");
         }
         httpText.append(route).append(" HTTP/1.1\n");
-        if (auth) {
+        if (token != null) {
             //add auth header
-            httpText.append("Token: 123321\n");
+            httpText.append("Authorization: Bearer ").append(token);
         }
         httpText.append("\n");
         httpText.append(json);

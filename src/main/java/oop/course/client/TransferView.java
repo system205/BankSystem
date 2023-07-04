@@ -5,13 +5,13 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class TransferView implements IView {
-    private Consumer<Type> onSceneChange;
+    private BiConsumer<Type, String> onSceneChange;
 
     public TransferView() throws IOException {
-        onSceneChange = (Type type) -> {};
+        onSceneChange = (Type type, String string) -> {};
     }
 
     @Override
@@ -28,12 +28,12 @@ public class TransferView implements IView {
         new TerminalButton("Transfer money", () -> {
             MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             window.close();
-            onSceneChange.accept(Type.Login);
+            onSceneChange.accept(Type.Login, "");
         }).attachTo(contentPanel);
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onSceneChange.accept(Type.Account);
+            onSceneChange.accept(Type.Account, "");
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);
@@ -42,7 +42,7 @@ public class TransferView implements IView {
     }
 
     @Override
-    public void registerChangeViewHandler(Consumer<Type> consumer) {
+    public void registerChangeViewHandler(BiConsumer<Type, String> consumer) {
         onSceneChange = consumer;
     }
 }

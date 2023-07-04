@@ -9,17 +9,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class RegisterView implements IView {
-    private Consumer<Type> onSceneChange;
+    private BiConsumer<Type, String> onSceneChange;
 
 
     public RegisterView() throws IOException {
-        onSceneChange = (Type type) -> {};
+        onSceneChange = (Type type, String string) -> {};
     }
 
     @Override
@@ -57,7 +56,7 @@ public class RegisterView implements IView {
                 req.send(out);
                 MessageDialog.showMessageDialog(gui, "Server Response", in.lines().collect(Collectors.joining("\n")), MessageDialogButton.OK);
                 window.close();
-                onSceneChange.accept(Type.Login);
+                onSceneChange.accept(Type.Login, "");
             } catch (Exception e) {
                 MessageDialog.showMessageDialog(gui, "Fatal error", "Unfortunately, the problem occurred when trying to communicate with the server", MessageDialogButton.OK);
             }
@@ -65,12 +64,12 @@ public class RegisterView implements IView {
         ).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
             window.close();
-            onSceneChange.accept(Type.Login);
+            onSceneChange.accept(Type.Login, "");
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            onSceneChange.accept(Type.None);
+            onSceneChange.accept(Type.None, "");
         });
 
         window.setContent(contentPanel);
@@ -79,7 +78,7 @@ public class RegisterView implements IView {
     }
 
     @Override
-    public void registerChangeViewHandler(Consumer<Type> consumer) {
+    public void registerChangeViewHandler(BiConsumer<Type, String> consumer) {
         onSceneChange = consumer;
     }
 }

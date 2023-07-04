@@ -4,13 +4,13 @@ public class RequestBuilder {
     private HttpJsonRequest.Method method;
     private String json;
     private String route;
-    private boolean auth;
+    private String token;
 
     public RequestBuilder() {
         method = HttpJsonRequest.Method.GET;
         json = "";
         route = "";
-        auth = false;
+        token = null;
     }
 
     public RequestBuilder withGet() {
@@ -33,12 +33,12 @@ public class RequestBuilder {
         return this;
     }
 
-    public RequestBuilder withToken() {
-        this.auth = true;
+    public RequestBuilder withToken(String token) {
+        this.token = token;
         return this;
     }
 
     public HttpJsonRequest build() {
-        return new HttpJsonRequest(method, json, route, auth);
+        return new HttpJsonRequest(method, json, route, token);
     }
 }
