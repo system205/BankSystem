@@ -18,7 +18,7 @@ public class ActionSelectView implements IView{
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Money transfer");
+        TerminalWindow window = new TerminalWindow("Action selector");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         new TerminalText("Please select an action.").attachTo(contentPanel);
         new TerminalButton("View accounts", () -> {}).attachTo(contentPanel);
