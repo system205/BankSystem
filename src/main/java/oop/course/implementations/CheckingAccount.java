@@ -1,9 +1,11 @@
 package oop.course.implementations;
 
+import oop.course.entity.*;
 import oop.course.interfaces.*;
 
 import java.math.*;
 import java.sql.*;
+import java.util.*;
 
 /**
  * A simple bank account
@@ -50,6 +52,9 @@ public class CheckingAccount implements Account {
         }
     }
 
+    /**
+     * The most important method of an Account object
+     */
     @Override
     public Transaction transfer(String accountNumber, BigDecimal amount) {
         try (PreparedStatement transactionStatement = this.connection.prepareStatement(
@@ -117,6 +122,55 @@ public class CheckingAccount implements Account {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CustomerRequest attachRequest(String type, BigDecimal amount) {
+        String sql = "INSERT INTO requests (account_number, amount, type) VALUES (?, ?, ?) RETURNING id";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setString(1, this.number);
+            statement.setBigDecimal(2, amount);
+            if (!(type.equals("withdraw") || type.equals("deposit"))) {
+                throw new RuntimeException("Bad request. Type should be withdraw or deposit");
+            }
+            statement.setString(3, type);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            long id = result.getLong(1);
+            this.connection.commit();
+            return new CustomerRequest(
+                    id,
+                    this.connection
+            );
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Collection<CustomerRequest> requests() {
+        String sql = "SELECT id FROM requests WHERE account_number = ?";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setString(1, this.number);
+            ResultSet result = statement.executeQuery();
+            List<CustomerRequest> requests = new LinkedList<>();
+            while (result.next()) {
+                requests.add(
+                        new CustomerRequest(
+                                result.getLong(1),
+                                this.connection
+                        )
+                );
+            }
+            return requests;
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

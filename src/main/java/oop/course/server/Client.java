@@ -84,6 +84,23 @@ public class Client {
                                         
                     EOF""";
 
+            String checkRequests = """
+                    GET /requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE2ODg1ODE0MTgsImV4cCI6MTY4ODY2NzgxOH0.n7dzTwVM1Cwjukc4Pq8074FKU6s9m7C4ltIXqZikXYg
+                                   
+                    EOF""";
+
+            String putRequest = """
+                    PUT /requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODU3OTk2NywiZXhwIjoxNjg4NjY2MzY3fQ.ToKZ5J_5l0o6WvJBn4nFUM75sv4YHwX8ZSaWPeZxRJQ
+                            
+                    {
+                      "amount": "200",
+                      "type": "deposit",
+                      "accountNumber": "8581256061"
+                    }       
+                    EOF""";
+
             final String request = requests;
 
             System.out.println("Sent:\n" + request);

@@ -70,6 +70,10 @@ public class Main {
                                                 new ListRequests(connection)
                                         )
                                 ),
+                                new RequestsRoute(
+                                        new GetRequests(connection),
+                                        new PutRequests(connection)
+                                ),
                                 new NotFoundRoute()
                         )
                 ),
