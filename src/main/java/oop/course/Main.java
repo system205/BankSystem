@@ -45,7 +45,7 @@ public class Main {
                                         new TokenReturn(
                                                 "mySecretKey",
                                                 24 * 60 * 60 * 1000,
-                                        connection
+                                                connection
                                         )
                                 ),
                                 new RegisterRoute(
@@ -55,17 +55,17 @@ public class Main {
                                         new MakeTransaction(
                                                 connection
                                         )
-                                ),new CheckAccountRoute(
-                                        new GetAccount(
-                                            connection
                                 ),
-                                new PutAccount(
-                                        connection
-                                )
-                        ),
-                        new AllAccounts(
-                                connection
-                                ), new NotFoundRoute()
+                                new CheckAccountRoute(
+                                        new GetAccount(
+                                                connection
+                                        ),
+                                        new PutAccount(
+                                                connection
+                                        )
+                                ),
+                                new AllAccounts(connection),
+                                new NotFoundRoute()
                         )
                 ),
                 new AuthSecurityConfiguration(
