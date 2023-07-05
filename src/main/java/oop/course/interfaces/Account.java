@@ -1,13 +1,13 @@
 package oop.course.interfaces;
 
+import oop.course.tools.*;
+
 import java.math.*;
 
-public interface Account {
+public interface Account extends JSON {
     long balance();
 
     Transaction transfer(String accountNumber, BigDecimal amount);
-
-    String json();
 
     void save(String customerId);
 }

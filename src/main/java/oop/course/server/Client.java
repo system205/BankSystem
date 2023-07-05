@@ -72,7 +72,13 @@ public class Client {
                     POST /random HTTP/1.1
                     EOF""";
 
-            final String request = putAccount;
+            String allAccounts = """
+                    GET /accounts HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODQ5MjcyOSwiZXhwIjoxNjg4NTc5MTI5fQ.UEJUjO_YYfvSZcVemm7KlxWTVwONZbVFfzCJw_h0o60
+                                        
+                    EOF""";
+
+            final String request = allAccounts;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
