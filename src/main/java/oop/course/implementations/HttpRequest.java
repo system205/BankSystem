@@ -20,14 +20,12 @@ public class HttpRequest implements Request {
     @Override
     public Collection<String> headers() {
         // a part of the data
-        Collection<String> meta = new LinkedList<>();
-        for (String line : data) {
-            if (line.equals("")) {
-                break;
-            }
-            meta.add(line);
+        Collection<String> headers = new ArrayList<>();
+        for (String line : this.data) {
+            if (line.isEmpty()) break;
+            headers.add(line);
         }
-        return meta;
+        return headers;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class HttpRequest implements Request {
         Collection<String> payload = new LinkedList<>();
         boolean foundEmptyLine = false;
         for (String line : data) {
-            if (line.equals("")) {
+            if (line.isEmpty()) {
                 foundEmptyLine = true;
                 continue;
             }
