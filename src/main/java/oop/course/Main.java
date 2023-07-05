@@ -39,9 +39,10 @@ public class Main {
                         new SimpleUrl(),
                         new MainRoute(),
                         new LoginRoute(
-                                new CredentialsAccess(
-                                        new DBLoginCheck(connection),
-                                        new TokenReturn("mySecretKey")
+                                new TokenReturn(
+                                        "mySecretKey",
+                                        24 * 60 * 60 * 1000,
+                                        connection
                                 )
                         ),
                         new RegisterRoute(
