@@ -78,7 +78,13 @@ public class Client {
                                         
                     EOF""";
 
-            final String request = allAccounts;
+            String requests = """
+                    POST /manager/requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODQ5MjcyOSwiZXhwIjoxNjg4NTc5MTI5fQ.UEJUjO_YYfvSZcVemm7KlxWTVwONZbVFfzCJw_h0o60
+                                        
+                    EOF""";
+
+            final String request = requests;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
