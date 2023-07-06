@@ -5,9 +5,11 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.actions.Action;
 import oop.course.client.actions.ChangeSceneAction;
+import oop.course.client.actions.SendRequestAction;
 import oop.course.client.gui.*;
 import oop.course.client.requests.RegisterRequest;
 import oop.course.client.requests.Request;
+import oop.course.client.responses.RegisterResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -51,8 +53,10 @@ public class RegisterView implements IView {
                 return;
             }
             //Check all other requirements for the fields
-            Request req = new RegisterRequest(form);
-            try (Socket client = new Socket("127.0.0.1", 6666);
+            Request<RegisterResponse> req = new RegisterRequest(form);
+            Action action = new SendRequestAction<RegisterResponse>(new ChangeSceneAction(Type.Login), req);
+            actionConsumer.accept(action);
+            /*try (Socket client = new Socket("127.0.0.1", 6666);
                  PrintWriter out = new PrintWriter(client.getOutputStream(), true);
                  BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
                 req.send(out);
@@ -62,7 +66,7 @@ public class RegisterView implements IView {
                 actionConsumer.accept(new ChangeSceneAction(Type.Login));
             } catch (Exception e) {
                 MessageDialog.showMessageDialog(gui, "Fatal error", "Unfortunately, the problem occurred when trying to communicate with the server", MessageDialogButton.OK);
-            }
+            }*/
         }
         ).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {

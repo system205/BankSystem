@@ -1,26 +1,23 @@
 package oop.course.client.actions;
 
+import oop.course.client.requests.Request;
+import oop.course.client.responses.Response;
 import oop.course.client.views.IView;
 
 import java.util.function.Consumer;
 
-public class ChangeSceneAction implements Action {
-    private final IView.Type type;
+public class SendRequestAction<T extends Response> implements Action {
     private final Action next;
+    private final Request<T> request;
 
-    public ChangeSceneAction(IView.Type type, Action next) {
-        this.type = type;
+    public SendRequestAction(Action next, Request<T> request) {
         this.next = next;
-    }
-
-    public ChangeSceneAction(IView.Type type) {
-        this.type = type;
-        this.next = new EmptyAction();
+        this.request = request;
     }
 
     @Override
     public void perform(Consumer<IView.Type> sceneChangedHandler, Consumer requestHandler) {
-        sceneChangedHandler.accept(type);
+        requestHandler.accept(request);
         next.perform(sceneChangedHandler, requestHandler);
     }
 }

@@ -5,5 +5,5 @@ import oop.course.client.views.IView;
 import java.util.function.Consumer;
 
 public interface Action {
-    void perform(Consumer<IView.Type> sceneChangedHandler);
+    void perform(Consumer<IView.Type> sceneChangedHandler, Consumer requestHandler);
 }

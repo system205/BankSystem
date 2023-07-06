@@ -1,6 +1,5 @@
 package oop.course.client.actions;
 
-import oop.course.client.actions.Action;
 import oop.course.client.views.IView;
 
 import java.util.function.Consumer;
@@ -9,7 +8,7 @@ import java.util.function.Consumer;
 public class EmptyAction implements Action {
 
     @Override
-    public void perform(Consumer<IView.Type> sceneChangedHandler) {
+    public void perform(Consumer<IView.Type> sceneChangedHandler, Consumer requestHandler) {
         //do nothing
     }
 }

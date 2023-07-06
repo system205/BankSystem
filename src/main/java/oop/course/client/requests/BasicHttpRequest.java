@@ -1,8 +1,12 @@
 package oop.course.client.requests;
 
-import java.io.PrintWriter;
+import oop.course.client.responses.BasicResponse;
 
-public class BasicHttpRequest implements Request {
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.util.stream.Collectors;
+
+public class BasicHttpRequest implements Request<BasicResponse> {
     private final String route;
     private final Method method;
 
@@ -22,5 +26,11 @@ public class BasicHttpRequest implements Request {
         }
         requestString += route + " HTTP/1.1";
         printWriter.println(requestString);
+    }
+
+    @Override
+    public BasicResponse response(BufferedReader bufferedReader) {
+        var s = bufferedReader.lines().collect(Collectors.joining("\n"));
+        return new BasicResponse(s);
     }
 }

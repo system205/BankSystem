@@ -2,6 +2,7 @@ package oop.course.client.requests;
 
 import oop.course.client.responses.Response;
 
+import java.io.BufferedReader;
 import java.io.PrintWriter;
 
 public interface Request<T extends Response> {
@@ -13,5 +14,5 @@ public interface Request<T extends Response> {
 
     void send(PrintWriter printWriter);
 
-    T response();
+    T response(BufferedReader bufferedReader);
 }

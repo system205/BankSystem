@@ -4,19 +4,25 @@ import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.screen.Screen;
 import oop.course.client.actions.Action;
+import oop.course.client.responses.Response;
 import oop.course.client.views.*;
+import oop.course.client.requests.Request;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class GUIOrchestrator {
     private IView.Type currentView;
-    private final WindowBasedTextGUI textGUI;
     private boolean changePending;
 
-    public GUIOrchestrator(Screen screen) {
+    private final WindowBasedTextGUI textGUI;
+    private final Consumer<Request<Response>> requestHandler;
+
+    public GUIOrchestrator(Screen screen, Consumer<Request<Response>> requestHandler) {
         currentView = IView.Type.Login;
         changePending = true;
         textGUI = new MultiWindowTextGUI(screen);
+        this.requestHandler = requestHandler;
     }
 
     public void mainLoop()
@@ -55,6 +61,6 @@ public class GUIOrchestrator {
     }
 
     private void handleAction(Action action) {
-        action.perform(this::changeView);
+        action.perform(this::changeView, requestHandler);
     }
 }
