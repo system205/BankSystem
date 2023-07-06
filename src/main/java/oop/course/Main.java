@@ -78,12 +78,12 @@ public class Main {
                                 new JobRoute(
                                         new PutOffer(connection)
                                 ),
-//                                new AdminFork( // /admin
-//                                        new ApplicantsRoute(
-//                                                new ListApplicants(connection),
-//                                                new PostOffer(connection)
-//                                        )
-//                                ),
+                                new AdminFork( // /admin
+                                        new ApplicantsRoute( // / offers
+                                                new ListApplicants(connection),
+                                                new PostOffer(connection)
+                                        )
+                                ),
                                 new NotFoundRoute()
                         )
                 ),

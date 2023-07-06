@@ -122,7 +122,28 @@ public class Client {
                     }       
                     EOF""";
 
-            final String request = requests;
+            String putJob = """
+                    PUT /job HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODY1NTI1NiwiZXhwIjoxNjg4NzQxNjU2fQ.NcTHtBLxyLlPc7mHQ2DTXN0z-E1RGuBiI4tKxMvzrXY
+                                   
+                    EOF""";
+
+            String offers = """
+                    GET /admin/offers HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE2ODg1ODE0MTgsImV4cCI6MTY4ODY2NzgxOH0.n7dzTwVM1Cwjukc4Pq8074FKU6s9m7C4ltIXqZikXYg
+                                   
+                    EOF""";
+            String acceptOffer = """
+                    POST /admin/offers HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE2ODg1ODE0MTgsImV4cCI6MTY4ODY2NzgxOH0.n7dzTwVM1Cwjukc4Pq8074FKU6s9m7C4ltIXqZikXYg
+                                        
+                    {
+                    "customerEmail" : "admin",
+                    "status" : "accepted"
+                    }               
+                    EOF""";
+
+            final String request = acceptOffer;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

@@ -154,7 +154,7 @@ public class Customer {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
             result.next();
-            Offer offer = new Offer(result.getLong(1));
+            Offer offer = new Offer(result.getLong(1), this.connection);
             this.connection.commit();
             return offer;
         } catch (SQLException e) {
@@ -163,6 +163,21 @@ public class Customer {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Offer offer() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT id FROM offers WHERE customer_email = ?"
+        )) {
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            if (!result.next())
+                throw new RuntimeException("Offer of a customer is not found");
+            return new Offer(result.getLong(1), this.connection);
+        } catch (SQLException e) {
+            log.error("Error when extracting offer from the customer");
             throw new RuntimeException(e);
         }
     }
