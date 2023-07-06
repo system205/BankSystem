@@ -10,7 +10,7 @@ public class LoginResponse implements Response {
     }
 
     public boolean isSuccess() {
-        return Objects.equals(response.raw(), "Created");
+        return response.raw().contains("token");
     }
 
     public boolean isWrongCredentials() {

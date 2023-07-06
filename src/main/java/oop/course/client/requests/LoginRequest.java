@@ -5,6 +5,7 @@ import oop.course.client.gui.TerminalForm;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.stream.Collectors;
 
 public class LoginRequest implements Request {
     private final Request base;
@@ -23,6 +24,6 @@ public class LoginRequest implements Request {
 
     @Override
     public BasicResponse response(BufferedReader bufferedReader) {
-        return null;
+        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
     }
 }

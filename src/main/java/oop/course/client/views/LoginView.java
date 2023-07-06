@@ -10,15 +10,11 @@ import oop.course.client.gui.*;
 import oop.course.client.requests.LoginRequest;
 import oop.course.client.requests.Request;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.LoginResponse;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class LoginView implements IView {
     private final Consumer<Type> onChangeView;
@@ -48,22 +44,16 @@ public class LoginView implements IView {
 
         new TerminalButton("Login", () -> {
             Request req = new LoginRequest(form);
-            try (Socket client = new Socket("127.0.0.1", 6666);
-                 PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
-                req.send(out);
-                out.println("EOF");
-                var resp = in.lines().collect(Collectors.joining("\n"));
-                if (resp.equals("Wrong credentials")) {
-                    MessageDialog.showMessageDialog(gui, "Server Response", resp, MessageDialogButton.Continue);
-                }
-                else {
-                    MessageDialog.showMessageDialog(gui, "Token", resp, MessageDialogButton.OK);
-                    window.close();
-                    onChangeView.accept(Type.ActionSelect);
-                }
-            } catch (Exception e) {
-                MessageDialog.showMessageDialog(gui, "Fatal error", "Unfortunately, the problem occurred when trying to communicate with the server", MessageDialogButton.OK);
+            var resp = new LoginResponse(requestHandler.apply(req));
+            if (resp.isWrongCredentials()) {
+                MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials", MessageDialogButton.Close);
+            }
+            else if (resp.isSuccess()) {
+                window.close();
+                onChangeView.accept(Type.ActionSelect);
+            }
+            else {
+                MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
             }
         }).attachTo(contentPanel);
 
