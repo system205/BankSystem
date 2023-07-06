@@ -1,4 +1,4 @@
-package oop.course.client;
+package oop.course.client.gui;
 
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;

@@ -1,8 +1,13 @@
-package oop.course.client;
+package oop.course.client.views;
 
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.actions.Action;
+import oop.course.client.actions.ChangeSceneAction;
+import oop.course.client.gui.*;
+import oop.course.client.requests.RegisterRequest;
+import oop.course.client.requests.Request;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

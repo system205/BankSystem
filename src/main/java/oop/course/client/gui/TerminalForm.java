@@ -1,4 +1,6 @@
-package oop.course.client;
+package oop.course.client.gui;
+
+import oop.course.client.gui.TerminalFormKeyValuePair;
 
 import java.util.List;
 

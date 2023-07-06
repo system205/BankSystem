@@ -1,8 +1,12 @@
-package oop.course.client;
+package oop.course.client.actions;
+
+import oop.course.client.actions.Action;
+import oop.course.client.actions.EmptyAction;
+import oop.course.client.views.IView;
 
 import java.util.function.Consumer;
 
-public class ChangeSceneAction implements Action{
+public class ChangeSceneAction implements Action {
     private final IView.Type type;
     private final Action next;
 

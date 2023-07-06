@@ -1,4 +1,4 @@
-package oop.course.client;
+package oop.course.client.views;
 
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
@@ -6,6 +6,12 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.actions.Action;
+import oop.course.client.actions.ChangeSceneAction;
+import oop.course.client.gui.TerminalButton;
+import oop.course.client.gui.TerminalText;
+import oop.course.client.gui.TerminalTextBox;
+import oop.course.client.gui.TerminalWindow;
 
 import java.util.function.Consumer;
 

@@ -1,4 +1,4 @@
-package oop.course.client;
+package oop.course.client.views;
 
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 

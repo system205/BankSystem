@@ -1,4 +1,6 @@
-package oop.course.client;
+package oop.course.client.actions;
+
+import oop.course.client.views.IView;
 
 import java.util.function.Consumer;
 

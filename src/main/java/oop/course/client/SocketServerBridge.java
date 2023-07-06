@@ -1,5 +1,8 @@
 package oop.course.client;
 
+import oop.course.client.requests.Request;
+import oop.course.client.responses.Response;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

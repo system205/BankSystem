@@ -1,8 +1,8 @@
-package oop.course.client;
+package oop.course.client.requests;
 
 import java.io.PrintWriter;
 
-public class JsonRequest implements Request{
+public class JsonRequest implements Request {
     private final Request request;
     private final String json;
 

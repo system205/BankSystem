@@ -1,6 +1,8 @@
-package oop.course.client;
+package oop.course.client.gui;
 
 import com.googlecode.lanterna.gui2.Panel;
+import oop.course.client.gui.TerminalGUIElement;
+import oop.course.client.gui.TerminalInputPair;
 
 public class TerminalFormKeyValuePair implements TerminalGUIElement {
     private final String key;
