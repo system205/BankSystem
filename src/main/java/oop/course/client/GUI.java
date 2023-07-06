@@ -1,10 +1,9 @@
 package oop.course.client;
 
 import oop.course.client.requests.Request;
-import oop.course.client.responses.Response;
-
-import java.util.function.Consumer;
+import oop.course.client.responses.BasicResponse;
+import java.util.function.Function;
 
 public interface GUI {
-    void startLooping(Consumer<Request<Response>> requestConsumer);
+    void startLooping(Function<Request, BasicResponse> requestConsumer);
 }

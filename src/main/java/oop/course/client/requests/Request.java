@@ -1,11 +1,11 @@
 package oop.course.client.requests;
 
-import oop.course.client.responses.Response;
+import oop.course.client.responses.BasicResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
-public interface Request<T extends Response> {
+public interface Request {
 
     enum Method {
         GET,
@@ -14,5 +14,5 @@ public interface Request<T extends Response> {
 
     void send(PrintWriter printWriter);
 
-    T response(BufferedReader bufferedReader);
+    BasicResponse response(BufferedReader bufferedReader);
 }

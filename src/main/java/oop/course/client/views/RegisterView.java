@@ -3,27 +3,23 @@ package oop.course.client.views;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.actions.Action;
-import oop.course.client.actions.ChangeSceneAction;
-import oop.course.client.actions.SendRequestAction;
 import oop.course.client.gui.*;
 import oop.course.client.requests.RegisterRequest;
 import oop.course.client.requests.Request;
+import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.RegisterResponse;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 public class RegisterView implements IView {
-    private final Consumer<Action> actionConsumer;
+    private final Consumer<Type> onChangeView;
+    private final Function<Request, BasicResponse> requestHandler;
 
-    public RegisterView(Consumer<Action> actionHandler) {
-        actionConsumer = actionHandler;
+    public RegisterView(Consumer<Type> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+        onChangeView = changeViewHandler;
+        this.requestHandler = requestHandler;
     }
 
     @Override
@@ -53,30 +49,19 @@ public class RegisterView implements IView {
                 return;
             }
             //Check all other requirements for the fields
-            Request<RegisterResponse> req = new RegisterRequest(form);
-            Action action = new SendRequestAction<RegisterResponse>(new ChangeSceneAction(Type.Login), req);
-            actionConsumer.accept(action);
-            /*try (Socket client = new Socket("127.0.0.1", 6666);
-                 PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
-                req.send(out);
-                out.println("EOF");
-                MessageDialog.showMessageDialog(gui, "Server Response", in.lines().collect(Collectors.joining("\n")), MessageDialogButton.OK);
-                window.close();
-                actionConsumer.accept(new ChangeSceneAction(Type.Login));
-            } catch (Exception e) {
-                MessageDialog.showMessageDialog(gui, "Fatal error", "Unfortunately, the problem occurred when trying to communicate with the server", MessageDialogButton.OK);
-            }*/
+            Request req = new RegisterRequest(form);
+            var resp = new RegisterResponse(requestHandler.apply(req));
+            MessageDialog.showMessageDialog(gui, "Result", String.valueOf(resp.isSuccess()), MessageDialogButton.OK);
         }
         ).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.Login));
+            onChangeView.accept(Type.Login);
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.None));
+            onChangeView.accept(Type.None);
         });
 
         window.setContent(contentPanel);

@@ -1,7 +1,7 @@
 package oop.course.client;
 
 import oop.course.client.requests.Request;
-import oop.course.client.responses.Response;
+import oop.course.client.responses.BasicResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class SocketServerBridge implements ServerBridge {
         this.port = port;
     }
     @Override
-    public <T extends Response> T execute(Request<T> request) {
+    public BasicResponse execute(Request request) {
         try (Socket client = new Socket(this.ip, this.port);
              PrintWriter out = new PrintWriter(client.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {

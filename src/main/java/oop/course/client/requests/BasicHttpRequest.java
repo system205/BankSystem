@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class BasicHttpRequest implements Request<BasicResponse> {
+public class BasicHttpRequest implements Request {
     private final String route;
     private final Method method;
 

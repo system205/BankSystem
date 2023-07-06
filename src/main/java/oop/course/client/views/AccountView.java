@@ -4,19 +4,22 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import oop.course.client.actions.Action;
-import oop.course.client.actions.ChangeSceneAction;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalText;
 import oop.course.client.gui.TerminalWindow;
+import oop.course.client.requests.Request;
+import oop.course.client.responses.BasicResponse;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class AccountView implements IView {
-    private final Consumer<Action> actionConsumer;
+    private final Consumer<Type> onChangeView;
+    private final Function<Request, BasicResponse> requestHandler;
 
-    public AccountView(Consumer<Action> actionHandler) {
-        actionConsumer = actionHandler;
+    public AccountView(Consumer<Type> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+        onChangeView = changeViewHandler;
+        this.requestHandler = requestHandler;
     }
 
     @Override
@@ -49,17 +52,17 @@ public class AccountView implements IView {
 
         new TerminalButton("Transfer money", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.Transfer));
+            onChangeView.accept(Type.Transfer);
         }).attachTo(contentPanel);
 
         new TerminalButton("Logout", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.Login));
+            onChangeView.accept(Type.Login);
         }).attachTo(contentPanel);
 
         new TerminalButton("Logout & exit", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.None));
+            onChangeView.accept(Type.None);
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

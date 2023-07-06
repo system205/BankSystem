@@ -1,14 +1,13 @@
 package oop.course.client.requests;
 
 import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.LoginResponse;
 import oop.course.client.gui.TerminalForm;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
-public class LoginRequest implements Request<LoginResponse> {
-    private final Request<BasicResponse> base;
+public class LoginRequest implements Request {
+    private final Request base;
 
     public LoginRequest(TerminalForm terminalForm) {
         base = new JsonRequest(
@@ -23,7 +22,7 @@ public class LoginRequest implements Request<LoginResponse> {
     }
 
     @Override
-    public LoginResponse response(BufferedReader bufferedReader) {
+    public BasicResponse response(BufferedReader bufferedReader) {
         return null;
     }
 }

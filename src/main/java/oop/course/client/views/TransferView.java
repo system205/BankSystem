@@ -6,20 +6,23 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.actions.Action;
-import oop.course.client.actions.ChangeSceneAction;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalText;
 import oop.course.client.gui.TerminalTextBox;
 import oop.course.client.gui.TerminalWindow;
+import oop.course.client.requests.Request;
+import oop.course.client.responses.BasicResponse;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class TransferView implements IView {
-    private final Consumer<Action> actionConsumer;
+    private final Consumer<Type> onChangeView;
+    private final Function<Request, BasicResponse> requestHandler;
 
-    public TransferView(Consumer<Action> actionHandler) {
-        actionConsumer = actionHandler;
+    public TransferView(Consumer<Type> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+        onChangeView = changeViewHandler;
+        this.requestHandler = requestHandler;
     }
 
     @Override
@@ -36,12 +39,12 @@ public class TransferView implements IView {
         new TerminalButton("Transfer money", () -> {
             MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.Account));
+            onChangeView.accept(Type.Account);
         }).attachTo(contentPanel);
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.Account));
+            onChangeView.accept(Type.Account);
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

@@ -5,10 +5,10 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import oop.course.client.requests.Request;
-import oop.course.client.responses.Response;
+import oop.course.client.responses.BasicResponse;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class TerminalGUI implements GUI {
     private final Terminal terminal;
@@ -20,7 +20,7 @@ public class TerminalGUI implements GUI {
     }
 
     @Override
-    public void startLooping(Consumer<Request<Response>> requestHandler) {
+    public void startLooping(Function<Request, BasicResponse> requestHandler) {
         try {
             screen.startScreen();
         } catch (IOException e) {

@@ -6,11 +6,10 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.actions.Action;
-import oop.course.client.actions.ChangeSceneAction;
 import oop.course.client.gui.*;
 import oop.course.client.requests.LoginRequest;
 import oop.course.client.requests.Request;
+import oop.course.client.responses.BasicResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,13 +17,16 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class LoginView implements IView {
-    private final Consumer<Action> actionConsumer;
+    private final Consumer<Type> onChangeView;
+    private final Function<Request, BasicResponse> requestHandler;
 
-    public LoginView(Consumer<Action> actionHandler) {
-        actionConsumer = actionHandler;
+    public LoginView(Consumer<Type> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+        onChangeView = changeViewHandler;
+        this.requestHandler = requestHandler;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class LoginView implements IView {
                 else {
                     MessageDialog.showMessageDialog(gui, "Token", resp, MessageDialogButton.OK);
                     window.close();
-                    actionConsumer.accept(new ChangeSceneAction(Type.ActionSelect));
+                    onChangeView.accept(Type.ActionSelect);
                 }
             } catch (Exception e) {
                 MessageDialog.showMessageDialog(gui, "Fatal error", "Unfortunately, the problem occurred when trying to communicate with the server", MessageDialogButton.OK);
@@ -67,12 +69,12 @@ public class LoginView implements IView {
 
         new TerminalButton("Register page", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.Register));
+            onChangeView.accept(Type.Register);
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            actionConsumer.accept(new ChangeSceneAction(Type.None));
+            onChangeView.accept(Type.None);
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

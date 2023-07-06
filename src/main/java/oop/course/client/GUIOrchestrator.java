@@ -3,22 +3,21 @@ package oop.course.client;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.screen.Screen;
-import oop.course.client.actions.Action;
-import oop.course.client.responses.Response;
+import oop.course.client.responses.BasicResponse;
 import oop.course.client.views.*;
 import oop.course.client.requests.Request;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GUIOrchestrator {
     private IView.Type currentView;
     private boolean changePending;
 
     private final WindowBasedTextGUI textGUI;
-    private final Consumer<Request<Response>> requestHandler;
+    private final Function<Request, BasicResponse> requestHandler;
 
-    public GUIOrchestrator(Screen screen, Consumer<Request<Response>> requestHandler) {
+    public GUIOrchestrator(Screen screen, Function<Request, BasicResponse> requestHandler) {
         currentView = IView.Type.Login;
         changePending = true;
         textGUI = new MultiWindowTextGUI(screen);
@@ -38,11 +37,11 @@ public class GUIOrchestrator {
                         break;
                     }
                     IView view = switch (currentView) {
-                        case Account -> new AccountView(this::handleAction);
-                        case Transfer -> new TransferView(this::handleAction);
-                        case Login -> new LoginView(this::handleAction);
-                        case Register -> new RegisterView(this::handleAction);
-                        case ActionSelect -> new ActionSelectView(this::handleAction);
+                        case Account -> new AccountView(this::changeView, requestHandler);
+                        case Transfer -> new TransferView(this::changeView, requestHandler);
+                        case Login -> new LoginView(this::changeView, requestHandler);
+                        case Register -> new RegisterView(this::changeView, requestHandler);
+                        case ActionSelect -> new ActionSelectView(this::changeView, requestHandler);
                         case None -> throw new RuntimeException();
                     };
                     view.show(textGUI);
@@ -58,9 +57,5 @@ public class GUIOrchestrator {
     private void changeView(IView.Type type) {
         changePending = true;
         currentView = type;
-    }
-
-    private void handleAction(Action action) {
-        action.perform(this::changeView, requestHandler);
     }
 }
