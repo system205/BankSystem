@@ -138,4 +138,32 @@ public class Customer {
             throw new RuntimeException(e);
         }
     }
+
+    public Offer applyForJob() {
+        log.info("Try apply for a job");
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "INSERT INTO offers (customer_email, status) VALUES (?, 'pending') RETURNING id"
+        ); PreparedStatement checkStatement = this.connection.prepareStatement(
+                "SELECT 1 FROM offers WHERE customer_email = ?"
+        )) {
+            checkStatement.setString(1, this.email);
+            ResultSet check = checkStatement.executeQuery();
+            if (check.next())
+                throw new RuntimeException("Bad request. Customer has already applied for a job");
+
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            Offer offer = new Offer(result.getLong(1));
+            this.connection.commit();
+            return offer;
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
 }
