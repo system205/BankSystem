@@ -32,12 +32,17 @@ public class Customer {
 
     public void save(Form details) {
         try (PreparedStatement statement = this.connection
-                .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)")) {
+                .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)");
+             PreparedStatement roleStatement = this.connection
+                     .prepareStatement("INSERT INTO roles (role, customer_id) VALUES ('user', (SELECT id FROM customer WHERE email = ?))")) {
             statement.setString(1, this.email);
             statement.setString(2, details.stringField("name"));
             statement.setString(3, details.stringField("surname"));
             statement.setString(4, details.stringField("password"));
             statement.execute();
+            log.info("Add role user to a new customer");
+            roleStatement.setString(1, this.email);
+            roleStatement.execute();
             this.connection.commit();
         } catch (SQLException e) {
             try {
