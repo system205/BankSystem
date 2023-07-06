@@ -17,10 +17,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class TransferView implements IView {
-    private final Consumer<Type> onChangeView;
+    private final Consumer<IView> onChangeView;
     private final Function<Request, BasicResponse> requestHandler;
 
-    public TransferView(Consumer<Type> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+    public TransferView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
     }
@@ -39,12 +39,12 @@ public class TransferView implements IView {
         new TerminalButton("Transfer money", () -> {
             MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             window.close();
-            onChangeView.accept(Type.Account);
+            //onChangeView.accept(new AccountsView(onChangeView, requestHandler));
         }).attachTo(contentPanel);
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onChangeView.accept(Type.Account);
+            //onChangeView.accept(Type.Account);
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

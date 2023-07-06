@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ActionSelectView implements IView {
-    private final Consumer<Type> onChangeView;
+    private final Consumer<IView> onChangeView;
     private final Function<Request, BasicResponse> requestHandler;
 
-    public ActionSelectView(Consumer<Type> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+    public ActionSelectView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
     }
@@ -30,7 +30,7 @@ public class ActionSelectView implements IView {
         new TerminalButton("View accounts", () -> {}).attachTo(contentPanel);
         new TerminalButton("Transfer", () -> {}).attachTo(contentPanel);
         new TerminalButton("Create a request", () -> {}).attachTo(contentPanel);
-        new TerminalButton("Logout", () -> onChangeView.accept(Type.Login)).attachTo(contentPanel);
+        new TerminalButton("Logout", () -> onChangeView.accept(new LoginView(onChangeView, requestHandler))).attachTo(contentPanel);
 
         window.setContent(contentPanel);
         window.addToGui(gui);

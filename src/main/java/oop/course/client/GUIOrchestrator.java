@@ -11,40 +11,28 @@ import java.io.IOException;
 import java.util.function.Function;
 
 public class GUIOrchestrator {
-    private IView.Type currentView;
+    private IView currentView;
     private boolean changePending;
+    private boolean exitCondition;
 
     private final WindowBasedTextGUI textGUI;
     private final Function<Request, BasicResponse> requestHandler;
 
     public GUIOrchestrator(Screen screen, Function<Request, BasicResponse> requestHandler) {
-        currentView = IView.Type.Login;
+        currentView = new LoginView(this::changeView, requestHandler);
         changePending = true;
         textGUI = new MultiWindowTextGUI(screen);
         this.requestHandler = requestHandler;
+        exitCondition = false;
     }
 
     public void mainLoop()
     {
         try {
-            currentView = IView.Type.Login;
-            while (true) {
-                if (changePending)
-                {
+            while (!exitCondition) {
+                if (changePending) {
                     changePending = false;
-                    if (currentView == IView.Type.None)
-                    {
-                        break;
-                    }
-                    IView view = switch (currentView) {
-                        case Account -> new AccountView(this::changeView, requestHandler);
-                        case Transfer -> new TransferView(this::changeView, requestHandler);
-                        case Login -> new LoginView(this::changeView, requestHandler);
-                        case Register -> new RegisterView(this::changeView, requestHandler);
-                        case ActionSelect -> new ActionSelectView(this::changeView, requestHandler);
-                        case None -> throw new RuntimeException();
-                    };
-                    view.show(textGUI);
+                    currentView.show(textGUI);
                 }
                 textGUI.getGUIThread().processEventsAndUpdate();
             }
@@ -54,7 +42,10 @@ public class GUIOrchestrator {
         }
     }
 
-    private void changeView(IView.Type type) {
+    private void changeView(IView type) {
+        if (type == null) {
+            exitCondition = true;
+        }
         changePending = true;
         currentView = type;
     }

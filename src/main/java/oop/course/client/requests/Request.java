@@ -9,7 +9,8 @@ public interface Request {
 
     enum Method {
         GET,
-        POST
+        POST,
+        PUT
     }
 
     void send(PrintWriter printWriter);

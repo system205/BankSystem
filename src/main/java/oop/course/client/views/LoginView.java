@@ -17,10 +17,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class LoginView implements IView {
-    private final Consumer<Type> onChangeView;
+    private final Consumer<IView> onChangeView;
     private final Function<Request, BasicResponse> requestHandler;
 
-    public LoginView(Consumer<Type> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+    public LoginView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
     }
@@ -50,7 +50,7 @@ public class LoginView implements IView {
             }
             else if (resp.isSuccess()) {
                 window.close();
-                onChangeView.accept(Type.ActionSelect);
+                onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token()));
             }
             else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
@@ -59,12 +59,12 @@ public class LoginView implements IView {
 
         new TerminalButton("Register page", () -> {
             window.close();
-            onChangeView.accept(Type.Register);
+            onChangeView.accept(new RegisterView(onChangeView, requestHandler));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            onChangeView.accept(Type.None);
+            onChangeView.accept(null);
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);
