@@ -27,7 +27,7 @@ public class SocketServerBridge implements ServerBridge {
         }
         catch (IOException exception) {
             System.err.println("Something went wrong.");
+            return new BasicResponse("");
         }
-        return null;
     }
 }

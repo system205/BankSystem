@@ -51,7 +51,14 @@ public class RegisterView implements IView {
             //Check all other requirements for the fields
             Request req = new RegisterRequest(form);
             var resp = new RegisterResponse(requestHandler.apply(req));
-            MessageDialog.showMessageDialog(gui, "Result", String.valueOf(resp.isSuccess()), MessageDialogButton.OK);
+            if (resp.isSuccess()) {
+                MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in", MessageDialogButton.OK);
+                window.close();
+                onChangeView.accept(Type.Login);
+            }
+            else {
+                MessageDialog.showMessageDialog(gui, "Result", "Something went terribly wrong!", MessageDialogButton.Abort);
+            }
         }
         ).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
