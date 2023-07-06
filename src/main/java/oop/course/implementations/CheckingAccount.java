@@ -128,7 +128,7 @@ public class CheckingAccount implements Account {
 
     @Override
     public CustomerRequest attachRequest(String type, BigDecimal amount) {
-        String sql = "INSERT INTO requests (account_number, amount, type) VALUES (?, ?, ?) RETURNING id";
+        String sql = "INSERT INTO requests (account_number, amount, type, status) VALUES (?, ?, ?, 'pending') RETURNING id";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             statement.setBigDecimal(2, amount);
@@ -171,6 +171,31 @@ public class CheckingAccount implements Account {
             }
             return requests;
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deposit(BigDecimal amount) {
+        withdraw(amount.negate());
+    }
+
+    @Override
+    public void withdraw(BigDecimal amount) {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "UPDATE checking_account SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) - ? WHERE account_number = ?"
+        )) {
+            statement.setString(1, this.number);
+            statement.setBigDecimal(2, amount);
+            statement.setString(3, this.number);
+            statement.execute();
+            this.connection.commit();
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
         }
     }

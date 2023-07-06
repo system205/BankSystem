@@ -67,7 +67,8 @@ public class Main {
                                 new AllAccounts(connection),
                                 new ManagerFork( // /manager
                                         new CustomerRequestsRoute(
-                                                new ListRequests(connection)
+                                                new ListRequests(connection),
+                                                new PostRequests(connection)
                                         )
                                 ),
                                 new RequestsRoute(

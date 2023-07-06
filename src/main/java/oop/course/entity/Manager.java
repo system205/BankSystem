@@ -17,7 +17,7 @@ public class Manager {
 
     public List<CustomerRequest> requests() {
         log.debug("Manager retrieves requests from the database");
-        final String sql = "SELECT id FROM requests";
+        final String sql = "SELECT id FROM requests WHERE status = 'pending'";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
             log.debug("Executing: {}", sql);

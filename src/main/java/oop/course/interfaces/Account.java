@@ -16,4 +16,9 @@ public interface Account extends JSON {
     CustomerRequest attachRequest(String type, BigDecimal amount);
 
     Collection<CustomerRequest> requests();
+
+    void deposit(BigDecimal amount);
+
+    void withdraw(BigDecimal amount);
+
 }
