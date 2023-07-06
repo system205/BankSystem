@@ -5,19 +5,16 @@ import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.screen.Screen;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class GUIOrchestrator {
     private IView.Type currentView;
     private final WindowBasedTextGUI textGUI;
-    private String token;
     private boolean changePending;
 
     public GUIOrchestrator(Screen screen) {
         currentView = IView.Type.Login;
         changePending = true;
         textGUI = new MultiWindowTextGUI(screen);
-        token = "";
     }
 
     public void mainLoop()
@@ -33,14 +30,13 @@ public class GUIOrchestrator {
                         break;
                     }
                     IView view = switch (currentView) {
-                        case Account -> new AccountView(token);
-                        case Transfer -> new TransferView();
-                        case Login -> new LoginView();
-                        case Register -> new RegisterView();
-                        case ActionSelect -> new ActionSelectView();
+                        case Account -> new AccountView(this::handleAction);
+                        case Transfer -> new TransferView(this::handleAction);
+                        case Login -> new LoginView(this::handleAction);
+                        case Register -> new RegisterView(this::handleAction);
+                        case ActionSelect -> new ActionSelectView(this::handleAction);
                         case None -> throw new RuntimeException();
                     };
-                    view.registerChangeViewHandler(this::changeView);
                     view.show(textGUI);
                 }
                 textGUI.getGUIThread().processEventsAndUpdate();
@@ -51,11 +47,12 @@ public class GUIOrchestrator {
         }
     }
 
-    private void changeView(IView.Type type, String string) {
+    private void changeView(IView.Type type) {
         changePending = true;
         currentView = type;
-        if (!Objects.equals(string, "")) {
-            token = string;
-        }
+    }
+
+    private void handleAction(Action action) {
+        action.perform(this::changeView);
     }
 }

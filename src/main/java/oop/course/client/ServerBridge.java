@@ -1,5 +1,6 @@
 package oop.course.client;
 
+
 public interface ServerBridge {
-    HttpJsonResponse execute(HttpJsonRequest request);
+     HttpJsonResponse execute(Request request);
 }

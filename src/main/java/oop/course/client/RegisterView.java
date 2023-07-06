@@ -5,20 +5,18 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class RegisterView implements IView {
-    private BiConsumer<Type, String> onSceneChange;
+    private final Consumer<Action> actionConsumer;
 
-
-    public RegisterView() throws IOException {
-        onSceneChange = (Type type, String string) -> {};
+    public RegisterView(Consumer<Action> actionHandler) {
+        actionConsumer = actionHandler;
     }
 
     @Override
@@ -48,15 +46,18 @@ public class RegisterView implements IView {
                 return;
             }
             //Check all other requirements for the fields
-            RequestBuilder builder = new RequestBuilder();
-            HttpJsonRequest req = builder.withPost().withJson(form.json()).withRoute("/register").build();
+            Request req = new JsonRequest(
+                    new BasicHttpRequest(Request.Method.POST, "/register"),
+                    form.json()
+            );
             try (Socket client = new Socket("127.0.0.1", 6666);
                  PrintWriter out = new PrintWriter(client.getOutputStream(), true);
                  BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
                 req.send(out);
+                out.println("EOF");
                 MessageDialog.showMessageDialog(gui, "Server Response", in.lines().collect(Collectors.joining("\n")), MessageDialogButton.OK);
                 window.close();
-                onSceneChange.accept(Type.Login, "");
+                actionConsumer.accept(new ChangeSceneAction(Type.Login));
             } catch (Exception e) {
                 MessageDialog.showMessageDialog(gui, "Fatal error", "Unfortunately, the problem occurred when trying to communicate with the server", MessageDialogButton.OK);
             }
@@ -64,21 +65,16 @@ public class RegisterView implements IView {
         ).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
             window.close();
-            onSceneChange.accept(Type.Login, "");
+            actionConsumer.accept(new ChangeSceneAction(Type.Login));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            onSceneChange.accept(Type.None, "");
+            actionConsumer.accept(new ChangeSceneAction(Type.None));
         });
 
         window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
-    }
-
-    @Override
-    public void registerChangeViewHandler(BiConsumer<Type, String> consumer) {
-        onSceneChange = consumer;
     }
 }

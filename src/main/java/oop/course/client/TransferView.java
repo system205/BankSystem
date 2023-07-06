@@ -1,17 +1,19 @@
 package oop.course.client;
 
-import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.LinearLayout;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 
-import java.io.IOException;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class TransferView implements IView {
-    private BiConsumer<Type, String> onSceneChange;
+    private final Consumer<Action> actionConsumer;
 
-    public TransferView() throws IOException {
-        onSceneChange = (Type type, String string) -> {};
+    public TransferView(Consumer<Action> actionHandler) {
+        actionConsumer = actionHandler;
     }
 
     @Override
@@ -28,21 +30,16 @@ public class TransferView implements IView {
         new TerminalButton("Transfer money", () -> {
             MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             window.close();
-            onSceneChange.accept(Type.Login, "");
+            actionConsumer.accept(new ChangeSceneAction(Type.Account));
         }).attachTo(contentPanel);
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onSceneChange.accept(Type.Account, "");
+            actionConsumer.accept(new ChangeSceneAction(Type.Account));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
-    }
-
-    @Override
-    public void registerChangeViewHandler(BiConsumer<Type, String> consumer) {
-        onSceneChange = consumer;
     }
 }
