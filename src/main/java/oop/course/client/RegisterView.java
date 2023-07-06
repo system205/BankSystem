@@ -46,10 +46,7 @@ public class RegisterView implements IView {
                 return;
             }
             //Check all other requirements for the fields
-            Request req = new JsonRequest(
-                    new BasicHttpRequest(Request.Method.POST, "/register"),
-                    form.json()
-            );
+            Request req = new RegisterRequest(form);
             try (Socket client = new Socket("127.0.0.1", 6666);
                  PrintWriter out = new PrintWriter(client.getOutputStream(), true);
                  BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {

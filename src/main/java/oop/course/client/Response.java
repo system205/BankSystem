@@ -1,5 +1,5 @@
 package oop.course.client;
 
-public class Response {
+public interface Response {
 
 }

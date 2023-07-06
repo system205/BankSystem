@@ -40,10 +40,7 @@ public class LoginView implements IView {
         password.attachTo(contentPanel);
 
         new TerminalButton("Login", () -> {
-            Request req = new JsonRequest(
-                    new BasicHttpRequest(Request.Method.POST, "/login"),
-                    form.json()
-            );
+            Request req = new LoginRequest(form);
             try (Socket client = new Socket("127.0.0.1", 6666);
                  PrintWriter out = new PrintWriter(client.getOutputStream(), true);
                  BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
