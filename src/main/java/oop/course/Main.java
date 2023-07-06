@@ -44,7 +44,7 @@ public class Main {
                                 new LoginRoute(
                                         new TokenReturn(
                                                 "mySecretKey",
-                                                24 * 60 * 60 * 1000,
+                                                24L * 60 * 60 * 1000,
                                                 connection
                                         )
                                 ),
@@ -65,6 +65,16 @@ public class Main {
                                         )
                                 ),
                                 new AllAccounts(connection),
+                                new ManagerFork( // /manager
+                                        new CustomerRequestsRoute(
+                                                new ListRequests(connection),
+                                                new PostRequests(connection)
+                                        )
+                                ),
+                                new RequestsRoute(
+                                        new GetRequests(connection),
+                                        new PutRequests(connection)
+                                ),
                                 new NotFoundRoute()
                         )
                 ),

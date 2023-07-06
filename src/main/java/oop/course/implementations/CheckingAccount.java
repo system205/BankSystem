@@ -1,9 +1,11 @@
 package oop.course.implementations;
 
+import oop.course.entity.*;
 import oop.course.interfaces.*;
 
 import java.math.*;
 import java.sql.*;
+import java.util.*;
 
 /**
  * A simple bank account
@@ -50,6 +52,9 @@ public class CheckingAccount implements Account {
         }
     }
 
+    /**
+     * The most important method of an Account object
+     */
     @Override
     public Transaction transfer(String accountNumber, BigDecimal amount) {
         try (PreparedStatement transactionStatement = this.connection.prepareStatement(
@@ -110,6 +115,80 @@ public class CheckingAccount implements Account {
             accountStatement.setString(2, "AKG");
             accountStatement.setString(3, this.number);
             accountStatement.execute();
+            this.connection.commit();
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CustomerRequest attachRequest(String type, BigDecimal amount) {
+        String sql = "INSERT INTO requests (account_number, amount, type, status) VALUES (?, ?, ?, 'pending') RETURNING id";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setString(1, this.number);
+            statement.setBigDecimal(2, amount);
+            if (!(type.equals("withdraw") || type.equals("deposit"))) {
+                throw new RuntimeException("Bad request. Type should be withdraw or deposit");
+            }
+            statement.setString(3, type);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            long id = result.getLong(1);
+            this.connection.commit();
+            return new CustomerRequest(
+                    id,
+                    this.connection
+            );
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Collection<CustomerRequest> requests() {
+        String sql = "SELECT id FROM requests WHERE account_number = ?";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setString(1, this.number);
+            ResultSet result = statement.executeQuery();
+            List<CustomerRequest> requests = new LinkedList<>();
+            while (result.next()) {
+                requests.add(
+                        new CustomerRequest(
+                                result.getLong(1),
+                                this.connection
+                        )
+                );
+            }
+            return requests;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deposit(BigDecimal amount) {
+        withdraw(amount.negate());
+    }
+
+    @Override
+    public void withdraw(BigDecimal amount) {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "UPDATE checking_account SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) - ? WHERE account_number = ?"
+        )) {
+            statement.setString(1, this.number);
+            statement.setBigDecimal(2, amount);
+            statement.setString(3, this.number);
+            statement.execute();
             this.connection.commit();
         } catch (SQLException e) {
             try {

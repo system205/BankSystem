@@ -42,7 +42,7 @@ public class Client {
                     EOF""";
 
             String check = """
-                    GET /accounts HTTP/1.1
+                    GET /account HTTP/1.1
                     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
 
                     {
@@ -51,7 +51,7 @@ public class Client {
                     EOF""";
 
             String putAccount = """
-                    PUT /accounts HTTP/1.1
+                    PUT /account HTTP/1.1
                     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
 
                     EOF""";
@@ -78,7 +78,51 @@ public class Client {
                                         
                     EOF""";
 
-            final String request = allAccounts;
+            String requests = """
+                    GET /manager/requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODQ5MjcyOSwiZXhwIjoxNjg4NTc5MTI5fQ.UEJUjO_YYfvSZcVemm7KlxWTVwONZbVFfzCJw_h0o60
+                                        
+                    EOF""";
+            String approve = """
+                    POST /manager/requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE2ODg1ODE0MTgsImV4cCI6MTY4ODY2NzgxOH0.n7dzTwVM1Cwjukc4Pq8074FKU6s9m7C4ltIXqZikXYg
+                            
+                    {
+                      "id": "2",
+                      "status": "approved",
+                    } 
+                                
+                    EOF""";
+
+            String deny = """
+                    POST /manager/requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE2ODg1ODE0MTgsImV4cCI6MTY4ODY2NzgxOH0.n7dzTwVM1Cwjukc4Pq8074FKU6s9m7C4ltIXqZikXYg
+                            
+                    {
+                      "id": "1",
+                      "status": "denied",
+                    } 
+                                
+                    EOF""";
+
+            String checkRequests = """
+                    GET /requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjIiLCJpYXQiOjE2ODg1ODE0MTgsImV4cCI6MTY4ODY2NzgxOH0.n7dzTwVM1Cwjukc4Pq8074FKU6s9m7C4ltIXqZikXYg
+                                   
+                    EOF""";
+
+            String putRequest = """
+                    PUT /requests HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODU3OTk2NywiZXhwIjoxNjg4NjY2MzY3fQ.ToKZ5J_5l0o6WvJBn4nFUM75sv4YHwX8ZSaWPeZxRJQ
+                            
+                    {
+                      "amount": "200",
+                      "type": "deposit",
+                      "accountNumber": "8581256061"
+                    }       
+                    EOF""";
+
+            final String request = requests;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

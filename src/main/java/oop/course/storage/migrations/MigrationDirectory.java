@@ -11,13 +11,16 @@ public class MigrationDirectory {
 
     public Sql[] scan() {
         return new Sql[]{
-                new CostumerTable(
+                new Table(
                         new TextFromFile(this.path + "/init-customer-table.sql")
                 ),
-                new CheckingAccountTable(
+                new Table(
                         new TextFromFile(this.path + "/init-checking-account-table.sql")
                 ),
-                new RolesTable(
+                new Table(
+                        new TextFromFile(this.path + "/init-roles-table.sql")
+                ),
+                new Table(
                         new TextFromFile(this.path + "/init-roles-table.sql")
                 )
         };
