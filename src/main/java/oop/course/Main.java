@@ -75,6 +75,15 @@ public class Main {
                                         new GetRequests(connection),
                                         new PutRequests(connection)
                                 ),
+                                new JobRoute(
+                                        new PutOffer(connection)
+                                ),
+                                new AdminFork( // /admin
+                                        new ApplicantsRoute( // / offers
+                                                new ListApplicants(connection),
+                                                new PostOffer(connection)
+                                        )
+                                ),
                                 new NotFoundRoute()
                         )
                 ),

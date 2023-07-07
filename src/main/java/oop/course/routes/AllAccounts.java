@@ -31,7 +31,7 @@ public class AllAccounts implements Route {
 
     @Override
     public boolean accept(String path) {
-        log.debug("Accept of AllAccounts with path {}", path);
+        log.trace("Accept of AllAccounts with path {}", path);
         return "/accounts".equals(path);
     }
 }

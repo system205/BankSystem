@@ -32,12 +32,17 @@ public class Customer {
 
     public void save(Form details) {
         try (PreparedStatement statement = this.connection
-                .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)")) {
+                .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)");
+             PreparedStatement roleStatement = this.connection
+                     .prepareStatement("INSERT INTO roles (role, customer_id) VALUES ('user', (SELECT id FROM customer WHERE email = ?))")) {
             statement.setString(1, this.email);
             statement.setString(2, details.stringField("name"));
             statement.setString(3, details.stringField("surname"));
             statement.setString(4, details.stringField("password"));
             statement.execute();
+            log.info("Add role user to a new customer");
+            roleStatement.setString(1, this.email);
+            roleStatement.execute();
             this.connection.commit();
         } catch (SQLException e) {
             try {
@@ -130,6 +135,49 @@ public class Customer {
             }
         } catch (SQLException e) {
             log.error("Exception when retrieving customer's password", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Offer applyForJob() {
+        log.info("Try apply for a job");
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "INSERT INTO offers (customer_email, status) VALUES (?, 'pending') RETURNING id"
+        ); PreparedStatement checkStatement = this.connection.prepareStatement(
+                "SELECT 1 FROM offers WHERE customer_email = ?"
+        )) {
+            checkStatement.setString(1, this.email);
+            ResultSet check = checkStatement.executeQuery();
+            if (check.next())
+                throw new RuntimeException("Bad request. Customer has already applied for a job");
+
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            Offer offer = new Offer(result.getLong(1), this.connection);
+            this.connection.commit();
+            return offer;
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Offer offer() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT id FROM offers WHERE customer_email = ?"
+        )) {
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            if (!result.next())
+                throw new RuntimeException("Offer of a customer is not found");
+            return new Offer(result.getLong(1), this.connection);
+        } catch (SQLException e) {
+            log.error("Error when extracting offer from the customer");
             throw new RuntimeException(e);
         }
     }
