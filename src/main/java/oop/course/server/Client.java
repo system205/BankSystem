@@ -143,7 +143,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = acceptOffer;
+            final String request = login;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

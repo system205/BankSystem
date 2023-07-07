@@ -181,4 +181,21 @@ public class Customer {
             throw new RuntimeException(e);
         }
     }
+
+    private boolean exists() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT COUNT(*) FROM customer WHERE email = ?"
+        )) {
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            return result.getInt(1) > 0;
+        } catch (SQLException e) {
+            log.error("Error when checking whether a customer exists");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean correctCredentials(String password) {
+        return this.exists() && password.equals(this.password());
+    }
 }

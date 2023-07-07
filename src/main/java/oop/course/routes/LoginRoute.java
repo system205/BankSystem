@@ -1,20 +1,40 @@
 package oop.course.routes;
 
+import oop.course.entity.Customer;
 import oop.course.interfaces.Process;
 import oop.course.interfaces.*;
+import oop.course.responses.UnauthorizedResponse;
+import oop.course.tools.implementations.JsonForm;
+import oop.course.tools.interfaces.Form;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
 
 public class LoginRoute implements Route {
     private final Process next;
+    private final Connection connection;
+    private final Logger log = LoggerFactory.getLogger(UnauthorizedResponse.class);
 
-    public LoginRoute(Process next) {
+    public LoginRoute(Connection connection, Process next) {
+        this.connection = connection;
         this.next = next;
     }
 
     @Override
     public Response act(Request request) {
+        // if (wrong credentials)
+        // return UnauthorizedResponse();
+        Form form = new JsonForm(request.body());
+        Customer customer = new Customer(connection, form);
+        if (!customer.correctCredentials(form.stringField("password"))) {
+            log.info("Invalid credentials:\nEmail: " +
+                    form.stringField("email") +
+                    "\nPassword: " +
+                    form.stringField("password"));
+            return new UnauthorizedResponse("Bearer", "/login");
+        }
         return next.act(request);
-
-
     }
 
     @Override
