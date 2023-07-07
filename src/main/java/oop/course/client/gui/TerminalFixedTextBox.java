@@ -4,17 +4,16 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
-public class TerminalPasswordBox implements TerminalInputBox {
+public class TerminalFixedTextBox implements TerminalInputBox {
     private final TextBox textBox;
-    public TerminalPasswordBox()
-    {
+    public TerminalFixedTextBox(String text) {
         textBox = new TextBox(new TerminalSize(20, 1));
-        textBox.setMask('*');
+        textBox.setText(text);
+        textBox.setReadOnly(true);
     }
 
     @Override
-    public void attachTo(Panel panel)
-    {
+    public void attachTo(Panel panel) {
         panel.addComponent(textBox);
     }
 

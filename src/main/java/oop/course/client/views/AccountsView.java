@@ -22,11 +22,13 @@ public class AccountsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
+    private final String email;
 
-    public AccountsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token) {
+    public AccountsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token, String email) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
+        this.email = email;
     }
 
     @Override
@@ -42,7 +44,8 @@ public class AccountsView implements IView {
             var t = "Account number: " + account.accountNumber() + " " +
                     "Balance: " + account.balance();
             new TerminalButton(t, () -> {
-
+                window.close();
+                onChangeView.accept(new TransferView(onChangeView, requestHandler, token, email));
             }, true).attachTo(contentPanel);
         }
 
@@ -53,7 +56,7 @@ public class AccountsView implements IView {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully created an account with number " +
                         newAccountResponse.accountNumber() + " with the starting balance " + newAccountResponse.accountBalance());
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+                onChangeView.accept(new AccountsView(onChangeView, requestHandler, token, email));
             }
             else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred", MessageDialogButton.Close);

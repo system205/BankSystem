@@ -34,7 +34,8 @@ public class LoginView implements IView {
                 "Welcome to the BankSystem client application!\nPlease, register or login into your existing account."
         ).attachTo(contentPanel);
 
-        var username = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox()));
+        var email = new TerminalTextBox();
+        var username = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), email));
         var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"), new TerminalPasswordBox()));
 
         var form = new TerminalForm(List.of(username, password));
@@ -50,7 +51,7 @@ public class LoginView implements IView {
             }
             else if (resp.isSuccess()) {
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token()));
+                onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token(), email.text()));
             }
             else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
