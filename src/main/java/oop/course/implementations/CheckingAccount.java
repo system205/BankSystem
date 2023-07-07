@@ -199,4 +199,44 @@ public class CheckingAccount implements Account {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<Transaction> transactions() {
+        try (PreparedStatement outcomeStatement = this.connection.prepareStatement(
+                "SELECT amount, created_at, receiver_number FROM transactions WHERE sender_number = ?"
+        ); PreparedStatement incomeStatement = this.connection.prepareStatement(
+                "SELECT amount, created_at, sender_number FROM transactions WHERE receiver_number = ?"
+        )) {
+            incomeStatement.setString(1, this.number);
+            outcomeStatement.setString(1, this.number);
+
+            ResultSet income = incomeStatement.executeQuery();
+            ResultSet outcome = outcomeStatement.executeQuery();
+
+            List<Transaction> transactions = new ArrayList<>();
+            while (income.next()) {
+                transactions.add(
+                        new CustomerTransaction(
+                                income.getTimestamp(2).toLocalDateTime(),
+                                income.getBigDecimal(1),
+                                income.getString(3),
+                                "income"
+                        )
+                );
+            }
+            while (outcome.next()) {
+                transactions.add(
+                        new CustomerTransaction(
+                                outcome.getTimestamp(2).toLocalDateTime(),
+                                outcome.getBigDecimal(1),
+                                outcome.getString(3),
+                                "outcome"
+                        )
+                );
+            }
+            return transactions;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

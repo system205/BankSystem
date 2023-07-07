@@ -1,5 +1,6 @@
 package oop.course.interfaces;
 
-public interface Transaction {
-    String info();
+import oop.course.tools.*;
+
+public interface Transaction extends JSON {
 }

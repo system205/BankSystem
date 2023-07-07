@@ -21,4 +21,5 @@ public interface Account extends JSON {
 
     void withdraw(BigDecimal amount);
 
+    List<Transaction> transactions();
 }

@@ -41,22 +41,22 @@ public class Main {
                         new Fork(
                                 new SimpleUrl(),
                                 new MainRoute(),
-                                new LoginRoute(
+                                new LoginRoute( // /login
                                         new TokenReturn(
                                                 "mySecretKey",
                                                 24L * 60 * 60 * 1000,
                                                 connection
                                         )
                                 ),
-                                new RegisterRoute(
+                                new RegisterRoute( // /register
                                         connection
                                 ),
-                                new TransferRoute(
+                                new TransferRoute( // /transfer
                                         new MakeTransaction(
                                                 connection
                                         )
                                 ),
-                                new CheckAccountRoute(
+                                new CheckAccountRoute( // /account
                                         new GetAccount(
                                                 connection
                                         ),
@@ -64,18 +64,23 @@ public class Main {
                                                 connection
                                         )
                                 ),
-                                new AllAccounts(connection),
+                                new TransactionsRoute(
+                                        new GetTransactions(
+                                                connection
+                                        )
+                                ),
+                                new AllAccounts(connection), // /accounts
                                 new ManagerFork( // /manager
-                                        new CustomerRequestsRoute(
+                                        new CustomerRequestsRoute( // /requests
                                                 new ListRequests(connection),
                                                 new PostRequests(connection)
                                         )
                                 ),
-                                new RequestsRoute(
+                                new RequestsRoute( // /requests
                                         new GetRequests(connection),
                                         new PutRequests(connection)
                                 ),
-                                new JobRoute(
+                                new JobRoute( // /job
                                         new PutOffer(connection)
                                 ),
                                 new AdminFork( // /admin
@@ -84,7 +89,7 @@ public class Main {
                                                 new PostOffer(connection)
                                         )
                                 ),
-                                new NotFoundRoute()
+                                new NotFoundRoute() // any other
                         )
                 ),
                 new AuthSecurityConfiguration(

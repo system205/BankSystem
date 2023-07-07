@@ -9,28 +9,27 @@ import oop.course.tools.interfaces.*;
 
 import java.sql.*;
 
-public class MakeTransaction implements ProcessMethod {
-
+public class GetTransactions implements ProcessMethod {
     private final Connection connection;
 
-    public MakeTransaction(Connection connection) {
+    public GetTransactions(Connection connection) {
         this.connection = connection;
     }
 
     @Override
     public Response act(Request request) {
         Form form = new JsonForm(request.body());
-        Transaction transaction = new Customer(this.connection,
-                new HeaderToken(request.headers()).id())
-                .account(form.stringField("senderAccount"))
-                .transfer(form.stringField("receiverAccount"),
-                        form.bigDecimalField("amount"));
-
-        return new SuccessResponse(transaction.json());
+        return new SuccessResponse(
+                new Customer(
+                        this.connection,
+                        new HeaderToken(request.headers()).id()
+                ).account(form.stringField("accountNumber"))
+                        .transactions()
+        );
     }
 
     @Override
     public boolean accept(String method) {
-        return "PUT".equals(method);
+        return "GET".equals(method);
     }
 }
