@@ -51,7 +51,7 @@ public class LoginView implements IView {
             }
             else if (resp.isSuccess()) {
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token(), email.text()));
+                onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token()));
             }
             else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);

@@ -8,7 +8,9 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.gui.*;
 import oop.course.client.requests.Request;
+import oop.course.client.requests.TransferRequest;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.TransferResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,13 +20,13 @@ public class TransferView implements IView {
     private final Consumer<IView> onChangeView;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
-    private final String email;
+    private final String accountNumber;
 
-    public TransferView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token, String email) {
+    public TransferView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
-        this.email = email;
+        this.accountNumber = accountNumber;
     }
 
     @Override
@@ -32,9 +34,9 @@ public class TransferView implements IView {
         TerminalWindow window = new TerminalWindow("Money transfer");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        var sender = new TerminalFormKeyValuePair("sender", new TerminalInputPair(new TerminalText("Sender"), new TerminalFixedTextBox(email)));
-        var receiver = new TerminalFormKeyValuePair("receiver", new TerminalInputPair(new TerminalText("Receiver"), new TerminalTextBox()));
-        var sum = new TerminalFormKeyValuePair("sum", new TerminalInputPair(new TerminalText("Sum"), new TerminalTextBox()));
+        var sender = new TerminalFormKeyValuePair("senderAccount", new TerminalInputPair(new TerminalText("Sender"), new TerminalFixedTextBox(accountNumber)));
+        var receiver = new TerminalFormKeyValuePair("receiverAccount", new TerminalInputPair(new TerminalText("Receiver"), new TerminalTextBox()));
+        var sum = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Sum"), new TerminalTextBox()));
 
         sender.attachTo(contentPanel);
         receiver.attachTo(contentPanel);
@@ -43,15 +45,21 @@ public class TransferView implements IView {
         var form = new TerminalForm(List.of(sender, receiver, sum));
 
         new TerminalButton("Transfer money", () -> {
-            System.out.println(form.json());
-            MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token, email));
+            var req = new TransferRequest(token, form);
+            var resp = new TransferResponse(requestHandler.apply(req));
+            if (resp.isSuccess()) {
+                MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
+                window.close();
+                onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            }
+            else {
+                MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.", MessageDialogButton.Close);
+            }
         }).attachTo(contentPanel);
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token, email));
+            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);
