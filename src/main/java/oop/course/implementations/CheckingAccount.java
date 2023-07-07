@@ -206,12 +206,16 @@ public class CheckingAccount implements Account {
                 "SELECT amount, created_at, receiver_number FROM transactions WHERE sender_number = ?"
         ); PreparedStatement incomeStatement = this.connection.prepareStatement(
                 "SELECT amount, created_at, sender_number FROM transactions WHERE receiver_number = ?"
-        )) {
+        ); PreparedStatement requestsStatement = this.connection.prepareStatement(
+                "SELECT type, amount FROM requests WHERE account_number = ? AND status = 'approved'"
+        );) {
             incomeStatement.setString(1, this.number);
             outcomeStatement.setString(1, this.number);
+            requestsStatement.setString(1, this.number);
 
             ResultSet income = incomeStatement.executeQuery();
             ResultSet outcome = outcomeStatement.executeQuery();
+            ResultSet approvedRequests = requestsStatement.executeQuery();
 
             List<Transaction> transactions = new ArrayList<>();
             while (income.next()) {
@@ -231,6 +235,14 @@ public class CheckingAccount implements Account {
                                 outcome.getBigDecimal(1),
                                 outcome.getString(3),
                                 "outcome"
+                        )
+                );
+            }
+            while (approvedRequests.next()) {
+                transactions.add(
+                        new ApprovedRequest(
+                                approvedRequests.getString(1),
+                                approvedRequests.getBigDecimal(2)
                         )
                 );
             }

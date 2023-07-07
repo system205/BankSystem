@@ -16,7 +16,7 @@ public class SuccessResponse implements Response {
 
     public SuccessResponse(Collection<? extends JSON> jsons) {
         this("[\n" + jsons.parallelStream().map(JSON::json)
-                .collect(Collectors.joining(", ")) +
+                .collect(Collectors.joining(",\n")) +
                 "\n]");
     }
 
