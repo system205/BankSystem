@@ -7,7 +7,7 @@ public class ResponseMessage implements JSON {
         this.message = message;
     }
 
-    final String message;
+    private final String message;
 
     @Override
     public String json() {

@@ -25,7 +25,7 @@ public class RegisterRoute implements Route {
         new Customer(this.connection, form.stringField("email"))
                 .save(form);
 
-        return new CreatedResponse();
+        return new CreatedResponse("The registration was successful");
     }
 
     @Override
