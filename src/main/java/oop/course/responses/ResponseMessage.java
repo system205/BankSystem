@@ -2,8 +2,8 @@ package oop.course.responses;
 
 import oop.course.tools.JSON;
 
-public class ErrorResponseMessage implements JSON {
-    public ErrorResponseMessage(String message) {
+public class ResponseMessage implements JSON {
+    public ResponseMessage(String message) {
         this.message = message;
     }
 

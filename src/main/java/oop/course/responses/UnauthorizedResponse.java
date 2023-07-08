@@ -33,9 +33,10 @@ public class UnauthorizedResponse implements Response {
                 401,
                 "Unauthorized",
                 Map.ofEntries(
-                        entry("WWW-Authenticate", authScheme + " realm=\"" + realm + "\"")
+                        entry("WWW-Authenticate", authScheme + " realm=\"" + realm + "\""),
+                        entry("Content-Type", "application/json")
                 ),
-                new ErrorResponseMessage(errorMessage).json()
+                new ResponseMessage(errorMessage).json()
         );
         baseResponse.print(out);
 //        String responseText =
