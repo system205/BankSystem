@@ -182,12 +182,13 @@ public class Customer {
         }
     }
 
-    private boolean exists() {
+    public boolean exists() {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT COUNT(*) FROM customer WHERE email = ?"
         )) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
+            result.next();
             return result.getInt(1) > 0;
         } catch (SQLException e) {
             log.error("Error when checking whether a customer exists");

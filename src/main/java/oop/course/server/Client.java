@@ -41,6 +41,24 @@ public class Client {
                     }
                     EOF""";
 
+            String loginWrongPassword = """
+                    POST /login HTTP/1.1
+
+                    {
+                      "email": "admin",
+                      "password": "456"
+                    }
+                    EOF""";
+
+            String loginDoesntExist = """
+                    POST /login HTTP/1.1
+
+                    {
+                      "email": "admin321",
+                      "password": "123"
+                    }
+                    EOF""";
+
             String check = """
                     GET /account HTTP/1.1
                     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
@@ -143,7 +161,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = login;
+            final String request = loginWrongPassword;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
