@@ -161,8 +161,16 @@ public class Client {
                     "endDate" : "2023-09-07",
                     }               
                     EOF""";
+            String deactivate = """
+                    DELETE /account HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODgyMTE3OCwiZXhwIjoxNjg4OTA3NTc4fQ.PSUnK5JpApbph2uP68vG1zQ7aV-qpCP5XxKs8PdbzYc
+                                        
+                    {
+                    "accountNumber" : "8821865334",
+                    }               
+                    EOF""";
 
-            final String request = statement;
+            final String request = deactivate;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

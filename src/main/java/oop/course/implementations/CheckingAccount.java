@@ -278,4 +278,22 @@ public class CheckingAccount implements Account {
 
         return new TransactionStatement(this.number, start, end, transactions, startingBalance, endingBalance);
     }
+
+    @Override
+    public void deactivate() {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "UPDATE checking_account SET active = false WHERE account_number = ?"
+        )) {
+            statement.setString(1, this.number);
+            statement.execute();
+            this.connection.commit();
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
 }

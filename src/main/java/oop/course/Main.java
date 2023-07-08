@@ -62,6 +62,9 @@ public class Main {
                                         ),
                                         new PutAccount(
                                                 connection
+                                        ),
+                                        new DeleteAccount(
+                                                connection
                                         )
                                 ),
                                 new TransactionsRoute( // /transactions

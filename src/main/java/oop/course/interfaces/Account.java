@@ -25,4 +25,6 @@ public interface Account extends JSON {
     List<Transaction> transactions();
 
     TransactionStatement compose(LocalDate start, LocalDate end);
+
+    void deactivate();
 }
