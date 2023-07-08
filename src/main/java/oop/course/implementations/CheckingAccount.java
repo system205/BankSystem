@@ -5,6 +5,7 @@ import oop.course.interfaces.*;
 
 import java.math.*;
 import java.sql.*;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -202,16 +203,27 @@ public class CheckingAccount implements Account {
 
     @Override
     public List<Transaction> transactions() {
+        return transactions(Timestamp.from(Instant.ofEpochSecond(0)), Timestamp.from(Instant.ofEpochSecond(10000000000L)));
+    }
+
+    private List<Transaction> transactions(Timestamp start, Timestamp end) {
         try (PreparedStatement outcomeStatement = this.connection.prepareStatement(
-                "SELECT amount, created_at, receiver_number FROM transactions WHERE sender_number = ?"
+                "SELECT amount, created_at, receiver_number FROM transactions WHERE sender_number = ? AND created_at BETWEEN ? AND ?"
         ); PreparedStatement incomeStatement = this.connection.prepareStatement(
-                "SELECT amount, created_at, sender_number FROM transactions WHERE receiver_number = ?"
+                "SELECT amount, created_at, sender_number FROM transactions WHERE receiver_number = ? AND created_at BETWEEN ? AND ?"
         ); PreparedStatement requestsStatement = this.connection.prepareStatement(
-                "SELECT type, amount FROM requests WHERE account_number = ? AND status = 'approved'"
+                "SELECT type, amount, created_at FROM requests WHERE account_number = ? AND status = 'approved' AND created_at BETWEEN ? AND ?"
         );) {
             incomeStatement.setString(1, this.number);
             outcomeStatement.setString(1, this.number);
             requestsStatement.setString(1, this.number);
+
+            incomeStatement.setTimestamp(2, start);
+            incomeStatement.setTimestamp(3, end);
+            outcomeStatement.setTimestamp(2, start);
+            outcomeStatement.setTimestamp(3, end);
+            requestsStatement.setTimestamp(2, start);
+            requestsStatement.setTimestamp(3, end);
 
             ResultSet income = incomeStatement.executeQuery();
             ResultSet outcome = outcomeStatement.executeQuery();
@@ -242,7 +254,8 @@ public class CheckingAccount implements Account {
                 transactions.add(
                         new ApprovedRequest(
                                 approvedRequests.getString(1),
-                                approvedRequests.getBigDecimal(2)
+                                approvedRequests.getBigDecimal(2),
+                                approvedRequests.getTimestamp(3).toLocalDateTime()
                         )
                 );
             }
@@ -250,5 +263,19 @@ public class CheckingAccount implements Account {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public TransactionStatement compose(LocalDate start, LocalDate end) {
+        final Timestamp startTimestamp = Timestamp.valueOf(start.atStartOfDay());
+        final Timestamp endTimestamp = Timestamp.valueOf(end.atStartOfDay());
+
+        final List<Transaction> transactions = transactions(startTimestamp, endTimestamp);
+        final List<Transaction> previousTransactions = transactions(Timestamp.from(Instant.ofEpochSecond(1)), startTimestamp);
+
+        final BigDecimal startingBalance = previousTransactions.stream().map(Transaction::balanceChange).reduce(BigDecimal::add).orElseGet(() -> new BigDecimal(0));
+        final BigDecimal endingBalance = transactions.stream().map(Transaction::balanceChange).reduce(BigDecimal::add).orElseGet(() -> new BigDecimal(0)).add(startingBalance);
+
+        return new TransactionStatement(this.number, start, end, transactions, startingBalance, endingBalance);
     }
 }

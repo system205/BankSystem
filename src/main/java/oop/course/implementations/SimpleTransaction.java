@@ -20,4 +20,9 @@ public class SimpleTransaction implements Transaction {
         return String.format("{\"from\":\"%s\",%n\"to\":\"%s\",%n\"amount\":\"%s\"}",
                 this.sender, this.receiver, this.amount);
     }
+
+    @Override
+    public BigDecimal balanceChange() {
+        return this.amount;
+    }
 }

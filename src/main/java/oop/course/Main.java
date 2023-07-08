@@ -64,10 +64,13 @@ public class Main {
                                                 connection
                                         )
                                 ),
-                                new TransactionsRoute(
+                                new TransactionsRoute( // /transactions
                                         new GetTransactions(
                                                 connection
                                         )
+                                ),
+                                new StatementRoute( // /stats
+                                        connection
                                 ),
                                 new AllAccounts(connection), // /accounts
                                 new ManagerFork( // /manager

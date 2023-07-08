@@ -21,11 +21,20 @@ public class CustomerTransaction implements Transaction {
     @Override
     public String json() {
         if ("income".equals(type)) {
-            return String.format("{\"type\":\"%s\",%n\"from\":\"%s\",%n\"amount\":\"%s\",%n\"date\":\"%s\"}",
+            return String.format("{%n\"type\":\"%s\",%n\"from\":\"%s\",%n\"amount\":\"%s\",%n\"date\":\"%s\"%n}",
                     this.type, this.anotherNumber, this.amount, this.dateTime);
         } else if ("outcome".equals(type)) {
-            return String.format("{\"type\":\"%s\",%n\"from\":\"%s\",%n\"amount\":\"%s\",%n\"date\":\"%s\"}",
+            return String.format("{%n\"type\":\"%s\",%n\"from\":\"%s\",%n\"amount\":\"%s\",%n\"date\":\"%s\"%n}",
                     this.type, this.anotherNumber, this.amount, this.dateTime);
         } else throw new IllegalStateException("Type of a customer transaction must be either income or outcome");
+    }
+
+    @Override
+    public BigDecimal balanceChange() {
+        if ("income".equals(this.type))
+            return this.amount;
+        else if ("outcome".equals(this.type))
+            return this.amount.negate();
+        else throw new IllegalStateException("The type of a customer transaction should be either income or outcome");
     }
 }

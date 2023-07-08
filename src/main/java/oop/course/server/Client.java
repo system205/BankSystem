@@ -151,8 +151,18 @@ public class Client {
                     "accountNumber" : "8581256061",
                     }               
                     EOF""";
+            String statement = """
+                    GET /stats HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODcyODcxNCwiZXhwIjoxNjg4ODE1MTE0fQ.X6Ce7oGHrz_bWNAeXsE2SOuQrwae0XHwJHe8Jpv2wsI
+                                        
+                    {
+                    "accountNumber" : "8581256061",
+                    "startDate" : "2021-01-01",
+                    "endDate" : "2023-09-07",
+                    }               
+                    EOF""";
 
-            final String request = transactions;
+            final String request = statement;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
