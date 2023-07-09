@@ -4,6 +4,7 @@ import oop.course.entity.*;
 import oop.course.tools.*;
 
 import java.math.*;
+import java.time.*;
 import java.util.*;
 
 public interface Account extends JSON {
@@ -21,4 +22,9 @@ public interface Account extends JSON {
 
     void withdraw(BigDecimal amount);
 
+    List<Transaction> transactions();
+
+    TransactionStatement compose(LocalDate start, LocalDate end);
+
+    void deactivate();
 }

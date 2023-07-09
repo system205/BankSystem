@@ -143,7 +143,34 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = acceptOffer;
+            String transactions = """
+                    GET /transactions HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODcyODcxNCwiZXhwIjoxNjg4ODE1MTE0fQ.X6Ce7oGHrz_bWNAeXsE2SOuQrwae0XHwJHe8Jpv2wsI
+                                        
+                    {
+                    "accountNumber" : "8581256061",
+                    }               
+                    EOF""";
+            String statement = """
+                    GET /stats HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODcyODcxNCwiZXhwIjoxNjg4ODE1MTE0fQ.X6Ce7oGHrz_bWNAeXsE2SOuQrwae0XHwJHe8Jpv2wsI
+                                        
+                    {
+                    "accountNumber" : "8581256061",
+                    "startDate" : "2021-01-01",
+                    "endDate" : "2023-09-07",
+                    }               
+                    EOF""";
+            String deactivate = """
+                    DELETE /account HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODgyMTE3OCwiZXhwIjoxNjg4OTA3NTc4fQ.PSUnK5JpApbph2uP68vG1zQ7aV-qpCP5XxKs8PdbzYc
+                                        
+                    {
+                    "accountNumber" : "8821865334",
+                    }               
+                    EOF""";
+
+            final String request = deactivate;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
