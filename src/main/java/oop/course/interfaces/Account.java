@@ -2,6 +2,7 @@ package oop.course.interfaces;
 
 import oop.course.entity.*;
 import oop.course.tools.*;
+import oop.course.tools.interfaces.*;
 
 import java.math.*;
 import java.time.*;
@@ -27,4 +28,8 @@ public interface Account extends JSON {
     TransactionStatement compose(LocalDate start, LocalDate end);
 
     void deactivate();
+
+    AutoPayment createPayment(Form form);
+
+    List<AutoPayment> autopayments();
 }
