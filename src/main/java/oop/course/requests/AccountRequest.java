@@ -1,5 +1,6 @@
 package oop.course.requests;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
 
@@ -11,7 +12,7 @@ public class AccountRequest implements Id<String> {
     }
 
     @Override
-    public String id() {
+    public String id() throws MalformedDataException {
         return form.stringField("accountNumber");
     }
 }

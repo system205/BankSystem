@@ -1,6 +1,8 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
+import oop.course.responses.MethodNotAllowedResponse;
 
 public class CheckAccountRoute implements Route {
 
@@ -12,14 +14,14 @@ public class CheckAccountRoute implements Route {
 
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         final String method = request.method();
         for (ProcessMethod process : next) {
             if (process.accept(method)) {
                 return process.act(request);
             }
         }
-        throw new RuntimeException("Unsupported exception");
+        return new MethodNotAllowedResponse();
     }
 
     @Override

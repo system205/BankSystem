@@ -6,8 +6,6 @@ import oop.course.interfaces.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
 
-import java.io.IOException;
-
 public class Fork implements Process {
 
     private final Route[] routes;

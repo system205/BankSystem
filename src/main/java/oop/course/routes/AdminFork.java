@@ -1,8 +1,14 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
+import oop.course.responses.NotFoundResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AdminFork implements Route {
+    private static final Logger log = LoggerFactory.getLogger(AdminFork.class);
+
     private final Route[] routes;
 
     public AdminFork(Route... routes) {
@@ -10,14 +16,15 @@ public class AdminFork implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         String url = request.url().substring("/admin".length());
         for (Route r : routes) {
             if (r.accept(url)) {
                 return r.act(request);
             }
         }
-        throw new RuntimeException("Suitable route is not found in /admin");
+        log.error("Suitable route is not found in /admin");
+        return new NotFoundResponse();
     }
 
     @Override

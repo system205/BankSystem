@@ -2,6 +2,7 @@ package oop.course.entity;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
+import oop.course.exceptions.MalformedDataException;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
@@ -21,7 +22,7 @@ public class Customer {
         this.email = id;
     }
 
-    public Customer(Connection connection, Form form) {
+    public Customer(Connection connection, Form form) throws MalformedDataException {
         this(connection, form.stringField("email"));
     }
 
@@ -44,7 +45,7 @@ public class Customer {
             roleStatement.setString(1, this.email);
             roleStatement.execute();
             this.connection.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | MalformedDataException e) {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {

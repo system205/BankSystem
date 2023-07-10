@@ -1,6 +1,7 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
+import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
 import oop.course.tools.implementations.*;
@@ -22,7 +23,7 @@ public class PostRequests implements ProcessMethod {
      * Takes id and new type (approved or denied) of a request
      */
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         Form form = new JsonForm(request.body());
         String status = form.stringField("status");
         long id = form.longField("id");

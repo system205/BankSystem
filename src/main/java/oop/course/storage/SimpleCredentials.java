@@ -1,5 +1,6 @@
 package oop.course.storage;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.storage.interfaces.*;
 import oop.course.tools.interfaces.*;
 
@@ -12,7 +13,7 @@ public class SimpleCredentials implements Credentials {
         this.password = password;
     }
 
-    public SimpleCredentials(Form form) {
+    public SimpleCredentials(Form form) throws MalformedDataException {
         this(form.stringField("email"), form.stringField("password"));
     }
 

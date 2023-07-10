@@ -1,5 +1,6 @@
 package oop.course.implementations;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
 import oop.course.interfaces.Process;
 import oop.course.storage.*;
@@ -15,7 +16,7 @@ public class CredentialsAccess implements Process {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         if (this.check.ok(new SimpleCredentials(
                 new JsonForm(request.body())
         ))) {

@@ -1,9 +1,9 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
-import oop.course.tools.implementations.*;
 
 import java.sql.*;
 
@@ -15,7 +15,7 @@ public class PutAccount implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         // Create and save new account
         Account account = new CheckingAccount(
                 this.connection

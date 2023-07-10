@@ -8,6 +8,7 @@ import oop.course.interfaces.*;
 
 import java.util.*;
 
+// TODO Add proper exceptions
 public class HeaderToken implements Id<String> {
     private final String token;
 

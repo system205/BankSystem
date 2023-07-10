@@ -1,6 +1,7 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
+import oop.course.exceptions.MalformedDataException;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
@@ -18,7 +19,7 @@ public class MakeTransaction implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         Form form = new JsonForm(request.body());
         Transaction transaction = new Customer(this.connection,
                 new HeaderToken(request.headers()).id())

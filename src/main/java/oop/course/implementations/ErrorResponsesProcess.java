@@ -7,8 +7,6 @@ import oop.course.interfaces.Response;
 import oop.course.responses.BadRequestResponse;
 import oop.course.responses.InternalErrorResponse;
 
-import java.util.Optional;
-
 public class ErrorResponsesProcess implements Process {
     private final Process next;
 
