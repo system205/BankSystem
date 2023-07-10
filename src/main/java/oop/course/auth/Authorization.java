@@ -1,6 +1,7 @@
 package oop.course.auth;
 
 import oop.course.auth.interfaces.SecurityConfiguration;
+import oop.course.exceptions.MalformedDataException;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.interfaces.Process;
@@ -25,7 +26,7 @@ public class Authorization implements Process {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         // Internal logic
         String url = new SimpleUrl().path(request);
         if (!securityConfiguration.isValidToken(request.headers(), url) && !securityConfiguration.isAccessibleUrl(url)) {

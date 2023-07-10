@@ -98,6 +98,7 @@ public class Main {
                         )
                 )
         );
+        final ErrorResponsesProcess errorResponsesProcess = new ErrorResponsesProcess(authorization);
         logger.debug("All processes are created");
 
         final int port = 6666;
@@ -108,7 +109,7 @@ public class Main {
                 new Thread(
                         new Server(
                                 socket.accept(),
-                                authorization))
+                                errorResponsesProcess))
                         .start();
             }
         } catch (IOException e) {
