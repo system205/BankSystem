@@ -4,8 +4,11 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
+import oop.course.client.requests.Request;
+import oop.course.client.responses.BasicResponse;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 public class TerminalGUI implements GUI {
     private final Terminal terminal;
@@ -17,13 +20,13 @@ public class TerminalGUI implements GUI {
     }
 
     @Override
-    public void startLooping() {
+    public void startLooping(Function<Request, BasicResponse> requestHandler) {
         try {
             screen.startScreen();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        new GUIOrchestrator(screen).mainLoop();
+        new GUIOrchestrator(screen, requestHandler).mainLoop();
         try {
             screen.stopScreen();
             terminal.close();

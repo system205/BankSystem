@@ -1,24 +1,25 @@
-package oop.course.client;
+package oop.course.client.views;
 
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.gui.*;
+import oop.course.client.requests.RegisterRequest;
+import oop.course.client.requests.Request;
+import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.RegisterResponse;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RegisterView implements IView {
-    private BiConsumer<Type, String> onSceneChange;
+    private final Consumer<IView> onChangeView;
+    private final Function<Request, BasicResponse> requestHandler;
 
-
-    public RegisterView() throws IOException {
-        onSceneChange = (Type type, String string) -> {};
+    public RegisterView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+        onChangeView = changeViewHandler;
+        this.requestHandler = requestHandler;
     }
 
     @Override
@@ -48,37 +49,30 @@ public class RegisterView implements IView {
                 return;
             }
             //Check all other requirements for the fields
-            RequestBuilder builder = new RequestBuilder();
-            HttpJsonRequest req = builder.withPost().withJson(form.json()).withRoute("/register").build();
-            try (Socket client = new Socket("127.0.0.1", 6666);
-                 PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
-                req.send(out);
-                MessageDialog.showMessageDialog(gui, "Server Response", in.lines().collect(Collectors.joining("\n")), MessageDialogButton.OK);
+            Request req = new RegisterRequest(form);
+            var resp = new RegisterResponse(requestHandler.apply(req));
+            if (resp.isSuccess()) {
+                MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in", MessageDialogButton.OK);
                 window.close();
-                onSceneChange.accept(Type.Login, "");
-            } catch (Exception e) {
-                MessageDialog.showMessageDialog(gui, "Fatal error", "Unfortunately, the problem occurred when trying to communicate with the server", MessageDialogButton.OK);
+                onChangeView.accept(new LoginView(onChangeView, requestHandler));
+            }
+            else {
+                MessageDialog.showMessageDialog(gui, "Result", "Something went terribly wrong!", MessageDialogButton.Abort);
             }
         }
         ).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
             window.close();
-            onSceneChange.accept(Type.Login, "");
+            onChangeView.accept(new LoginView(onChangeView, requestHandler));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            onSceneChange.accept(Type.None, "");
+            onChangeView.accept(null);
         });
 
         window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
-    }
-
-    @Override
-    public void registerChangeViewHandler(BiConsumer<Type, String> consumer) {
-        onSceneChange = consumer;
     }
 }
