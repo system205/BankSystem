@@ -10,7 +10,8 @@ public interface Request {
     enum Method {
         GET,
         POST,
-        PUT
+        PUT,
+        DELETE
     }
 
     void send(PrintWriter printWriter);

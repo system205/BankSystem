@@ -43,7 +43,7 @@ public class AccountsView implements IView {
                     "Balance: " + account.balance();
             new TerminalButton(t, () -> {
                 window.close();
-                onChangeView.accept(new TransferView(onChangeView, requestHandler, token, account.accountNumber()));
+                onChangeView.accept(new AccountActionsView(onChangeView, requestHandler, token, account.accountNumber()));
             }, true).attachTo(contentPanel);
         }
 
