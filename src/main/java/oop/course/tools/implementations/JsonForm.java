@@ -1,11 +1,15 @@
 package oop.course.tools.implementations;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.tools.interfaces.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.*;
 import java.util.regex.*;
 
 public class JsonForm implements Form {
+    private final Logger log = LoggerFactory.getLogger(JsonForm.class);
     private final String source;
     private static final String REGEX = "\"%s\" *: *\"[^\"]*\"";
     private static final String STRING_REGEX = "\"[^\"]*\"$";
@@ -24,7 +28,7 @@ public class JsonForm implements Form {
     }
 
     @Override
-    public long longField(String field) {
+    public long longField(String field) throws MalformedDataException {
         Matcher matcher = Pattern
                 .compile(String.format(REGEX, field))
                 .matcher(this.source);
@@ -36,17 +40,17 @@ public class JsonForm implements Form {
                 final String value = m.group();
                 return Long.parseLong(value.substring(1, value.length() - 1));
             } else {
-                System.err.println("No number was found. JsonMalformed.");
-                throw new RuntimeException("No number was found in field: " + field + ". JsonMalformed.");
+                log.error("No number was found. JsonMalformed.");
+                throw new MalformedDataException("No number was found in field: " + field + ". JsonMalformed.");
             }
         } else {
-            System.err.println("Json can't find field " + field);
-            throw new RuntimeException("There is no attribute: " + field + " in JSON.");
+            log.error("Json can't find field " + field);
+            throw new MalformedDataException("There is no attribute: " + field + " in JSON.");
         }
     }
 
     @Override
-    public String stringField(String field) {
+    public String stringField(String field) throws MalformedDataException {
         Matcher matcher = Pattern
                 .compile(String.format(REGEX, field))
                 .matcher(this.source);
@@ -58,17 +62,17 @@ public class JsonForm implements Form {
                 final String value = m.group();
                 return value.substring(1, value.length() - 1);
             } else {
-                System.err.println("No string was found. JsonMalformed.");
-                throw new RuntimeException("No string value was found in field: " + field + ". JsonMalformed.");
+                log.error("No string was found. JsonMalformed.");
+                throw new MalformedDataException("No string value was found in field: " + field + ". JsonMalformed.");
             }
         } else {
-            System.err.println("Json can't find field " + field);
-            throw new RuntimeException("There is no attribute: " + field + " in JSON.");
+            log.error("Json can't find field " + field);
+            throw new MalformedDataException("There is no attribute: " + field + " in JSON.");
         }
     }
 
     @Override
-    public BigDecimal bigDecimalField(String field) {
+    public BigDecimal bigDecimalField(String field) throws MalformedDataException {
         return new BigDecimal(stringField(field));
     }
 }

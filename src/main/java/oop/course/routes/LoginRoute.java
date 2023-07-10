@@ -1,6 +1,7 @@
 package oop.course.routes;
 
 import oop.course.entity.Customer;
+import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.Process;
 import oop.course.interfaces.*;
 import oop.course.responses.UnauthorizedResponse;
@@ -22,9 +23,7 @@ public class LoginRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
-        // if (wrong credentials)
-        // return UnauthorizedResponse();
+    public Response act(Request request) throws MalformedDataException {
         Form form = new JsonForm(request.body());
         Customer customer = new Customer(connection, form);
         if (!customer.exists()) {

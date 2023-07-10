@@ -1,9 +1,12 @@
 package oop.course.server;
 
+import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.Process;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
+
+import java.io.IOException;
 
 public class Fork implements Process {
 
@@ -17,7 +20,7 @@ public class Fork implements Process {
 
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws MalformedDataException {
         final String path = this.url.path(request);
         for (Route route : routes) {
             if (route.accept(path))
