@@ -15,7 +15,7 @@ import java.sql.Connection;
 public class LoginRoute implements Route {
     private final Process next;
     private final Connection connection;
-    private final Logger log = LoggerFactory.getLogger(UnauthorizedResponse.class);
+    private final Logger log = LoggerFactory.getLogger(LoginRoute.class);
 
     public LoginRoute(Connection connection, Process next) {
         this.connection = connection;

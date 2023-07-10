@@ -31,7 +31,10 @@ public class Customer {
         return String.format("Customer with email: %s", this.email);
     }
 
-    public void save(Form details) {
+    public void save(Form details) throws IllegalStateException, MalformedDataException {
+        if (!this.exists()) {
+            throw new IllegalStateException("Email is already presented");
+        }
         try (PreparedStatement statement = this.connection
                 .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)");
              PreparedStatement roleStatement = this.connection
@@ -45,7 +48,7 @@ public class Customer {
             roleStatement.setString(1, this.email);
             roleStatement.execute();
             this.connection.commit();
-        } catch (SQLException | MalformedDataException e) {
+        } catch (SQLException e) {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -57,7 +60,7 @@ public class Customer {
     }
 
     public Account account(String id) {
-        // Check that customer ownes the account and then return.
+        // Check that customer owns the account and then return.
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT 1 FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ? AND account_number=?"
         )) {
