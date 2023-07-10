@@ -21,13 +21,17 @@ public class MakeTransaction implements ProcessMethod {
     @Override
     public Response act(Request request) throws MalformedDataException {
         Form form = new JsonForm(request.body());
-        Transaction transaction = new Customer(this.connection,
-                new HeaderToken(request.headers()).id())
-                .account(form.stringField("senderAccount"))
-                .transfer(form.stringField("receiverAccount"),
-                        form.bigDecimalField("amount"));
+        try {
+            Transaction transaction = new Customer(this.connection,
+                    new HeaderToken(request.headers()).id())
+                    .account(form.stringField("senderAccount"))
+                    .transfer(form.stringField("receiverAccount"),
+                            form.bigDecimalField("amount"));
+            return new SuccessResponse(transaction.info());
+        } catch (IllegalStateException e) {
+            return new BadRequestResponse("Not enough money on account to make transaction");
+        }
 
-        return new SuccessResponse(transaction.info());
     }
 
     @Override

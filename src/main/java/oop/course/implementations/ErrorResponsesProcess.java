@@ -19,7 +19,7 @@ public class ErrorResponsesProcess implements Process {
         try {
             return next.act(request);
         } catch (MalformedDataException e) {
-            return new BadRequestResponse();
+            return new BadRequestResponse(e.getMessage());
         } catch (Exception e) {
             return new InternalErrorResponse();
         }

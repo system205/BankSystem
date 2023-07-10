@@ -2,6 +2,8 @@ package oop.course.implementations;
 
 import oop.course.entity.*;
 import oop.course.interfaces.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.*;
 import java.sql.*;
@@ -11,6 +13,8 @@ import java.util.*;
  * A simple bank account
  */
 public class CheckingAccount implements Account {
+    private static final Logger log = LoggerFactory.getLogger(CheckingAccount.class);
+
     private final String number;
 
     private final Connection connection;
@@ -65,7 +69,17 @@ public class CheckingAccount implements Account {
              );
              PreparedStatement payStatement = this.connection.prepareStatement(
                      "UPDATE checking_account SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) + ? WHERE account_number = ?"
-             );) {
+             );
+             PreparedStatement enoughMoneyStatement = this.connection.prepareStatement(
+                     "SELECT balance FROM checking_account WHERE account_number = ?"
+             )) {
+            enoughMoneyStatement.setString(1, this.number);
+            ResultSet result = enoughMoneyStatement.executeQuery();
+            result.next();
+            final BigDecimal balance = result.getBigDecimal(1);
+            if (balance.compareTo(amount) < 0){
+                throw new IllegalArgumentException("Not enough money to perform a transaction");
+            }
             transactionStatement.setString(1, this.number);
             transactionStatement.setString(2, accountNumber);
             transactionStatement.setBigDecimal(3, amount);
@@ -85,7 +99,7 @@ public class CheckingAccount implements Account {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-            System.err.println("SQL error when transferring money. Internal error: " + e);
+            log.error("SQL error when transferring money. Internal error: " + e);
             throw new RuntimeException(e);
         }
         return new SimpleTransaction(this.number, accountNumber, amount);
