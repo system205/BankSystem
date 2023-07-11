@@ -24,7 +24,7 @@ public class BasicResponse implements Response {
     }
 
     public List<String> values(String key) {
-        Pattern pattern = Pattern.compile("\"" + key + "\": ?\"(.*?)\"");
+        Pattern pattern = Pattern.compile("\"" + key + "\" *: *\"(.*?)\"");
         Matcher matcher = pattern.matcher(response);
         List<String> res = new ArrayList<>();
         while (matcher.find()) {
