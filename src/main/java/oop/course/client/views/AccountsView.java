@@ -75,6 +75,11 @@ public class AccountsView implements IView {
             }
         }).attachTo(contentPanel);
 
+        new TerminalButton("Admin actions", () -> {
+            window.close();
+            onChangeView.accept(new AdminActionsView(onChangeView, requestHandler, token));
+        }).attachTo(contentPanel);
+
         new TerminalButton("Logout", () -> {
             window.close();
             onChangeView.accept(new LoginView(onChangeView, requestHandler));

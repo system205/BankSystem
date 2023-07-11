@@ -11,7 +11,7 @@ import oop.course.client.gui.*;
 import oop.course.client.requests.Request;
 import oop.course.client.requests.TransactionsRequest;
 import oop.course.client.responses.BasicResponse;
-import oop.course.responses.TransactionsResponse;
+import oop.course.client.responses.TransactionsResponse;
 
 import java.util.List;
 import java.util.function.Consumer;

@@ -1,8 +1,6 @@
-package oop.course.responses;
+package oop.course.client.responses;
 
 import oop.course.client.Transaction;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.Response;
 
 import java.util.ArrayList;
 import java.util.List;
