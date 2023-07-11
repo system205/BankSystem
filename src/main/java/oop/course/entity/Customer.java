@@ -181,4 +181,22 @@ public class Customer {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteAutopayment(long paymentId) {
+        String sql = "DELETE FROM autopayments a WHERE a.id = ? AND from_account_id IN " +
+                "(SELECT c.account_id FROM checking_account c WHERE c.customer_id = (SELECT customer.id FROM customer WHERE email = ?));";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setLong(1, paymentId);
+            statement.setString(2, this.email);
+            statement.execute();
+            this.connection.commit();
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
 }

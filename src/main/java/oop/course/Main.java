@@ -1,8 +1,10 @@
 package oop.course;
 
 import oop.course.auth.*;
+import oop.course.entity.*;
 import oop.course.implementations.*;
 import oop.course.routes.*;
+import oop.course.routes.methods.*;
 import oop.course.server.*;
 import oop.course.storage.*;
 import oop.course.storage.migrations.*;
@@ -33,6 +35,9 @@ public class Main {
                 new MigrationDirectory("migrations")
                         .scan()
         ).init();
+
+        // Resume autopayments
+        new Admin(connection).payments().forEach(AutoPayment::pay);
 
         // Processes
         logger.debug("Start creating processes");
@@ -74,6 +79,11 @@ public class Main {
                                 ),
                                 new StatementRoute( // /stats
                                         connection
+                                ),
+                                new AutoPaymentRoute( // /autopayments
+                                        new ListAutoPayments(connection),
+                                        new PostAutoPayment(connection),
+                                        new DeleteAutoPayment(connection)
                                 ),
                                 new AllAccounts(connection), // /accounts
                                 new ManagerFork( // /manager
