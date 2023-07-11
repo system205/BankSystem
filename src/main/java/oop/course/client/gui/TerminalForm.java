@@ -1,4 +1,4 @@
-package oop.course.client;
+package oop.course.client.gui;
 
 import java.util.List;
 

@@ -3,45 +3,36 @@ package oop.course.client;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.screen.Screen;
+import oop.course.client.responses.BasicResponse;
+import oop.course.client.views.*;
+import oop.course.client.requests.Request;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.function.Function;
 
 public class GUIOrchestrator {
-    private IView.Type currentView;
-    private final WindowBasedTextGUI textGUI;
-    private String token;
+    private IView currentView;
     private boolean changePending;
+    private boolean exitCondition;
 
-    public GUIOrchestrator(Screen screen) {
-        currentView = IView.Type.Login;
+    private final WindowBasedTextGUI textGUI;
+    private final Function<Request, BasicResponse> requestHandler;
+
+    public GUIOrchestrator(Screen screen, Function<Request, BasicResponse> requestHandler) {
+        currentView = new LoginView(this::changeView, requestHandler);
         changePending = true;
         textGUI = new MultiWindowTextGUI(screen);
-        token = "";
+        this.requestHandler = requestHandler;
+        exitCondition = false;
     }
 
     public void mainLoop()
     {
         try {
-            currentView = IView.Type.Login;
-            while (true) {
-                if (changePending)
-                {
+            while (!exitCondition) {
+                if (changePending) {
                     changePending = false;
-                    if (currentView == IView.Type.None)
-                    {
-                        break;
-                    }
-                    IView view = switch (currentView) {
-                        case Account -> new AccountView(token);
-                        case Transfer -> new TransferView();
-                        case Login -> new LoginView();
-                        case Register -> new RegisterView();
-                        case ActionSelect -> new ActionSelectView();
-                        case None -> throw new RuntimeException();
-                    };
-                    view.registerChangeViewHandler(this::changeView);
-                    view.show(textGUI);
+                    currentView.show(textGUI);
                 }
                 textGUI.getGUIThread().processEventsAndUpdate();
             }
@@ -51,11 +42,11 @@ public class GUIOrchestrator {
         }
     }
 
-    private void changeView(IView.Type type, String string) {
+    private void changeView(IView type) {
+        if (type == null) {
+            exitCondition = true;
+        }
         changePending = true;
         currentView = type;
-        if (!Objects.equals(string, "")) {
-            token = string;
-        }
     }
 }

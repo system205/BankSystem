@@ -27,6 +27,6 @@ public class Client {
     }
 
     public void run() {
-        clientGui.startLooping();
+        clientGui.startLooping(serverBridge::execute);
     }
 }

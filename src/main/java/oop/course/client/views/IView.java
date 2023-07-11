@@ -1,9 +1,8 @@
-package oop.course.client;
+package oop.course.client.views;
 
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 
 import java.io.IOException;
-import java.util.function.BiConsumer;
 
 public interface IView {
     enum Type {
@@ -15,6 +14,4 @@ public interface IView {
         None
     }
     void show(WindowBasedTextGUI gui) throws IOException;
-
-    void registerChangeViewHandler(BiConsumer<Type, String> consumer);
 }

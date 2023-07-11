@@ -1,14 +1,14 @@
-package oop.course.client;
+package oop.course.client.gui;
 
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
-public class TerminalPasswordBox implements TerminalInputBox {
+public class TerminalTextBox implements TerminalInputBox {
     private final TextBox textBox;
-    public TerminalPasswordBox()
+    public TerminalTextBox()
     {
-        textBox = new TextBox();
-        textBox.setMask('*');
+        textBox = new TextBox(new TerminalSize(20, 1));
     }
 
     @Override
