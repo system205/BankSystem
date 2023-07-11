@@ -63,7 +63,7 @@ public class AccountsView implements IView {
             }
         }).attachTo(contentPanel);
 
-        new TerminalButton("Check pending requests", () -> {
+        new TerminalButton("Check my requests", () -> {
             window.close();
             onChangeView.accept(new CheckRequestsView(onChangeView, requestHandler, token));
         }).attachTo(contentPanel);

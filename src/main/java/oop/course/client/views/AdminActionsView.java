@@ -35,6 +35,11 @@ public class AdminActionsView implements IView{
             onChangeView.accept(new OfferManagementView(onChangeView, requestHandler, token));
         }).attachTo(contentPanel);
 
+        new TerminalButton("View requests", () -> {
+            window.close();
+            onChangeView.accept(new AdminRequestsView(onChangeView, requestHandler, token));
+        }).attachTo(contentPanel);
+
         new TerminalButton("Return", () -> {
             window.close();
             onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
