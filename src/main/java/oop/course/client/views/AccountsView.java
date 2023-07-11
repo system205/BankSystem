@@ -9,10 +9,12 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalWindow;
 import oop.course.client.requests.AccountsRequest;
+import oop.course.client.requests.BecomeManagerRequest;
 import oop.course.client.requests.NewAccountRequest;
 import oop.course.client.requests.Request;
 import oop.course.client.responses.AccountsResponse;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.BecomeManagerResponse;
 import oop.course.client.responses.NewAccountResponse;
 
 import java.util.function.Consumer;
@@ -58,6 +60,18 @@ public class AccountsView implements IView {
             }
             else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred", MessageDialogButton.Close);
+            }
+        }).attachTo(contentPanel);
+
+        new TerminalButton("Request a manager status", () -> {
+            var request = new BecomeManagerRequest(token);
+            var response = new BecomeManagerResponse(requestHandler.apply(request));
+            if (response.isSuccess()) {
+                MessageDialog.showMessageDialog(gui, "Success",
+                        "The request has been sent successfully. Assigned id: " + response.id(), MessageDialogButton.Continue);
+            }
+            else {
+                MessageDialog.showMessageDialog(gui, "Failure", "The request could not be sent or you already applied to the job", MessageDialogButton.Close);
             }
         }).attachTo(contentPanel);
 
