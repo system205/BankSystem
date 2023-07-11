@@ -2,9 +2,11 @@ package oop.course.implementations;
 
 import oop.course.entity.*;
 import oop.course.interfaces.*;
+import oop.course.tools.interfaces.*;
 
 import java.math.*;
 import java.sql.*;
+import java.sql.Date;
 import java.time.*;
 import java.util.*;
 
@@ -293,6 +295,52 @@ public class CheckingAccount implements Account {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public AutoPayment createPayment(Form form) {
+        String sql = "INSERT INTO autopayments (from_account_id, to_account_id, amount, start_date, period_in_seconds) VALUES " +
+                "((SELECT account_id FROM checking_account account WHERE account_number = ?), (SELECT account_id FROM checking_account account WHERE account_number = ?), ?, ?, ?) " +
+                "RETURNING id;";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setString(1, this.number);
+            statement.setString(2, form.stringField("receiverNumber"));
+            statement.setBigDecimal(3, form.bigDecimalField("amount"));
+            statement.setDate(4, Date.valueOf(form.stringField("startDate")));
+            statement.setLong(5, form.longField("period"));
+            ResultSet id = statement.executeQuery();
+            id.next();
+            this.connection.commit();
+            return new AutoPayment(id.getLong(1), this.connection);
+        } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AutoPayment> autopayments() {
+        String sql = "SELECT id FROM autopayments WHERE from_account_id = (SELECT account_id FROM checking_account WHERE account_number = ?)";
+        try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
+            statement.setString(1, this.number);
+            ResultSet result = statement.executeQuery();
+            List<AutoPayment> payments = new LinkedList<>();
+            while (result.next()) {
+                payments.add(
+                        new AutoPayment(
+                                result.getLong(1),
+                                this.connection
+                        )
+                );
+            }
+            return payments;
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
