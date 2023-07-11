@@ -21,8 +21,7 @@ public class AuthSecurityConfiguration implements SecurityConfiguration {
 
     public boolean isAccessibleUrl(String url) {
         // Check whether the user is allowed to access the specified URL
-        return true;
-        //return url.endsWith("/login") || url.endsWith("/register");
+        return url.endsWith("/login") || url.endsWith("/register");
     }
 
     @Override
