@@ -35,6 +35,8 @@ public class OfferManagementView implements IView {
         Request req = new GetOffersRequest(token);
         var response = new GetOffersResponse(requestHandler.apply(req));
 
+        //TODO: display the offers and handle approving/denying once the backend is updated
+
         if (!response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Operation failed", "You do not have access or the server did not respond", MessageDialogButton.Abort);
             window.close();

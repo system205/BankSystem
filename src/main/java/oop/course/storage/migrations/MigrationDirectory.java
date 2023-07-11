@@ -21,9 +21,6 @@ public class MigrationDirectory {
                         new TextFromFile(this.path + "/init-roles-table.sql")
                 ),
                 new Table(
-                        new TextFromFile(this.path + "/init-roles-table.sql")
-                ),
-                new Table(
                         new TextFromFile(this.path + "/init-transaction-table.sql")
                 ),
                 new Table(
