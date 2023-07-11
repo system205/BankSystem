@@ -44,6 +44,11 @@ public class AccountActionsView implements IView {
                 new TerminalInputPair(new TerminalText("Account Number"), new TerminalFixedTextBox(account)));
         var accountDeactivationForm = new TerminalForm(List.of(accountNumber));
 
+        new TerminalButton("Request a statement", () -> {
+            window.close();
+            onChangeView.accept(new StatementInputView(onChangeView, requestHandler, token, account));
+        }).attachTo(contentPanel);
+
         new TerminalButton("Deactivate an account", () -> {
             Request deactivateRequest = new DeactivateAccountRequest(token, accountDeactivationForm);
             var response = new DeactivateAccountResponse(requestHandler.apply(deactivateRequest));

@@ -25,6 +25,9 @@ public class MigrationDirectory {
                 ),
                 new Table(
                         new TextFromFile(this.path + "/init-transaction-table.sql")
+                ),
+                new Table(
+                        new TextFromFile(this.path + "/init-requests-table.sql")
                 )
         };
     }
