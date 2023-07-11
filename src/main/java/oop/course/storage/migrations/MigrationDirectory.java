@@ -28,6 +28,9 @@ public class MigrationDirectory {
                 ),
                 new Table(
                         new TextFromFile(this.path + "/init-offers-table.sql")
+                ),
+                new Table(
+                        new TextFromFile(this.path + "/init-payments-table.sql")
                 )
         };
     }
