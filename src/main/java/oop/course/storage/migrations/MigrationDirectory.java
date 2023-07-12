@@ -18,19 +18,19 @@ public class MigrationDirectory {
                         new TextFromFile(this.path + "/init-checking-account-table.sql")
                 ),
                 new Table(
-                        new TextFromFile(this.path + "/init-roles-table.sql")
+                        new TextFromFile(this.path + "/init-offers-table.sql")
                 ),
                 new Table(
                         new TextFromFile(this.path + "/init-transaction-table.sql")
                 ),
                 new Table(
+                        new TextFromFile(this.path + "/init-payments-table.sql")
+                ),
+                new Table(
                         new TextFromFile(this.path + "/init-requests-table.sql")
                 ),
                 new Table(
-                        new TextFromFile(this.path + "/init-offers-table.sql")
-                ),
-                new Table(
-                        new TextFromFile(this.path + "/init-payments-table.sql")
+                        new TextFromFile(this.path + "/init-roles-table.sql")
                 )
         };
     }
