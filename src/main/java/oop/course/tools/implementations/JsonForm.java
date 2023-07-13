@@ -60,6 +60,10 @@ public class JsonForm implements Form {
                     .matcher(matcher.group());
             if (m.find()) {
                 final String value = m.group();
+                final String result = value.substring(1, value.length() - 1);
+                if (result.isEmpty()) {
+                    throw new MalformedDataException("Field " + field + " must be nonempty string.");
+                }
                 return value.substring(1, value.length() - 1);
             } else {
                 log.error("No string was found. JsonMalformed.");
