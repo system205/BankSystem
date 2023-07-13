@@ -1,5 +1,6 @@
 package oop.course.implementations;
 
+import oop.course.exceptions.AccountException;
 import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.Process;
 import oop.course.interfaces.Request;
@@ -18,7 +19,7 @@ public class ErrorResponsesProcess implements Process {
     public Response act(Request request) {
         try {
             return next.act(request);
-        } catch (MalformedDataException e) {
+        } catch (MalformedDataException | AccountException e) {
             return new BadRequestResponse(e.getMessage());
         } catch (Exception e) {
             return new InternalErrorResponse();

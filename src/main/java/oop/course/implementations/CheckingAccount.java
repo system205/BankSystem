@@ -1,6 +1,8 @@
 package oop.course.implementations;
 
 import oop.course.entity.*;
+import oop.course.exceptions.AccountException;
+import oop.course.exceptions.NotExistsException;
 import oop.course.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +42,14 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public long balance() {
+    public long balance() throws AccountException {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT balance from checking_account where account_number=?");
         ) {
             statement.setString(1, this.number);
             ResultSet results = statement.executeQuery();
             if (!results.next()) {
-                throw new RuntimeException("The account with number: " + this.number + " was not found");
+                throw new AccountException("The account with number: " + this.number + " was not found");
             }
             return results.getLong(1);
         } catch (SQLException e) {
@@ -60,7 +62,7 @@ public class CheckingAccount implements Account {
      * The most important method of an Account object
      */
     @Override
-    public Transaction transfer(String accountNumber, BigDecimal amount) {
+    public Transaction transfer(String accountNumber, BigDecimal amount) throws AccountException {
         try (PreparedStatement transactionStatement = this.connection.prepareStatement(
                 "INSERT INTO transactions (sender_number, receiver_number, amount) VALUES (?, ?, ?)"
         );
@@ -72,13 +74,23 @@ public class CheckingAccount implements Account {
              );
              PreparedStatement enoughMoneyStatement = this.connection.prepareStatement(
                      "SELECT balance FROM checking_account WHERE account_number = ?"
+             );
+             PreparedStatement receiverExists = this.connection.prepareStatement(
+                     "SELECT 1 FROM checking_account WHERE account_number = ?"
              )) {
             enoughMoneyStatement.setString(1, this.number);
             ResultSet result = enoughMoneyStatement.executeQuery();
-            result.next();
+            if (!result.next()) {
+                throw new AccountException("The account with number: " + this.number + " was not found");
+            }
+            receiverExists.setString(1, accountNumber);
+            ResultSet receiverExistsResult = receiverExists.executeQuery();
+            if (!receiverExistsResult.next()) {
+                throw new AccountException("The account with number: " + accountNumber + " was not found");
+            }
             final BigDecimal balance = result.getBigDecimal(1);
             if (balance.compareTo(amount) < 0){
-                throw new IllegalArgumentException("Not enough money to perform a transaction");
+                throw new AccountException("Not enough money to perform a transaction");
             }
             transactionStatement.setString(1, this.number);
             transactionStatement.setString(2, accountNumber);
@@ -106,7 +118,7 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public String json() {
+    public String json() throws AccountException {
         return String.format("{\"accountNumber\":\"%s\", \"balance\":\"%s\"}", this.number, balance());
     }
 

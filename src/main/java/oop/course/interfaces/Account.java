@@ -7,9 +7,9 @@ import java.math.*;
 import java.util.*;
 
 public interface Account extends JSON {
-    long balance();
+    long balance() throws Exception;
 
-    Transaction transfer(String accountNumber, BigDecimal amount);
+    Transaction transfer(String accountNumber, BigDecimal amount) throws Exception;
 
     void save(String customerId);
 
