@@ -2,7 +2,7 @@ package oop.course.entity;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
@@ -22,7 +22,7 @@ public class Customer {
         this.email = id;
     }
 
-    public Customer(Connection connection, Form form) throws MalformedDataException {
+    public Customer(Connection connection, Form form) {
         this(connection, form.stringField("email"));
     }
 
@@ -31,7 +31,7 @@ public class Customer {
         return String.format("Customer with email: %s", this.email);
     }
 
-    public void save(Form details) throws IllegalStateException, MalformedDataException {
+    public void save(Form details) {
         if (this.exists()) {
             throw new IllegalStateException("Email is already presented");
         }

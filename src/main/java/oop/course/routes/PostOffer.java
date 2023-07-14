@@ -1,7 +1,7 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.interfaces.*;
 import oop.course.responses.*;
 import oop.course.tools.implementations.*;
@@ -17,7 +17,7 @@ public class PostOffer implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request)  {
         Form form = new JsonForm(request.body());
         new Customer(this.connection, form.stringField("customerEmail"))
                 .offer().update(

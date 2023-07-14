@@ -9,13 +9,13 @@ import java.time.*;
 import java.util.*;
 
 public interface Account extends JSON {
-    long balance() throws Exception;
+    long balance();
 
-    Transaction transfer(String accountNumber, BigDecimal amount) throws Exception;
+    Transaction transfer(String accountNumber, BigDecimal amount);
 
-    void save(String customerId) throws Exception;
+    void save(String customerId);
 
-    CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception;
+    CustomerRequest attachRequest(String type, BigDecimal amount) ;
 
     Collection<CustomerRequest> requests();
 

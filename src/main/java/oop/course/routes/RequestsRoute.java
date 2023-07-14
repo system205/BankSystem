@@ -1,6 +1,5 @@
 package oop.course.routes;
 
-import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
 import oop.course.responses.MethodNotAllowedResponse;
 import org.slf4j.*;
@@ -15,7 +14,7 @@ public class RequestsRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) throws Exception {
+    public Response act(Request request)  {
         String method = request.method();
         for (ProcessMethod m : processes) {
             if (m.accept(method)) {

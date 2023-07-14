@@ -1,7 +1,7 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.interfaces.*;
 import oop.course.responses.*;
 import oop.course.tools.implementations.*;
@@ -22,7 +22,7 @@ public class RegisterRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request)  {
         // provide all the necessary information to register new personal account
         // email name surname password must be provided
 

@@ -27,7 +27,7 @@ public class Authorization implements Process {
     }
 
     @Override
-    public Response act(Request request) throws Exception {
+    public Response act(Request request) {
         // throws exception if user does not have a necessary role
         new GuardedUrl(connection, rolesConfiguration).path(request);
         // Process next if OK so far

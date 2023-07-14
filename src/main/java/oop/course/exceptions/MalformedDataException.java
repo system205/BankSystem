@@ -1,11 +1,9 @@
 package oop.course.exceptions;
 
-import java.io.IOException;
-
 /**
  * Exception that is thrown when the request is malformed: wrong format, missing parameters, etc.
  */
-public class MalformedDataException extends IOException {
+public class MalformedDataException extends RuntimeException {
 
     public MalformedDataException() {
         super();

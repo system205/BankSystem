@@ -1,6 +1,5 @@
 package oop.course.routes;
 
-import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
 import oop.course.responses.MethodNotAllowedResponse;
 
@@ -12,7 +11,7 @@ public class TransferRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) throws Exception {
+    public Response act(Request request)  {
         // fork depending on the http method
         String method = request.method();
 

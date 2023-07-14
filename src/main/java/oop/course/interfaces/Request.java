@@ -1,16 +1,16 @@
 package oop.course.interfaces;
 
-import oop.course.exceptions.MalformedDataException;
+
 
 import java.util.*;
 
 public interface Request {
 
-    Collection<String> headers() throws MalformedDataException;
+    Collection<String> headers() ;
 
     Iterable<String> body();
 
-    String url() throws MalformedDataException;
+    String url() ;
 
-    String method() throws MalformedDataException;
+    String method() ;
 }

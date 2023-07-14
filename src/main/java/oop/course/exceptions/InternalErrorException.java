@@ -1,6 +1,6 @@
 package oop.course.exceptions;
 
-public class InternalErrorException extends Exception {
+public class InternalErrorException extends RuntimeException {
     public InternalErrorException() {
     }
 

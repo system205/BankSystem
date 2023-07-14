@@ -1,6 +1,6 @@
 package oop.course.exceptions;
 
-public class NotExistsException extends Exception {
+public class NotExistsException extends RuntimeException {
     public NotExistsException() {
     }
 

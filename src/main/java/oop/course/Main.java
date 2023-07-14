@@ -46,6 +46,7 @@ public class Main {
                         new SimpleUrl(),
                         new MainRoute(),
                         new LoginRoute(
+                                connection,
                                 new TokenReturn(
                                         "mySecretKey",
                                         24L * 60 * 60 * 1000,

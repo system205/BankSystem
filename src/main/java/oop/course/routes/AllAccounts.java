@@ -1,7 +1,7 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
@@ -20,7 +20,7 @@ public class AllAccounts implements Route {
     }
 
     @Override
-    public Response act(Request request) throws Exception {
+    public Response act(Request request)  {
         log.debug("Start retrieving all accounts");
         return new SuccessResponse(
                 new Customer(

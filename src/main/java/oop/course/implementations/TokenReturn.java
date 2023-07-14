@@ -1,7 +1,7 @@
 package oop.course.implementations;
 
 import oop.course.entity.*;
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.interfaces.*;
 import oop.course.interfaces.Process;
 import oop.course.responses.*;
@@ -22,7 +22,7 @@ public class TokenReturn implements Process {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) {
         Form form = new JsonForm(request.body());
         return new SuccessResponse(
                 new Customer(

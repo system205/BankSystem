@@ -1,5 +1,6 @@
 package oop.course.implementations;
 
+
 import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class HttpRequest implements Request {
         log.info("HttpRequest data:\n" + this.data);
     }
 
-    private String[] requestLine() throws MalformedDataException {
+    private String[] requestLine() {
         if (data.isEmpty()) {
             throw new MalformedDataException("HttpRequest is empty");
         }
@@ -35,7 +36,7 @@ public class HttpRequest implements Request {
     }
 
     @Override
-    public Collection<String> headers() throws MalformedDataException {
+    public Collection<String> headers() {
         // a part of the data
         // TODO - multiple line headers are not implemented
         ArrayList<String> headers = new ArrayList<>();
@@ -70,12 +71,12 @@ public class HttpRequest implements Request {
     }
 
     @Override
-    public String url() throws MalformedDataException {
+    public String url() {
         return requestLine()[1]; // the very first word
     }
 
     @Override
-    public String method() throws MalformedDataException {
+    public String method() {
         return requestLine()[0]; // the very first word
     }
 }

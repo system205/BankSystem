@@ -45,9 +45,9 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public long balance() throws AccountException {
+    public long balance() {
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "SELECT balance from checking_account where account_number=?");
+                "SELECT balance from checking_account where account_number=?")
         ) {
             statement.setString(1, this.number);
             ResultSet results = statement.executeQuery();
@@ -65,7 +65,7 @@ public class CheckingAccount implements Account {
      * The most important method of an Account object
      */
     @Override
-    public Transaction transfer(String accountNumber, BigDecimal amount) throws AccountException {
+    public Transaction transfer(String accountNumber, BigDecimal amount) {
         try (PreparedStatement transactionStatement = this.connection.prepareStatement(
                 "INSERT INTO transactions (sender_number, receiver_number, amount) VALUES (?, ?, ?)"
         );
@@ -121,12 +121,12 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public String json() throws AccountException {
+    public String json() {
         return String.format("{\"accountNumber\":\"%s\", \"balance\":\"%s\"}", this.number, balance());
     }
 
     @Override
-    public void save(String customerEmail) throws Exception {
+    public void save(String customerEmail) {
         // TODO - could be simplified
         try (PreparedStatement accountStatement = this.connection.prepareStatement(
                 "INSERT INTO checking_account (customer_id, bank_name, account_number) VALUES (?, ?, ?)");
@@ -174,7 +174,7 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public CustomerRequest attachRequest(String type, BigDecimal amount) throws AccountException {
+    public CustomerRequest attachRequest(String type, BigDecimal amount) {
         String sql = "INSERT INTO requests (account_number, amount, type, status) VALUES (?, ?, ?, 'pending') RETURNING id";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
@@ -259,7 +259,7 @@ public class CheckingAccount implements Account {
                 "SELECT amount, created_at, sender_number FROM transactions WHERE receiver_number = ? AND created_at BETWEEN ? AND ?"
         ); PreparedStatement requestsStatement = this.connection.prepareStatement(
                 "SELECT type, amount, created_at FROM requests WHERE account_number = ? AND status = 'approved' AND created_at BETWEEN ? AND ?"
-        );) {
+        )) {
             incomeStatement.setString(1, this.number);
             outcomeStatement.setString(1, this.number);
             requestsStatement.setString(1, this.number);

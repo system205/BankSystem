@@ -23,7 +23,7 @@ public class GuardedUrl implements URL {
     }
 
     @Override
-    public String path(Request request) throws Exception {
+    public String path(Request request) {
         String url  = request.url();
         if (rolesConfiguration.isAllowedToGo(url)) {
             return url;

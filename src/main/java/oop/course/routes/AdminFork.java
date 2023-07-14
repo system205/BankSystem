@@ -1,6 +1,6 @@
 package oop.course.routes;
 
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.interfaces.*;
 import oop.course.responses.NotFoundResponse;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ public class AdminFork implements Route {
     }
 
     @Override
-    public Response act(Request request) throws Exception {
+    public Response act(Request request)  {
         String url = request.url().substring("/admin".length());
         for (Route r : routes) {
             if (r.accept(url)) {

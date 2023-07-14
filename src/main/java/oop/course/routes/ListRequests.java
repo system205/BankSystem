@@ -1,7 +1,7 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
@@ -19,7 +19,7 @@ public class ListRequests implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) throws Exception {
+    public Response act(Request request)  {
         log.debug("Call manager to list requests");
         return new SuccessResponse(
                 new Manager(

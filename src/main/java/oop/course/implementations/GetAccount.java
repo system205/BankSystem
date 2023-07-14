@@ -1,7 +1,7 @@
 package oop.course.implementations;
 
 import oop.course.entity.*;
-import oop.course.exceptions.MalformedDataException;
+
 import oop.course.interfaces.*;
 import oop.course.requests.*;
 import oop.course.responses.*;
@@ -18,7 +18,7 @@ public class GetAccount implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) throws Exception {
+    public Response act(Request request) {
         return new CheckingResponse(
                 new Customer(this.connection,
                         new HeaderToken(request.headers()).id())
