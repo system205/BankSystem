@@ -35,7 +35,7 @@ public class CreateRequestView implements IView {
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
         var number = new TerminalFormKeyValuePair("accountNumber", new TerminalInputPair(new TerminalText("Account number"), new TerminalFixedTextBox(account)));
-        var type = new TerminalFormKeyValuePair("type", new TerminalInputPair(new TerminalText("Type"), new TerminalTextBox()));
+        var type = new TerminalFormKeyValuePair("type", new TerminalInputPair(new TerminalText("Type"), new DropDownTextBox(List.of("deposit", "withdraw"))));
         var amount = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Amount"), new TerminalTextBox()));
 
         number.attachTo(contentPanel);
