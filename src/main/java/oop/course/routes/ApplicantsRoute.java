@@ -16,7 +16,7 @@ public class ApplicantsRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         String method = request.method();
         for (ProcessMethod m : processes) {
             if (m.accept(method)) {

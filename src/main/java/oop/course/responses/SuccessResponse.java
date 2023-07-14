@@ -15,7 +15,14 @@ public class SuccessResponse implements Response {
     }
 
     public SuccessResponse(Collection<? extends JSON> jsons) {
-        this("[\n" + jsons.parallelStream().map(JSON::json)
+        // TODO - to be changed
+        this("[\n" + jsons.parallelStream().map(json -> {
+                    try {
+                        return json.json();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.joining(", ")) +
                 "\n]");
     }

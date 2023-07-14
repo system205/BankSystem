@@ -16,7 +16,7 @@ public class AdminFork implements Route {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         String url = request.url().substring("/admin".length());
         for (Route r : routes) {
             if (r.accept(url)) {

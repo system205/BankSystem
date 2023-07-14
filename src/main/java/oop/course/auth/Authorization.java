@@ -26,7 +26,7 @@ public class Authorization implements Process {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         // Internal logic
         String url = new SimpleUrl().path(request);
         if (!securityConfiguration.isValidToken(request.headers(), url) && !securityConfiguration.isAccessibleUrl(url)) {

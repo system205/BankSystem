@@ -29,7 +29,7 @@ public class Server implements Runnable, Closeable {
         try {
             // process the request here
             this.process.act(new HttpRequest(in)).print(out);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Exception when receiving a request");
         } finally {
             close();

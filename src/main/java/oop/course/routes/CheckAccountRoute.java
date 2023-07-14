@@ -14,7 +14,7 @@ public class CheckAccountRoute implements Route {
 
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         final String method = request.method();
         for (ProcessMethod process : next) {
             if (process.accept(method)) {

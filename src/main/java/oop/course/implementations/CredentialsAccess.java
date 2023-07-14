@@ -16,7 +16,7 @@ public class CredentialsAccess implements Process {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         if (this.check.ok(new SimpleCredentials(
                 new JsonForm(request.body())
         ))) {

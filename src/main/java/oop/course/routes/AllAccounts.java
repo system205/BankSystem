@@ -20,7 +20,7 @@ public class AllAccounts implements Route {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         log.debug("Start retrieving all accounts");
         return new SuccessResponse(
                 new Customer(

@@ -2,6 +2,7 @@ package oop.course.auth;
 
 import oop.course.auth.interfaces.SecurityConfiguration;
 import oop.course.entity.Customer;
+import oop.course.exceptions.AuthorizationException;
 import oop.course.implementations.HeaderToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class AuthSecurityConfiguration implements SecurityConfiguration {
         final String userId;
         try {
             userId = new HeaderToken(headers).id();
-        } catch (RuntimeException e) {
+        } catch (AuthorizationException e) {
             logger.error("Error appeared in HeaderToken class");
             return false;
         }

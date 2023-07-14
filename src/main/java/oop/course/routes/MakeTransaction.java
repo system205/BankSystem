@@ -19,7 +19,7 @@ public class MakeTransaction implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         try {
             Transaction transaction = new Customer(this.connection,

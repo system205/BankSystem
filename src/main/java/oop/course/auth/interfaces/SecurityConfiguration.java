@@ -5,5 +5,5 @@ import java.util.Collection;
 public interface SecurityConfiguration {
     boolean isAccessibleUrl(String url);
 
-    boolean isValidToken(Collection<String> headers, String url);
+    boolean isValidToken(Collection<String> headers, String url) throws Exception;
 }

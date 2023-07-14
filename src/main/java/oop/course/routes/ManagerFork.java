@@ -15,7 +15,7 @@ public class ManagerFork implements Route {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         String url = request.url().substring("/manager".length());
         log.debug("Forking from manager with url: {}", url);
         for (Route r : routes) {

@@ -19,7 +19,7 @@ public class ListRequests implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) throws MalformedDataException {
+    public Response act(Request request) throws Exception {
         log.debug("Call manager to list requests");
         return new SuccessResponse(
                 new Manager(
