@@ -120,7 +120,7 @@ public class Client {
 
             String requests = """
                     GET /manager/requests HTTP/1.1
-                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyIiwiaWF0IjoxNjg5MzUyMjE0LCJleHAiOjE2ODk0Mzg2MTR9.sQyiIuCoeICICD7UT0yaLkzaDDQPG3nNVNp4eIDv81A
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyIiwiaWF0IjoxNjg5MzU1MzI2LCJleHAiOjE2ODk0NDE3MjZ9.v7pYpluQeEPylMVR4zzfJzXT6NcOm8aU7m04ejqCZ2o
                                         
                     EOF""";
             String approve = """
@@ -223,7 +223,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = autopayments;
+            final String request = requests;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

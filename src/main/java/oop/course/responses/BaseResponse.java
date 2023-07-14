@@ -32,7 +32,7 @@ public class BaseResponse implements Response {
     }
 
     @Override
-    public void print(PrintWriter out) throws IOException {
+    public void print(PrintWriter out) {
         StringBuilder sb = new StringBuilder();
         sb.append("HTTP/1.1 ");
         sb.append(statusCode);

@@ -22,6 +22,9 @@ public class SuccessResponse implements Response {
 
     @Override
     public void print(PrintWriter out) {
-        out.println(this.body);
+        new BaseResponse(
+                200, "OK",
+                Map.ofEntries(Map.entry("Content-Type", "application/json")), this.body
+        ).print(out);
     }
 }
