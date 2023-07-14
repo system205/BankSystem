@@ -9,8 +9,6 @@ import java.time.*;
 import java.util.*;
 
 public interface Account extends JSON {
-    long balance();
-
     Transaction transfer(String accountNumber, BigDecimal amount);
 
     void save(String customerId);
