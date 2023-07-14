@@ -1,8 +1,10 @@
 package oop.course;
 
 import oop.course.auth.*;
+import oop.course.entity.*;
 import oop.course.implementations.*;
 import oop.course.routes.*;
+import oop.course.routes.methods.*;
 import oop.course.server.*;
 import oop.course.storage.*;
 import oop.course.storage.migrations.*;
@@ -33,6 +35,10 @@ public class Main {
                 new MigrationDirectory("migrations")
                         .scan()
         ).init();
+
+        // Resume autopayments
+        new Admin(connection).payments().forEach(AutoPayment::pay);
+
         // Processes
         logger.debug("Start creating processes");
         final Authorization authorization = new Authorization(
@@ -40,7 +46,6 @@ public class Main {
                         new SimpleUrl(),
                         new MainRoute(),
                         new LoginRoute(
-                                connection,
                                 new TokenReturn(
                                         "mySecretKey",
                                         24L * 60 * 60 * 1000,
@@ -61,7 +66,23 @@ public class Main {
                                 ),
                                 new PutAccount(
                                         connection
+                                ),
+                                new DeleteAccount(
+                                        connection
                                 )
+                        ),
+                        new TransactionsRoute( // /transactions
+                                new GetTransactions(
+                                        connection
+                                )
+                        ),
+                        new StatementRoute( // /stats
+                                connection
+                        ),
+                        new AutoPaymentRoute( // /autopayments
+                                new ListAutoPayments(connection),
+                                new PostAutoPayment(connection),
+                                new DeleteAutoPayment(connection)
                         ),
                         new AllAccounts(connection),
                         new ManagerFork( // /manager

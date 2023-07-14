@@ -183,7 +183,47 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = requests;
+            String transactions = """
+                    GET /transactions HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODcyODcxNCwiZXhwIjoxNjg4ODE1MTE0fQ.X6Ce7oGHrz_bWNAeXsE2SOuQrwae0XHwJHe8Jpv2wsI
+                                        
+                    {
+                    "accountNumber" : "8581256061",
+                    }               
+                    EOF""";
+            String statement = """
+                    GET /stats HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODcyODcxNCwiZXhwIjoxNjg4ODE1MTE0fQ.X6Ce7oGHrz_bWNAeXsE2SOuQrwae0XHwJHe8Jpv2wsI
+                                        
+                    {
+                    "accountNumber" : "8581256061",
+                    "startDate" : "2021-01-01",
+                    "endDate" : "2023-09-07",
+                    }               
+                    EOF""";
+            String deactivate = """
+                    DELETE /account HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODgyMTE3OCwiZXhwIjoxNjg4OTA3NTc4fQ.PSUnK5JpApbph2uP68vG1zQ7aV-qpCP5XxKs8PdbzYc
+                                        
+                    {
+                    "accountNumber" : "8821865334",
+                    }               
+                    EOF""";
+            String autopayments = """
+                    POST /autopayments HTTP/1.1
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbjMiLCJpYXQiOjE2ODg5MDY5MTgsImV4cCI6MTY4ODk5MzMxOH0.JDAc8wQtdjl_Qm6zCxal7Kri4BiS3E2DKGDOqJ2q9V4                    
+                                        
+                    {
+                    "period" : "1",
+                    "senderNumber": "8907115031",
+                    "receiverNumber": "8907066715",
+                    "amount" : "1",
+                    "startDate" : "2023-07-9",
+                    "paymentId" : "3"
+                    }               
+                    EOF""";
+
+            final String request = autopayments;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

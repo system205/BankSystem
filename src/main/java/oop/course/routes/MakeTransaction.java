@@ -27,7 +27,7 @@ public class MakeTransaction implements ProcessMethod {
                     .account(form.stringField("senderAccount"))
                     .transfer(form.stringField("receiverAccount"),
                             form.bigDecimalField("amount"));
-            return new SuccessResponse(transaction.info());
+            return new SuccessResponse(transaction.json());
         } catch (IllegalStateException e) {
             return new BadRequestResponse("Not enough money on account to make transaction");
         }

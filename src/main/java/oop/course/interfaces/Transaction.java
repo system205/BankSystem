@@ -1,5 +1,9 @@
 package oop.course.interfaces;
 
-public interface Transaction {
-    String info();
+import oop.course.tools.*;
+
+import java.math.*;
+
+public interface Transaction extends JSON {
+    BigDecimal balanceChange();
 }

@@ -31,4 +31,21 @@ public class Admin {
             throw new RuntimeException(e);
         }
     }
+
+    public List<AutoPayment> payments() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT id FROM autopayments;"
+        )) {
+            ResultSet result = statement.executeQuery();
+            List<AutoPayment> payments = new LinkedList<>();
+            while (result.next()) {
+                payments.add(new AutoPayment(result.getLong(1), this.connection));
+            }
+            log.info("Found {} autopayments", payments.size());
+            return payments;
+        } catch (SQLException e) {
+            log.error("Error when retrieving offers from a database", e);
+            throw new RuntimeException(e);
+        }
+    }
 }
