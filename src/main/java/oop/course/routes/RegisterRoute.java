@@ -22,18 +22,15 @@ public class RegisterRoute implements Route {
     }
 
     @Override
-    public Response act(Request request)  {
+    public Response act(Request request) {
         // provide all the necessary information to register new personal account
         // email name surname password must be provided
 
         Form form = new JsonForm(request.body());
-        try {
-            new Customer(this.connection, form.stringField("email"))
-                    .save(form);
-        } catch (IllegalStateException e) {
-            log.error("User with email: " + form.stringField("email") + " already exists");
-            return new ConflictResponse("User with email: " + form.stringField("email") + " already exists");
-        }
+
+        new Customer(this.connection, form.stringField("email"))
+                .save(form);
+
         return new CreatedResponse("The registration was successful");
     }
 

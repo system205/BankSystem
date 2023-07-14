@@ -3,6 +3,7 @@ package oop.course.entity;
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
 
+import oop.course.exceptions.ConflictException;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
@@ -33,7 +34,7 @@ public class Customer {
 
     public void save(Form details) {
         if (this.exists()) {
-            throw new IllegalStateException("Email is already presented");
+            throw new ConflictException("Email is already presented");
         }
         try (PreparedStatement statement = this.connection
                 .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)");
