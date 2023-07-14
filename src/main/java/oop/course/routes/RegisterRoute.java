@@ -31,8 +31,8 @@ public class RegisterRoute implements Route {
             new Customer(this.connection, form.stringField("email"))
                     .save(form);
         } catch (IllegalStateException e) {
-            log.error("User with email: " + form.stringField("email") + "already exists");
-            return new ConflictResponse("User with email: " + form.stringField("email") + "already exists");
+            log.error("User with email: " + form.stringField("email") + " already exists");
+            return new ConflictResponse("User with email: " + form.stringField("email") + " already exists");
         }
         return new CreatedResponse("The registration was successful");
     }

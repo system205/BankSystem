@@ -32,6 +32,26 @@ public class Client {
                     }
                     EOF""";
 
+            String registerManager = """
+                    POST /register HTTP/1.1
+
+                    {
+                      "email": "manager",
+                      "name": "manager",
+                      "surname": "manager",
+                      "password": "manager"
+                    }
+                    EOF""";
+
+            String loginManager = """
+                    POST /login HTTP/1.1
+
+                    {
+                      "email": "manager",
+                      "password": "manager"
+                    }
+                    EOF""";
+
             String login = """
                     POST /login HTTP/1.1
 
@@ -40,6 +60,8 @@ public class Client {
                       "password": "123"
                     }
                     EOF""";
+
+            String managerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyIiwiaWF0IjoxNjg5MzUyMjE0LCJleHAiOjE2ODk0Mzg2MTR9.sQyiIuCoeICICD7UT0yaLkzaDDQPG3nNVNp4eIDv81A";
 
             String loginWrongPassword = """
                     POST /login HTTP/1.1
@@ -98,7 +120,7 @@ public class Client {
 
             String requests = """
                     GET /manager/requests HTTP/1.1
-                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODQ5MjcyOSwiZXhwIjoxNjg4NTc5MTI5fQ.UEJUjO_YYfvSZcVemm7KlxWTVwONZbVFfzCJw_h0o60
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyIiwiaWF0IjoxNjg5MzUyMjE0LCJleHAiOjE2ODk0Mzg2MTR9.sQyiIuCoeICICD7UT0yaLkzaDDQPG3nNVNp4eIDv81A
                                         
                     EOF""";
             String approve = """
@@ -161,7 +183,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = loginWrongPassword;
+            final String request = requests;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

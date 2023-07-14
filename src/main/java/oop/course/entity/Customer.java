@@ -32,7 +32,7 @@ public class Customer {
     }
 
     public void save(Form details) throws IllegalStateException, MalformedDataException {
-        if (!this.exists()) {
+        if (this.exists()) {
             throw new IllegalStateException("Email is already presented");
         }
         try (PreparedStatement statement = this.connection

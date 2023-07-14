@@ -33,68 +33,63 @@ public class Main {
                 new MigrationDirectory("migrations")
                         .scan()
         ).init();
-
         // Processes
         logger.debug("Start creating processes");
         final Authorization authorization = new Authorization(
-                Optional.of(
-                        new Fork(
-                                new SimpleUrl(),
-                                new MainRoute(),
-                                new LoginRoute(
-                                        connection,
-                                        new TokenReturn(
-                                                "mySecretKey",
-                                                24L * 60 * 60 * 1000,
-                                                connection
-                                        )
-                                ),
-                                new RegisterRoute(
+                new Fork(
+                        new SimpleUrl(),
+                        new MainRoute(),
+                        new LoginRoute(
+                                connection,
+                                new TokenReturn(
+                                        "mySecretKey",
+                                        24L * 60 * 60 * 1000,
+                                        connection
+                                )
+                        ),
+                        new RegisterRoute(
+                                connection
+                        ),
+                        new TransferRoute(
+                                new MakeTransaction(
+                                        connection
+                                )
+                        ),
+                        new CheckAccountRoute(
+                                new GetAccount(
                                         connection
                                 ),
-                                new TransferRoute(
-                                        new MakeTransaction(
-                                                connection
-                                        )
-                                ),
-                                new CheckAccountRoute(
-                                        new GetAccount(
-                                                connection
-                                        ),
-                                        new PutAccount(
-                                                connection
-                                        )
-                                ),
-                                new AllAccounts(connection),
-                                new ManagerFork( // /manager
-                                        new CustomerRequestsRoute(
-                                                new ListRequests(connection),
-                                                new PostRequests(connection)
-                                        )
-                                ),
-                                new RequestsRoute(
-                                        new GetRequests(connection),
-                                        new PutRequests(connection)
-                                ),
-                                new JobRoute(
-                                        new PutOffer(connection)
-                                ),
-                                new AdminFork( // /admin
-                                        new ApplicantsRoute( // / offers
-                                                new ListApplicants(connection),
-                                                new PostOffer(connection)
-                                        )
-                                ),
-                                new NotFoundRoute()
-                        )
-                ),
-                new AuthSecurityConfiguration(
-                        connection,
-                        new RolesConfiguration(
-                                Map.ofEntries(
-                                        entry("/login", List.of("customer", "admin")),
-                                        entry("/admin", List.of("admin"))
+                                new PutAccount(
+                                        connection
                                 )
+                        ),
+                        new AllAccounts(connection),
+                        new ManagerFork( // /manager
+                                new CustomerRequestsRoute(
+                                        new ListRequests(connection),
+                                        new PostRequests(connection)
+                                )
+                        ),
+                        new RequestsRoute(
+                                new GetRequests(connection),
+                                new PutRequests(connection)
+                        ),
+                        new JobRoute(
+                                new PutOffer(connection)
+                        ),
+                        new AdminFork( // /admin
+                                new ApplicantsRoute( // / offers
+                                        new ListApplicants(connection),
+                                        new PostOffer(connection)
+                                )
+                        ),
+                        new NotFoundRoute()
+                ),
+                connection,
+                new RolesConfiguration(
+                        Map.ofEntries(
+                                entry("/manager", List.of("manager", "admin")),
+                                entry("/admin", List.of("admin"))
                         )
                 )
         );
