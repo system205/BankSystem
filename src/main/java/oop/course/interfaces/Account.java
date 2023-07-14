@@ -11,9 +11,9 @@ public interface Account extends JSON {
 
     Transaction transfer(String accountNumber, BigDecimal amount) throws Exception;
 
-    void save(String customerId);
+    void save(String customerId) throws Exception;
 
-    CustomerRequest attachRequest(String type, BigDecimal amount);
+    CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception;
 
     Collection<CustomerRequest> requests();
 

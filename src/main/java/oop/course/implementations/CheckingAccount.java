@@ -2,7 +2,7 @@ package oop.course.implementations;
 
 import oop.course.entity.*;
 import oop.course.exceptions.AccountException;
-import oop.course.exceptions.NotExistsException;
+import oop.course.exceptions.ConflictException;
 import oop.course.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class CheckingAccount implements Account {
                 throw new AccountException("The account with number: " + accountNumber + " was not found");
             }
             final BigDecimal balance = result.getBigDecimal(1);
-            if (balance.compareTo(amount) < 0){
+            if (balance.compareTo(amount) < 0) {
                 throw new AccountException("Not enough money to perform a transaction");
             }
             transactionStatement.setString(1, this.number);
@@ -123,19 +123,37 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public void save(String customerEmail) {
+    public void save(String customerEmail) throws Exception {
+        // TODO - could be simplified
         try (PreparedStatement accountStatement = this.connection.prepareStatement(
                 "INSERT INTO checking_account (customer_id, bank_name, account_number) VALUES (?, ?, ?)");
+             PreparedStatement accountExistsStatement = this.connection.prepareStatement(
+                     "SELECT 1 FROM checking_account WHERE account_id = ?"
+             );
              PreparedStatement customerStatement = this.connection.prepareStatement(
-                     "SELECT id FROM customer WHERE email=?")
+                     "SELECT id FROM customer WHERE email=?");
+             PreparedStatement customerAccountsAmountStatement = this.connection.prepareStatement(
+                     "SELECT COUNT(*) FROM checking_account WHERE account_id = ?"
+             )
         ) {
             // Identify customer in DB
             customerStatement.setString(1, customerEmail);
             ResultSet result = customerStatement.executeQuery();
-            if (!result.next())
-                throw new RuntimeException("Customer with the email: " + customerEmail + " was not found");
+            if (!result.next()) {
+                throw new AccountException("Customer with the email: " + customerEmail + " was not found");
+            }
+            ResultSet accountExistsResult = accountExistsStatement.executeQuery();
+            if (accountExistsResult.next()) {
+                log.debug("Account with number: " + this.number + " is already saved in DB");
+                return;
+            }
+            ResultSet customerAccountsAmountResult = customerAccountsAmountStatement.executeQuery();
+            customerAccountsAmountResult.next();
+            final int numberOfAccounts = customerAccountsAmountResult.getInt(1);
+            if (numberOfAccounts == 5) {
+                throw new ConflictException("Customer can't have more than 5 accounts");
+            }
             final long id = result.getLong(1);
-
             // Save new checking account
             accountStatement.setLong(1, id);
             accountStatement.setString(2, "AKG");
@@ -153,13 +171,13 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public CustomerRequest attachRequest(String type, BigDecimal amount) {
+    public CustomerRequest attachRequest(String type, BigDecimal amount) throws AccountException {
         String sql = "INSERT INTO requests (account_number, amount, type, status) VALUES (?, ?, ?, 'pending') RETURNING id";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             statement.setBigDecimal(2, amount);
             if (!(type.equals("withdraw") || type.equals("deposit"))) {
-                throw new RuntimeException("Bad request. Type should be withdraw or deposit");
+                throw new AccountException("Bad request. Type should be withdraw or deposit");
             }
             statement.setString(3, type);
             ResultSet result = statement.executeQuery();
