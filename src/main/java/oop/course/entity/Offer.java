@@ -80,7 +80,7 @@ public class Offer implements JSON {
         }
     }
 
-    private static class Details {
+    private static class Details implements JSON {
         private final String email;
         private final String status;
         private final LocalDateTime timestamp;
