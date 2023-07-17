@@ -5,16 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Client {
-    private GUI clientGui;
-    private ServerBridge serverBridge;
+    private final GUI clientGui;
+    private final ServerBridge serverBridge;
 
-    public Client(GUIFactory guiFactory, ServerBridgeFactory serverFactory) {
+    public Client(GUIFactory guiFactory, ServerBridgeFactory serverFactory) throws RuntimeException {
         try {
             clientGui = guiFactory.bestGUIImplementation();
             serverBridge = serverFactory.bestServerImplementation();
         } catch (IOException e) {
-            System.err.println("Unable to create GUI");
-            System.exit(-1);
+            throw new RuntimeException("Unable to create GUI");
         }
     }
 
