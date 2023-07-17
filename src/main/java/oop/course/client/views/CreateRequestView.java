@@ -19,15 +19,17 @@ import java.util.function.Function;
 
 public class CreateRequestView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
     private final String account;
 
-    public CreateRequestView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public CreateRequestView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                              String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
+        this.onExit = onExit;
         account = accountNumber;
     }
 
@@ -56,7 +58,7 @@ public class CreateRequestView implements IView {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully created a request",
                         MessageDialogButton.OK);
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to create a request",
                         MessageDialogButton.Close);
@@ -65,7 +67,7 @@ public class CreateRequestView implements IView {
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

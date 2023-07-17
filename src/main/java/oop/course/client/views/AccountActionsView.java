@@ -18,16 +18,18 @@ import java.util.function.Function;
 
 public class AccountActionsView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
     private final String account;
 
-    public AccountActionsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public AccountActionsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                               String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
         account = accountNumber;
+        this.onExit = onExit;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class AccountActionsView implements IView {
 
         new TerminalButton("Money transfer", () -> {
             window.close();
-            onChangeView.accept(new TransferView(onChangeView, requestHandler, token, account));
+            onChangeView.accept(new TransferView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
         var accountNumber = new TerminalFormKeyValuePair("accountNumber", new TerminalInputPair(new TerminalText(
@@ -47,22 +49,22 @@ public class AccountActionsView implements IView {
 
         new TerminalButton("Request a statement", () -> {
             window.close();
-            onChangeView.accept(new StatementInputView(onChangeView, requestHandler, token, account));
+            onChangeView.accept(new StatementInputView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
         new TerminalButton("View transaction history", () -> {
             window.close();
-            onChangeView.accept(new TransactionsView(onChangeView, requestHandler, token, account));
+            onChangeView.accept(new TransactionsView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
         new TerminalButton("Create a request", () -> {
             window.close();
-            onChangeView.accept(new CreateRequestView(onChangeView, requestHandler, token, account));
+            onChangeView.accept(new CreateRequestView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
         new TerminalButton("Set up an autopayment", () -> {
             window.close();
-            onChangeView.accept(new AutoPaymentView(onChangeView, requestHandler, token, account));
+            onChangeView.accept(new AutoPaymentView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
         new TerminalButton("Deactivate an account", () -> {
@@ -72,7 +74,7 @@ public class AccountActionsView implements IView {
                 MessageDialog.showMessageDialog(gui, "Success", "Account successfully deactivated",
                         MessageDialogButton.Continue);
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Account could not be deactivated",
                         MessageDialogButton.Abort);
@@ -81,7 +83,7 @@ public class AccountActionsView implements IView {
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

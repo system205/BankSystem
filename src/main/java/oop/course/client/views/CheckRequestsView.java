@@ -20,13 +20,15 @@ import java.util.function.Function;
 
 public class CheckRequestsView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
 
-    public CheckRequestsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public CheckRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                              String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
+        this.onExit = onExit;
         this.token = token;
     }
 
@@ -46,7 +48,7 @@ public class CheckRequestsView implements IView {
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

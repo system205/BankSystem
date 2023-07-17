@@ -18,10 +18,12 @@ import java.util.function.Function;
 
 public class LoginView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
 
-    public LoginView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+    public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler) {
         onChangeView = changeViewHandler;
+        this.onExit = onExit;
         this.requestHandler = requestHandler;
     }
 
@@ -51,7 +53,7 @@ public class LoginView implements IView {
                         MessageDialogButton.Close);
             } else if (resp.isSuccess()) {
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token()));
+                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, resp.token()));
             } else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
             }
@@ -59,12 +61,12 @@ public class LoginView implements IView {
 
         new TerminalButton("Register page", () -> {
             window.close();
-            onChangeView.accept(new RegisterView(onChangeView, requestHandler));
+            onChangeView.accept(new RegisterView(onChangeView, onExit, requestHandler));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            onChangeView.accept(null);
+            onExit.run();
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

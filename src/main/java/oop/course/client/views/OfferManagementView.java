@@ -19,13 +19,15 @@ import java.util.function.Function;
 
 public class OfferManagementView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
 
-    public OfferManagementView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public OfferManagementView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                                String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
+        this.onExit = onExit;
         this.token = token;
     }
 
@@ -43,13 +45,13 @@ public class OfferManagementView implements IView {
             MessageDialog.showMessageDialog(gui, "Operation failed", "You do not have access or the server did not " +
                     "respond", MessageDialogButton.Abort);
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
             return;
         }
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

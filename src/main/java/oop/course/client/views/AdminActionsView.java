@@ -16,14 +16,16 @@ import java.util.function.Function;
 public class AdminActionsView implements IView {
 
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
 
-    public AdminActionsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public AdminActionsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                             String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
+        this.onExit = onExit;
     }
 
     @Override
@@ -33,17 +35,17 @@ public class AdminActionsView implements IView {
 
         new TerminalButton("Manage offers", () -> {
             window.close();
-            onChangeView.accept(new OfferManagementView(onChangeView, requestHandler, token));
+            onChangeView.accept(new OfferManagementView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         new TerminalButton("View requests", () -> {
             window.close();
-            onChangeView.accept(new AdminRequestsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

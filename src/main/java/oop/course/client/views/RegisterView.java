@@ -18,10 +18,12 @@ import java.util.function.Function;
 
 public class RegisterView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
 
-    public RegisterView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+    public RegisterView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler) {
         onChangeView = changeViewHandler;
+        this.onExit = onExit;
         this.requestHandler = requestHandler;
     }
 
@@ -62,7 +64,7 @@ public class RegisterView implements IView {
                 MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in",
                         MessageDialogButton.OK);
                 window.close();
-                onChangeView.accept(new LoginView(onChangeView, requestHandler));
+                onChangeView.accept(new LoginView(onChangeView, onExit, requestHandler));
             } else {
                 MessageDialog.showMessageDialog(gui, "Result", "Something went terribly wrong!",
                         MessageDialogButton.Abort);
@@ -70,12 +72,12 @@ public class RegisterView implements IView {
         }).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
             window.close();
-            onChangeView.accept(new LoginView(onChangeView, requestHandler));
+            onChangeView.accept(new LoginView(onChangeView, onExit, requestHandler));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            onChangeView.accept(null);
+            onExit.run();
         });
 
         window.setContent(contentPanel);

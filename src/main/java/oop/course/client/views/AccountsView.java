@@ -23,14 +23,16 @@ import java.util.function.Function;
 
 public class AccountsView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
 
-    public AccountsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public AccountsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                         String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
+        this.onExit = onExit;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class AccountsView implements IView {
             var t = "Account number: " + account.accountNumber() + " " + "Balance: " + account.balance();
             new TerminalModernButton(t, () -> {
                 window.close();
-                onChangeView.accept(new AccountActionsView(onChangeView, requestHandler, token,
+                onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token,
                         account.accountNumber()));
             }).attachTo(contentPanel);
         }
@@ -59,7 +61,7 @@ public class AccountsView implements IView {
                         "Successfully created an account with number " + newAccountResponse.accountNumber() + " with " +
                                 "the starting balance " + newAccountResponse.accountBalance());
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred",
                         MessageDialogButton.Close);
@@ -68,7 +70,7 @@ public class AccountsView implements IView {
 
         new TerminalButton("Check my requests", () -> {
             window.close();
-            onChangeView.accept(new CheckRequestsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new CheckRequestsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         new TerminalButton("Request a manager status", () -> {
@@ -85,17 +87,17 @@ public class AccountsView implements IView {
 
         new TerminalButton("Admin actions", () -> {
             window.close();
-            onChangeView.accept(new AdminActionsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AdminActionsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         new TerminalButton("Logout", () -> {
             window.close();
-            onChangeView.accept(new LoginView(onChangeView, requestHandler));
+            onChangeView.accept(new LoginView(onChangeView, onExit, requestHandler));
         }).attachTo(contentPanel);
 
         new TerminalButton("Logout & exit", () -> {
             window.close();
-            onChangeView.accept(null);
+            onExit.run();
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

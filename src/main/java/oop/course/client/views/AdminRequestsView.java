@@ -22,15 +22,17 @@ import java.util.function.Function;
 
 public class AdminRequestsView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
     private final TerminalWindow window;
 
-    public AdminRequestsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public AdminRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                              String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
+        this.onExit = onExit;
         window = new TerminalWindow("Account selection");
     }
 
@@ -51,7 +53,7 @@ public class AdminRequestsView implements IView {
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AdminActionsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AdminActionsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);
@@ -74,7 +76,7 @@ public class AdminRequestsView implements IView {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully approved request",
                         MessageDialogButton.OK);
                 window.close();
-                onChangeView.accept(new AdminRequestsView(onChangeView, requestHandler, token));
+                onChangeView.accept(new AdminRequestsView(onChangeView, onExit, requestHandler, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to approve the request",
                         MessageDialogButton.Close);
@@ -91,7 +93,7 @@ public class AdminRequestsView implements IView {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully denied request",
                         MessageDialogButton.OK);
                 window.close();
-                onChangeView.accept(new AdminRequestsView(onChangeView, requestHandler, token));
+                onChangeView.accept(new AdminRequestsView(onChangeView, onExit, requestHandler, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to deny the request",
                         MessageDialogButton.Close);

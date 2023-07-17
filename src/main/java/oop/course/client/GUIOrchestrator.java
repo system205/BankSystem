@@ -18,7 +18,7 @@ public class GUIOrchestrator {
     private boolean exitCondition;
 
     public GUIOrchestrator(Screen screen, Function<Request, BasicResponse> requestHandler) {
-        currentView = new LoginView(this::changeView, requestHandler);
+        currentView = new LoginView(this::changeView, this::exit, requestHandler);
         changePending = true;
         textGUI = new MultiWindowTextGUI(screen);
         exitCondition = false;
@@ -40,10 +40,12 @@ public class GUIOrchestrator {
     }
 
     private void changeView(IView type) {
-        if (type == null) {
-            exitCondition = true;
-        }
         changePending = true;
         currentView = type;
+    }
+
+    private void exit()
+    {
+        exitCondition = true;
     }
 }

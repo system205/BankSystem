@@ -16,15 +16,17 @@ import java.util.function.Function;
 
 public class TransactionsView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
     private final String accountNumber;
 
-    public TransactionsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public TransactionsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                             String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
+        this.onExit = onExit;
         this.accountNumber = accountNumber;
     }
 
@@ -50,7 +52,7 @@ public class TransactionsView implements IView {
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(panel);
 
         window.setContent(panel);

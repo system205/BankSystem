@@ -13,15 +13,17 @@ import java.util.function.Function;
 
 public class AutoPaymentView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
     private final String account;
 
-    public AutoPaymentView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+    public AutoPaymentView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                            String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
+        this.onExit = onExit;
         account = accountNumber;
     }
 
@@ -53,7 +55,7 @@ public class AutoPaymentView implements IView {
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountActionsView(onChangeView, requestHandler, token, account));
+            onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);
