@@ -46,7 +46,6 @@ public class TransactionsView implements IView {
         if (!response.isSuccess()) {
             new TerminalText("Could not fetch data").attachTo(panel);
         } else {
-            //experimental raw lanterna table
             new TerminalTransactionTable(response.transactions()).attachTo(panel);
         }
 
