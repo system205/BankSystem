@@ -36,8 +36,8 @@ public class Main {
                         .scan()
         ).init();
 
-        // Resume autopayments
-        new Admin(connection).payments().forEach(AutoPayment::pay);
+
+        new Admin(connection).init();
 
         // Processes
         logger.debug("Start creating processes");
