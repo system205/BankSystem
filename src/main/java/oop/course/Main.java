@@ -15,13 +15,19 @@ import java.net.*;
 import java.sql.*;
 import java.util.*;
 
-import static java.util.Map.entry;
+import static java.util.Map.*;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
+
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(
+                        () -> logger.info("App existed {} ms", System.currentTimeMillis() - startTime)
+                )
+        );
 
         Connection connection = new Postgres(
                 new SimpleNetAddress("127.0.0.1", 5432),
