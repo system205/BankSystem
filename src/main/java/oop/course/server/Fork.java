@@ -1,6 +1,5 @@
 package oop.course.server;
 
-
 import oop.course.interfaces.Process;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
@@ -18,7 +17,7 @@ public class Fork implements Process {
 
 
     @Override
-    public Response act(Request request)  {
+    public Response act(Request request) {
         final String path = this.url.path(request);
         for (Route route : routes) {
             if (route.accept(path))

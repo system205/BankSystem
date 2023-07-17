@@ -1,7 +1,6 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
-
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
@@ -16,7 +15,7 @@ public class PutOffer implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request)  {
+    public Response act(Request request) {
         return new SuccessResponse(new Customer(
                 this.connection,
                 new HeaderToken(request.headers()).id()

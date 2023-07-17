@@ -28,8 +28,6 @@ public class MakeTransaction implements ProcessMethod {
                 .transfer(form.stringField("receiverAccount"),
                         form.bigDecimalField("amount"));
         return new SuccessResponse(transaction.json());
-
-
     }
 
     @Override

@@ -16,7 +16,7 @@ public class AdminFork implements Route {
     }
 
     @Override
-    public Response act(Request request)  {
+    public Response act(Request request) {
         String url = request.url().substring("/admin".length());
         for (Route r : routes) {
             if (r.accept(url)) {
