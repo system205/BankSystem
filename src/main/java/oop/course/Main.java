@@ -20,19 +20,14 @@ import static java.util.Map.entry;
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
-        
-        logger.debug("Create postgres connection");
+
         Connection connection = new Postgres(
                 new SimpleNetAddress("127.0.0.1", 5432),
                 new SimpleCredentials("postgres", "postgres"),
                 "bank"
         ).connect();
-        logger.debug("Turn off auto commit");
-        connection.setAutoCommit(false);
-        logger.info("The connection to database is set up");
-
 
         new Background(
                 new DatabaseStartUp(
@@ -43,7 +38,6 @@ public class Main {
                 ),
                 new Admin(connection)
         ).init();
-
 
         // Processes
         logger.debug("Start creating processes");
