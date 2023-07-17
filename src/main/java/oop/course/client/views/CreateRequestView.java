@@ -26,11 +26,11 @@ public class CreateRequestView implements IView {
 
     public CreateRequestView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                              String token, String accountNumber) {
-        onChangeView = changeViewHandler;
+        this.onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
         this.onExit = onExit;
-        account = accountNumber;
+        this.account = accountNumber;
     }
 
     @Override

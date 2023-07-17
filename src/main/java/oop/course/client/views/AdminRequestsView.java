@@ -29,11 +29,11 @@ public class AdminRequestsView implements IView {
 
     public AdminRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                              String token) {
-        onChangeView = changeViewHandler;
+        this.onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
         this.onExit = onExit;
-        window = new TerminalWindow("Account selection");
+        this.window = new TerminalWindow("Account selection");
     }
 
 
