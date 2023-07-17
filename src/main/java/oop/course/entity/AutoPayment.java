@@ -17,7 +17,11 @@ public class AutoPayment implements JSON {
     public AutoPayment(long id, Connection connection) {
         this.id = id;
         this.connection = connection;
-        this.timer = Executors.newSingleThreadScheduledExecutor();
+        this.timer = Executors.newSingleThreadScheduledExecutor(r -> {
+            Thread thread = Executors.defaultThreadFactory().newThread(r);
+            thread.setDaemon(true); // to shut down when app is closed
+            return thread;
+        });
     }
 
     public void pay() {
