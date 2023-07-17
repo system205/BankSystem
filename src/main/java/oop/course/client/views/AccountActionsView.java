@@ -25,10 +25,10 @@ public class AccountActionsView implements IView {
 
     public AccountActionsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                               String token, String accountNumber) {
-        onChangeView = changeViewHandler;
+        this.onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
-        account = accountNumber;
+        this.account = accountNumber;
         this.onExit = onExit;
     }
 

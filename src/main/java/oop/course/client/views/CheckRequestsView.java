@@ -26,7 +26,7 @@ public class CheckRequestsView implements IView {
 
     public CheckRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                              String token) {
-        onChangeView = changeViewHandler;
+        this.onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.onExit = onExit;
         this.token = token;
@@ -41,7 +41,8 @@ public class CheckRequestsView implements IView {
         var response = new GetRequestsResponse(requestHandler.apply(request));
 
         if (response.isSuccess()) {
-            new TerminalBankRequestTable(response.requests(), (List<String> row) -> {}).attachTo(contentPanel);
+            new TerminalBankRequestTable(response.requests(), (List<String> row) -> {
+            }).attachTo(contentPanel);
         } else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
