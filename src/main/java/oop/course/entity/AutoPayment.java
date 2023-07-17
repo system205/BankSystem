@@ -1,12 +1,10 @@
 package oop.course.entity;
 
 import oop.course.implementations.*;
-import oop.course.interfaces.*;
 import oop.course.tools.*;
 
 import java.math.*;
 import java.sql.*;
-import java.sql.Date;
 import java.time.*;
 import java.time.temporal.*;
 import java.util.concurrent.*;
@@ -30,7 +28,8 @@ public class AutoPayment implements JSON {
                     if (!active())
                         task[0].cancel(true);
 
-                    details.sender.transfer(details.receiverNumber, details.amount);
+                    new CheckingAccount(details.senderNumber, this.connection)
+                            .transfer(details.receiverNumber, details.amount);
                 }, calculateInitDelay(details.startDate.toLocalDate().atStartOfDay(),
                         details.period), details.period, TimeUnit.SECONDS
         );
@@ -56,7 +55,7 @@ public class AutoPayment implements JSON {
             if (!result.next()) {
                 throw new RuntimeException("The autopayment with id " + this.id + " does not exist");
             }
-            return new PaymentDetails(new CheckingAccount(result.getString(1), this.connection),
+            return new PaymentDetails(result.getString(1),
                     result.getString(2),
                     result.getBigDecimal(3),
                     result.getDate(4),
@@ -68,22 +67,28 @@ public class AutoPayment implements JSON {
 
     @Override
     public String json() {
-        return String.format("{%n\"id\":\"%s\"%n}", this.id);
+        return String.format("{%n\"id\":\"%s\",%n%s%n}", this.id, details().json());
     }
 
-    private static class PaymentDetails {
-        private final Account sender;
+    private static class PaymentDetails implements JSON {
+        private final String senderNumber;
         private final String receiverNumber;
         private final BigDecimal amount;
         private final Date startDate;
         private final long period;
 
-        private PaymentDetails(Account sender, String receiverNumber, BigDecimal amount, Date startDate, long period) {
-            this.sender = sender;
+        private PaymentDetails(String senderNumber, String receiverNumber, BigDecimal amount, Date startDate, long period) {
+            this.senderNumber = senderNumber;
             this.receiverNumber = receiverNumber;
             this.amount = amount;
             this.startDate = startDate;
             this.period = period;
+        }
+
+        @Override
+        public String json() {
+            return String.format("\"sender\":\"%s\",%n\"receiver\":\"%s\",%n\"amount\":\"%s\",%n\"startDate\":\"%s\",%n\"period\":\"%s\"",
+                    this.senderNumber, this.receiverNumber, this.amount, this.startDate, this.period);
         }
     }
 
