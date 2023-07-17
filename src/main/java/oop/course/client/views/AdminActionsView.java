@@ -13,13 +13,14 @@ import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class AdminActionsView implements IView{
+public class AdminActionsView implements IView {
 
     private final Consumer<IView> onChangeView;
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
 
-    public AdminActionsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token) {
+    public AdminActionsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+                            String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;

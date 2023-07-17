@@ -9,8 +9,7 @@ public class HandleRequestResponse implements Response {
         this.response = response;
     }
 
-    public boolean isSuccess()
-    {
+    public boolean isSuccess() {
         return !Objects.equals(response.raw(), "");
     }
 }

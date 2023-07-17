@@ -12,6 +12,7 @@ public class ManagerRequestsRequest implements Request {
     public ManagerRequestsRequest(String token) {
         base = new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/manager/requests"), token);
     }
+
     @Override
     public void send(PrintWriter printWriter) {
         base.send(printWriter);

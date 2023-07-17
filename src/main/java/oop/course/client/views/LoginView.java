@@ -30,13 +30,13 @@ public class LoginView implements IView {
         TerminalWindow window = new TerminalWindow("BankSystem authentication");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        new TerminalText(
-                "Welcome to the BankSystem client application!\nPlease, register or login into your existing account."
-        ).attachTo(contentPanel);
+        new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your existing" +
+                " account.").attachTo(contentPanel);
 
         var email = new TerminalTextBox();
         var username = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), email));
-        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"), new TerminalPasswordBox()));
+        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
+                new TerminalPasswordBox()));
 
         var form = new TerminalForm(List.of(username, password));
 
@@ -47,13 +47,12 @@ public class LoginView implements IView {
             Request req = new LoginRequest(form);
             var resp = new LoginResponse(requestHandler.apply(req));
             if (resp.isWrongCredentials()) {
-                MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials", MessageDialogButton.Close);
-            }
-            else if (resp.isSuccess()) {
+                MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials",
+                        MessageDialogButton.Close);
+            } else if (resp.isSuccess()) {
                 window.close();
                 onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token()));
-            }
-            else {
+            } else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
             }
         }).attachTo(contentPanel);

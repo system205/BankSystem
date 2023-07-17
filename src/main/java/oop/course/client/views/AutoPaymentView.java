@@ -17,7 +17,8 @@ public class AutoPaymentView implements IView {
     private final String token;
     private final String account;
 
-    public AutoPaymentView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token, String accountNumber) {
+    public AutoPaymentView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+                           String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
@@ -29,11 +30,16 @@ public class AutoPaymentView implements IView {
         TerminalWindow window = new TerminalWindow("Auto payment");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        var sender = new TerminalFormKeyValuePair("senderNumber", new TerminalInputPair(new TerminalText("From"), new TerminalFixedTextBox(account)));
-        var receiver = new TerminalFormKeyValuePair("receiverNumber", new TerminalInputPair(new TerminalText("To"), new TerminalTextBox()));
-        var amount = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Amount"), new TerminalTextBox()));
-        var period = new TerminalFormKeyValuePair("period", new TerminalInputPair(new TerminalText("Period"), new TerminalTextBox()));
-        var paymentId = new TerminalFormKeyValuePair("paymentId", new TerminalInputPair(new TerminalText("Payment ID"), new TerminalTextBox()));
+        var sender = new TerminalFormKeyValuePair("senderNumber", new TerminalInputPair(new TerminalText("From"),
+                new TerminalImmutableTextBox(account)));
+        var receiver = new TerminalFormKeyValuePair("receiverNumber", new TerminalInputPair(new TerminalText("To"),
+                new TerminalTextBox()));
+        var amount = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Amount"),
+                new TerminalTextBox()));
+        var period = new TerminalFormKeyValuePair("period", new TerminalInputPair(new TerminalText("Period"),
+                new TerminalTextBox()));
+        var paymentId = new TerminalFormKeyValuePair("paymentId",
+                new TerminalInputPair(new TerminalText("Payment ID"), new TerminalTextBox()));
 
         sender.attachTo(contentPanel);
         receiver.attachTo(contentPanel);

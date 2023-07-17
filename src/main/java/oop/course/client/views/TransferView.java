@@ -22,7 +22,8 @@ public class TransferView implements IView {
     private final String token;
     private final String accountNumber;
 
-    public TransferView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token, String accountNumber) {
+    public TransferView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+                        String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
@@ -34,9 +35,12 @@ public class TransferView implements IView {
         TerminalWindow window = new TerminalWindow("Money transfer");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        var sender = new TerminalFormKeyValuePair("senderAccount", new TerminalInputPair(new TerminalText("Sender"), new TerminalFixedTextBox(accountNumber)));
-        var receiver = new TerminalFormKeyValuePair("receiverAccount", new TerminalInputPair(new TerminalText("Receiver"), new TerminalTextBox()));
-        var sum = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Sum"), new TerminalTextBox()));
+        var sender = new TerminalFormKeyValuePair("senderAccount", new TerminalInputPair(new TerminalText("Sender"),
+                new TerminalImmutableTextBox(accountNumber)));
+        var receiver = new TerminalFormKeyValuePair("receiverAccount", new TerminalInputPair(new TerminalText(
+                "Receiver"), new TerminalTextBox()));
+        var sum = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Sum"),
+                new TerminalTextBox()));
 
         sender.attachTo(contentPanel);
         receiver.attachTo(contentPanel);
@@ -48,12 +52,13 @@ public class TransferView implements IView {
             var req = new TransferRequest(token, form);
             var resp = new TransferResponse(requestHandler.apply(req));
             if (resp.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
+                MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.",
+                        MessageDialogButton.OK);
                 window.close();
                 onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
-            }
-            else {
-                MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.", MessageDialogButton.Close);
+            } else {
+                MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.",
+                        MessageDialogButton.Close);
             }
         }).attachTo(contentPanel);
 

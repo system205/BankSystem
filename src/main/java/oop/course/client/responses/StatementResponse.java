@@ -8,15 +8,14 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StatementResponse implements Response{
+public class StatementResponse implements Response {
     private final BasicResponse response;
 
     public StatementResponse(BasicResponse response) {
         this.response = response;
     }
 
-    public boolean isSuccess()
-    {
+    public boolean isSuccess() {
         return !Objects.equals(response.raw(), "");
     }
 

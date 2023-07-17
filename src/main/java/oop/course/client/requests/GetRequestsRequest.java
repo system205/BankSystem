@@ -12,6 +12,7 @@ public class GetRequestsRequest implements Request {
     public GetRequestsRequest(String token) {
         base = new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/requests"), token);
     }
+
     @Override
     public void send(PrintWriter printWriter) {
         base.send(printWriter);

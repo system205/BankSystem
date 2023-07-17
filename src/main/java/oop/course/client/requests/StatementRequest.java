@@ -12,9 +12,7 @@ public class StatementRequest implements Request {
     private final Request base;
 
     public StatementRequest(String token, TerminalForm form) {
-        base = new JsonRequest(
-                new AuthorizedRequest(
-                        new BasicHttpRequest(Method.GET, "/stats"), token), form.json());
+        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/stats"), token), form.json());
     }
 
     @Override

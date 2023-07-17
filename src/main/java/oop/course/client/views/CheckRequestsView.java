@@ -4,9 +4,7 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import com.googlecode.lanterna.gui2.table.Table;
-import com.googlecode.lanterna.gui2.table.TableModel;
-import oop.course.client.BankRequest;
+import oop.course.client.gui.TerminalBankRequestTable;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalText;
 import oop.course.client.gui.TerminalWindow;
@@ -25,11 +23,13 @@ public class CheckRequestsView implements IView {
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
 
-    public CheckRequestsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token) {
+    public CheckRequestsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+                             String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
     }
+
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
         TerminalWindow window = new TerminalWindow("Action selector");
@@ -39,16 +39,8 @@ public class CheckRequestsView implements IView {
         var response = new GetRequestsResponse(requestHandler.apply(request));
 
         if (response.isSuccess()) {
-            List<BankRequest> requests = response.requests();
-            var table = new Table<String>("Id", "Account Number", "Amount", "Type", "Status");
-            var tableModel = new TableModel<String>("Id", "Account Number", "Amount", "Type", "Status");
-            for (var row : requests) {
-                tableModel.addRow(row.id(), row.accountNumber(), row.amount(), row.type(), row.status());
-            }
-            table.setTableModel(tableModel);
-            table.addTo(contentPanel);
-        }
-        else {
+            new TerminalBankRequestTable(response.requests(), (List<String> row) -> {}).attachTo(contentPanel);
+        } else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
 

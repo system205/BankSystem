@@ -12,6 +12,7 @@ public class GetOffersRequest implements Request {
     public GetOffersRequest(String token) {
         base = new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/admin/offers"), token);
     }
+
     @Override
     public void send(PrintWriter printWriter) {
         base.send(printWriter);

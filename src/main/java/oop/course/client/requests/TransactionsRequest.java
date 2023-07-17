@@ -11,10 +11,10 @@ public class TransactionsRequest implements Request {
     private final Request base;
 
     public TransactionsRequest(String token, TerminalForm form) {
-        base = new JsonRequest(
-                new AuthorizedRequest(
-                        new BasicHttpRequest(Method.GET, "/transactions"), token), form.json());
+        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/transactions"), token),
+                form.json());
     }
+
     @Override
     public void send(PrintWriter printWriter) {
         base.send(printWriter);

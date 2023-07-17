@@ -11,10 +11,8 @@ public class CreateRequestRequest implements Request {
     private final Request base;
 
     public CreateRequestRequest(String token, TerminalForm form) {
-        base = new JsonRequest(new AuthorizedRequest(
-                new BasicHttpRequest(Method.PUT, "/requests"),
-                token
-        ), form.json());
+        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/requests"), token),
+                form.json());
     }
 
     @Override

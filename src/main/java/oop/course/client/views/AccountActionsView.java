@@ -22,7 +22,8 @@ public class AccountActionsView implements IView {
     private final String token;
     private final String account;
 
-    public AccountActionsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token, String accountNumber) {
+    public AccountActionsView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+                              String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
@@ -40,8 +41,8 @@ public class AccountActionsView implements IView {
             onChangeView.accept(new TransferView(onChangeView, requestHandler, token, account));
         }).attachTo(contentPanel);
 
-        var accountNumber = new TerminalFormKeyValuePair("accountNumber",
-                new TerminalInputPair(new TerminalText("Account Number"), new TerminalFixedTextBox(account)));
+        var accountNumber = new TerminalFormKeyValuePair("accountNumber", new TerminalInputPair(new TerminalText(
+                "Account Number"), new TerminalImmutableTextBox(account)));
         var accountDeactivationForm = new TerminalForm(List.of(accountNumber));
 
         new TerminalButton("Request a statement", () -> {
@@ -68,12 +69,13 @@ public class AccountActionsView implements IView {
             Request deactivateRequest = new DeactivateAccountRequest(token, accountDeactivationForm);
             var response = new DeactivateAccountResponse(requestHandler.apply(deactivateRequest));
             if (response.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Account successfully deactivated", MessageDialogButton.Continue);
+                MessageDialog.showMessageDialog(gui, "Success", "Account successfully deactivated",
+                        MessageDialogButton.Continue);
                 window.close();
                 onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
-            }
-            else {
-                MessageDialog.showMessageDialog(gui, "Failure", "Account could not be deactivated", MessageDialogButton.Abort);
+            } else {
+                MessageDialog.showMessageDialog(gui, "Failure", "Account could not be deactivated",
+                        MessageDialogButton.Abort);
             }
         }).attachTo(contentPanel);
 

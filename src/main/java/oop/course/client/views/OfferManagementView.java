@@ -22,11 +22,13 @@ public class OfferManagementView implements IView {
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
 
-    public OfferManagementView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token) {
+    public OfferManagementView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+                               String token) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
     }
+
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
         TerminalWindow window = new TerminalWindow("Account selection");
@@ -38,7 +40,8 @@ public class OfferManagementView implements IView {
         //TODO: display the offers and handle approving/denying once the backend is updated
 
         if (!response.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Operation failed", "You do not have access or the server did not respond", MessageDialogButton.Abort);
+            MessageDialog.showMessageDialog(gui, "Operation failed", "You do not have access or the server did not " +
+                    "respond", MessageDialogButton.Abort);
             window.close();
             onChangeView.accept(new AccountsView(onChangeView, requestHandler, token));
             return;

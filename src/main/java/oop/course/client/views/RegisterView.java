@@ -1,6 +1,9 @@
 package oop.course.client.views;
 
-import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Direction;
+import com.googlecode.lanterna.gui2.LinearLayout;
+import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.gui.*;
@@ -27,12 +30,16 @@ public class RegisterView implements IView {
         TerminalWindow window = new TerminalWindow("BankSystem registration");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         new TerminalText("Please enter your data for registration.").attachTo(contentPanel);
-        var email = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox()));
-        var name = new TerminalFormKeyValuePair("name", new TerminalInputPair(new TerminalText("Name"), new TerminalTextBox()));
-        var surname = new TerminalFormKeyValuePair("surname", new TerminalInputPair(new TerminalText("Surname"), new TerminalTextBox()));
+        var email = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"),
+                new TerminalTextBox()));
+        var name = new TerminalFormKeyValuePair("name", new TerminalInputPair(new TerminalText("Name"),
+                new TerminalTextBox()));
+        var surname = new TerminalFormKeyValuePair("surname", new TerminalInputPair(new TerminalText("Surname"),
+                new TerminalTextBox()));
         var passwordField1 = new TerminalPasswordBox();
         var passwordField2 = new TerminalPasswordBox();
-        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"), passwordField1));
+        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
+                passwordField1));
         var password2 = new TerminalInputPair(new TerminalText("Repeat password"), passwordField2);
 
         var form = new TerminalForm(List.of(email, name, surname, password));
@@ -52,15 +59,15 @@ public class RegisterView implements IView {
             Request req = new RegisterRequest(form);
             var resp = new RegisterResponse(requestHandler.apply(req));
             if (resp.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in", MessageDialogButton.OK);
+                MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in",
+                        MessageDialogButton.OK);
                 window.close();
                 onChangeView.accept(new LoginView(onChangeView, requestHandler));
+            } else {
+                MessageDialog.showMessageDialog(gui, "Result", "Something went terribly wrong!",
+                        MessageDialogButton.Abort);
             }
-            else {
-                MessageDialog.showMessageDialog(gui, "Result", "Something went terribly wrong!", MessageDialogButton.Abort);
-            }
-        }
-        ).attachTo(contentPanel);
+        }).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
             window.close();
             onChangeView.accept(new LoginView(onChangeView, requestHandler));

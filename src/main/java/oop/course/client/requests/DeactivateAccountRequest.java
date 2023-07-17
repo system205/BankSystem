@@ -7,14 +7,12 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class DeactivateAccountRequest implements Request{
+public class DeactivateAccountRequest implements Request {
     private final Request base;
 
     public DeactivateAccountRequest(String token, TerminalForm terminalForm) {
-        base = new JsonRequest(new AuthorizedRequest(
-                new BasicHttpRequest(Method.DELETE, "/account"),
-                token
-        ), terminalForm.json());
+        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.DELETE, "/account"), token),
+                terminalForm.json());
     }
 
     @Override

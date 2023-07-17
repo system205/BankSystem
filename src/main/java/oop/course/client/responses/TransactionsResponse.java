@@ -15,18 +15,17 @@ public class TransactionsResponse implements Response {
         this.response = response;
     }
 
-    public boolean isSuccess()
-    {
+    public boolean isSuccess() {
         return !Objects.equals(response.raw(), "");
     }
 
     public List<Transaction> transactions() {
         List<Transaction> transactions = new ArrayList<>();
-
-        Pattern patternType = Pattern.compile("\"" + "type" + "\" *: *\"(.*?)\"");
-        Pattern patternFrom = Pattern.compile("\"" + "from" + "\" *: *\"(.*?)\"");
-        Pattern patternAmount = Pattern.compile("\"" + "amount" + "\" *: *\"(.*?)\"");
-        Pattern patternDate = Pattern.compile("\"" + "date" + "\" *: *\"(.*?)\"");
+        var basicPattern = "\" *: *\"(.*?)\"";
+        Pattern patternType = Pattern.compile("\"" + "type" + basicPattern);
+        Pattern patternFrom = Pattern.compile("\"" + "from" + basicPattern);
+        Pattern patternAmount = Pattern.compile("\"" + "amount" + basicPattern);
+        Pattern patternDate = Pattern.compile("\"" + "date" + basicPattern);
         Pattern main = Pattern.compile("\\{(.|\\n)*?\\}");
 
         Matcher matcher = main.matcher(response.raw());

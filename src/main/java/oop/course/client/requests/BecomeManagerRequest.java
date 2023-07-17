@@ -6,14 +6,11 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class BecomeManagerRequest implements Request{
+public class BecomeManagerRequest implements Request {
     private final Request base;
 
     public BecomeManagerRequest(String token) {
-        base = new AuthorizedRequest(
-                new BasicHttpRequest(Method.PUT, "/job"),
-                token
-        );
+        base = new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/job"), token);
     }
 
     @Override

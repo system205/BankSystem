@@ -3,11 +3,12 @@ package oop.course.client.gui;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Panel;
 
-public class TerminalButton implements TerminalGUIElement {
+public class TerminalModernButton implements TerminalGUIElement {
     private final Button button;
 
-    public TerminalButton(String text, Runnable action) {
+    public TerminalModernButton(String text, Runnable action) {
         button = new Button(text, action);
+        button.setRenderer(new Button.FlatButtonRenderer());
     }
 
     @Override

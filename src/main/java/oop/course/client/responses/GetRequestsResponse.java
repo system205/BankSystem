@@ -13,8 +13,7 @@ public class GetRequestsResponse implements Response {
         this.response = response;
     }
 
-    public boolean isSuccess()
-    {
+    public boolean isSuccess() {
         return !Objects.equals(response.raw(), "");
     }
 
@@ -26,7 +25,7 @@ public class GetRequestsResponse implements Response {
         var statuses = response.values("status");
         List<BankRequest> res = new ArrayList<>();
         for (int i = 0; i < ids.size(); i++) {
-            res.add(new BankRequest(ids.get(i), numbers.get(i), amounts.get(i),types.get(i), statuses.get(i)));
+            res.add(new BankRequest(ids.get(i), numbers.get(i), amounts.get(i), types.get(i), statuses.get(i)));
         }
         return res;
     }

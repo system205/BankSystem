@@ -11,6 +11,7 @@ public class DropDownTextBox implements TerminalInputBox {
     public DropDownTextBox(List<String> options) {
         comboBox = new ComboBox<>(options);
     }
+
     @Override
     public void attachTo(Panel panel) {
         comboBox.addTo(panel);

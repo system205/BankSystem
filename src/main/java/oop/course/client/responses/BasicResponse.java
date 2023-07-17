@@ -17,8 +17,7 @@ public class BasicResponse implements Response {
         Matcher matcher = pattern.matcher(response);
         if (matcher.find()) {
             return matcher.group(1);
-        }
-        else {
+        } else {
             throw new RuntimeException("The field was not present in the response");
         }
     }

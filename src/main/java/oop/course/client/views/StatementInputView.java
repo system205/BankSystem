@@ -18,7 +18,8 @@ public class StatementInputView implements IView {
     private final String token;
     private final String accountNumber;
 
-    public StatementInputView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler, String token, String accountNumber) {
+    public StatementInputView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler,
+                              String token, String accountNumber) {
         onChangeView = changeViewHandler;
         this.requestHandler = requestHandler;
         this.token = token;
@@ -30,12 +31,12 @@ public class StatementInputView implements IView {
         var window = new TerminalWindow("Account Statement request");
         var panel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        var accKV = new TerminalFormKeyValuePair("accountNumber",
-                new TerminalInputPair(new TerminalText("Account Number"), new TerminalFixedTextBox(accountNumber)));
-        var startDate = new TerminalFormKeyValuePair("startDate",
-                new TerminalInputPair(new TerminalText("Start date (YYYY-MM-DD format)"), new TerminalTextBox()));
-        var endDate = new TerminalFormKeyValuePair("endDate",
-                new TerminalInputPair(new TerminalText("End date (YYYY-MM-DD format)"), new TerminalTextBox()));
+        var accKV = new TerminalFormKeyValuePair("accountNumber", new TerminalInputPair(new TerminalText("Account " +
+                "Number"), new TerminalImmutableTextBox(accountNumber)));
+        var startDate = new TerminalFormKeyValuePair("startDate", new TerminalInputPair(new TerminalText("Start date " +
+                "(YYYY-MM-DD format)"), new TerminalTextBox()));
+        var endDate = new TerminalFormKeyValuePair("endDate", new TerminalInputPair(new TerminalText("End date " +
+                "(YYYY-MM-DD format)"), new TerminalTextBox()));
 
         accKV.attachTo(panel);
         startDate.attachTo(panel);

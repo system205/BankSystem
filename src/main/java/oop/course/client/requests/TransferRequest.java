@@ -11,10 +11,8 @@ public class TransferRequest implements Request {
     private final Request base;
 
     public TransferRequest(String token, TerminalForm form) {
-        base = new JsonRequest(new AuthorizedRequest(
-                new BasicHttpRequest(Method.PUT, "/transfer"),
-                token
-        ), form.json());
+        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/transfer"), token),
+                form.json());
     }
 
     @Override
