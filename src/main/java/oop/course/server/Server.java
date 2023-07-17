@@ -12,9 +12,9 @@ public class Server implements Runnable, Closeable {
     private final BufferedReader in;
     private final Process process;
 
-    public Server(Socket client, Process process) {
-        this.socket = client;
+    public Server(ServerSocket client, Process process) {
         try {
+            this.socket = client.accept();
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {

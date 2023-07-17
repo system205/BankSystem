@@ -20,7 +20,9 @@ import static java.util.Map.entry;
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws SQLException {
+        long startTime = System.currentTimeMillis();
+        
         logger.debug("Create postgres connection");
         Connection connection = new Postgres(
                 new SimpleNetAddress("127.0.0.1", 5432),
@@ -31,13 +33,17 @@ public class Main {
         connection.setAutoCommit(false);
         logger.info("The connection to database is set up");
 
-        new DatabaseStartUp(new SimpleSqlExecutor(connection),
-                new MigrationDirectory("migrations")
-                        .scan()
+
+        new Background(
+                new DatabaseStartUp(
+                        new SimpleSqlExecutor(connection),
+                        new MigrationDirectory(
+                                "migrations"
+                        ).scan()
+                ),
+                new Admin(connection)
         ).init();
 
-
-        new Admin(connection).init();
 
         // Processes
         logger.debug("Start creating processes");
@@ -122,18 +128,21 @@ public class Main {
 
         final int port = 6666;
         try (ServerSocket socket = new ServerSocket(port)) {
-            logger.info("Server started on port {}", port);
+            logger.info("Server started on port {} in {} ms", port, System.currentTimeMillis() - startTime);
             while (true) {
                 logger.debug("Waiting for new client");
                 new Thread(
                         new Server(
-                                socket.accept(),
+                                socket,
                                 authorization))
                         .start();
             }
         } catch (IOException e) {
-            logger.error("Failed to accept a client", e);
-            throw new RuntimeException(e);
+            logger.error("Failed to create a server socket", e);
+            System.exit(2);
+        } finally {
+            logger.error("The app crashed");
+            System.exit(1);
         }
     }
 }
