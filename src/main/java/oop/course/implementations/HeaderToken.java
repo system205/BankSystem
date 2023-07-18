@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-// TODO Add proper exceptions
 public class HeaderToken implements Id<String> {
     private final Logger log = LoggerFactory.getLogger(HeaderToken.class);
     private final String token;
