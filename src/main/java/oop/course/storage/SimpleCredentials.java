@@ -12,7 +12,7 @@ public class SimpleCredentials implements Credentials {
         this.password = password;
     }
 
-    public SimpleCredentials(Form form) {
+    public SimpleCredentials(Form form) throws Exception {
         this(form.stringField("email"), form.stringField("password"));
     }
 

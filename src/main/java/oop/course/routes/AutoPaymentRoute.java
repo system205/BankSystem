@@ -10,7 +10,7 @@ public class AutoPaymentRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         final String method = request.method();
         for (ProcessMethod process : processes) {
             if (process.accept(method)) {

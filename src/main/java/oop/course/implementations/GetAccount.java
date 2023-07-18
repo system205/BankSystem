@@ -17,7 +17,7 @@ public class GetAccount implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         return new CheckingResponse(
                 new Customer(this.connection,
                         new HeaderToken(request.headers()).id())

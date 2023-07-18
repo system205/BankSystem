@@ -19,7 +19,7 @@ public class StatementRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MM");
         return new SuccessResponse(

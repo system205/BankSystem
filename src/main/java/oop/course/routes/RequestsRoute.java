@@ -1,6 +1,7 @@
 package oop.course.routes;
 
 import oop.course.interfaces.*;
+import oop.course.responses.MethodNotAllowedResponse;
 import org.slf4j.*;
 
 public class RequestsRoute implements Route {
@@ -13,14 +14,14 @@ public class RequestsRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         String method = request.method();
         for (ProcessMethod m : processes) {
             if (m.accept(method)) {
                 return m.act(request);
             }
         }
-        throw new RuntimeException("Not supported method");
+        return new MethodNotAllowedResponse();
     }
 
     @Override

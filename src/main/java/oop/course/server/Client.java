@@ -32,6 +32,26 @@ public class Client {
                     }
                     EOF""";
 
+            String registerManager = """
+                    POST /register HTTP/1.1
+
+                    {
+                      "email": "manager",
+                      "name": "manager",
+                      "surname": "manager",
+                      "password": "manager"
+                    }
+                    EOF""";
+
+            String loginManager = """
+                    POST /login HTTP/1.1
+
+                    {
+                      "email": "manager",
+                      "password": "manager"
+                    }
+                    EOF""";
+
             String login = """
                     POST /login HTTP/1.1
 
@@ -41,9 +61,29 @@ public class Client {
                     }
                     EOF""";
 
+            String managerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4OTY3ODM1NSwiZXhwIjoxNjg5NzY0NzU1fQ.JMuMsG0NaCh5I7W1ThCtkROD6ccdKKq9L0fWEBVlqM8";
+
+            String loginWrongPassword = """
+                    POST /login HTTP/1.1
+
+                    {
+                      "email": "admin",
+                      "password": "456"
+                    }
+                    EOF""";
+
+            String loginDoesntExist = """
+                    POST /login HTTP/1.1
+
+                    {
+                      "email": "admin321",
+                      "password": "123"
+                    }
+                    EOF""";
+
             String check = """
                     GET /account HTTP/1.1
-                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4OTY3ODM1NSwiZXhwIjoxNjg5NzY0NzU1fQ.JMuMsG0NaCh5I7W1ThCtkROD6ccdKKq9L0fWEBVlqM8
 
                     {
                       "accountNumber": "1234567890",
@@ -80,7 +120,7 @@ public class Client {
 
             String requests = """
                     GET /manager/requests HTTP/1.1
-                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODQ5MjcyOSwiZXhwIjoxNjg4NTc5MTI5fQ.UEJUjO_YYfvSZcVemm7KlxWTVwONZbVFfzCJw_h0o60
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyIiwiaWF0IjoxNjg5MzU1MzI2LCJleHAiOjE2ODk0NDE3MjZ9.v7pYpluQeEPylMVR4zzfJzXT6NcOm8aU7m04ejqCZ2o
                                         
                     EOF""";
             String approve = """
@@ -183,7 +223,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = autopayments;
+            final String request = check;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

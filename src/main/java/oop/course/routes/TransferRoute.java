@@ -1,6 +1,7 @@
 package oop.course.routes;
 
 import oop.course.interfaces.*;
+import oop.course.responses.MethodNotAllowedResponse;
 
 public class TransferRoute implements Route {
     private final ProcessMethod[] next;
@@ -10,7 +11,7 @@ public class TransferRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         // fork depending on the http method
         String method = request.method();
 
@@ -20,7 +21,7 @@ public class TransferRoute implements Route {
             }
         }
 
-        throw new RuntimeException("Unsupported method " + method);
+        return new MethodNotAllowedResponse();
     }
 
 

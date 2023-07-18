@@ -1,5 +1,6 @@
 package oop.course.entity;
 
+import oop.course.exceptions.InternalErrorException;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.tools.*;
@@ -20,7 +21,7 @@ public class CustomerRequest implements JSON {
     }
 
     @Override
-    public String json() {
+    public String json() throws Exception {
         RequestDetails details = details();
         return String.format("{%n\"id\"             :\"%s\",%n" +
                         "\"accountNumber\"  :\"%s\",%n" +
@@ -30,14 +31,14 @@ public class CustomerRequest implements JSON {
                 this.id, details.accountNumber, details.amount, details.type, details.status);
     }
 
-    public void update(String status) {
+    public void update(String status) throws Exception {
         RequestDetails details = details();
         Account account = new CheckingAccount(
                 details.accountNumber,
                 this.connection
         );
         if (!details.status.equals("pending")) {
-            throw new RuntimeException("Only pending requests must be considered");
+            throw new IllegalStateException("Only pending requests must be considered");
         }
         log.debug("Considering customer request: {}", details);
         if ("approved".equals(status)) {
@@ -52,19 +53,19 @@ public class CustomerRequest implements JSON {
             log.info("The customer's request {} is denied", this.id);
         } else {
             log.error("New status of a request must be approved or denied.");
-            throw new RuntimeException("Bad Request. Type must be either approved or denied");
+            throw new IllegalStateException("Bad Request. Type must be either approved or denied");
         }
         updateStatus(status);
     }
 
-    private RequestDetails details() {
+    private RequestDetails details() throws Exception {
         String sql = "SELECT account_number, amount, type, status FROM requests WHERE id = ?";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setLong(1, this.id);
             ResultSet result = statement.executeQuery();
             if (!result.next()) {
                 log.debug("Requests details with id {} was not found.", this.id);
-                throw new RuntimeException("Not found details of request by id");
+                throw new IllegalStateException("Not found details of request by id");
             }
             return new RequestDetails(
                     result.getString(1),
@@ -74,11 +75,11 @@ public class CustomerRequest implements JSON {
             );
         } catch (SQLException e) {
             log.error("Error when retrieving a request details", e);
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    private void updateStatus(String status) {
+    private void updateStatus(String status) throws Exception {
         String sql = "UPDATE requests SET status = ? WHERE id = ?";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, status);
@@ -90,10 +91,10 @@ public class CustomerRequest implements JSON {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
             log.error("Error when updating the status of a customer's request", e);
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 

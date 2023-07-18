@@ -14,7 +14,7 @@ public class ListApplicants implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         return new SuccessResponse(new Admin(this.connection).offers());
     }
 

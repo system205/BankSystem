@@ -11,7 +11,7 @@ public class AccountRequest implements Id<String> {
     }
 
     @Override
-    public String id() {
+    public String id() throws Exception {
         return form.stringField("accountNumber");
     }
 }

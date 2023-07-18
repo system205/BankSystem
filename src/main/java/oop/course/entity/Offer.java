@@ -1,5 +1,6 @@
 package oop.course.entity;
 
+import oop.course.exceptions.InternalErrorException;
 import oop.course.tools.*;
 import org.slf4j.*;
 
@@ -18,12 +19,12 @@ public class Offer implements JSON {
     }
 
     @Override
-    public String json() {
+    public String json() throws Exception {
         Details details = details();
         return String.format("{%n\"id\":\"%s\",%n%s%n}", this.id, details.json());
     }
 
-    public void update(String status) {
+    public void update(String status) throws Exception {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "UPDATE offers SET status = ? WHERE id = ?"
         ); PreparedStatement checkStatement = this.connection.prepareStatement(
@@ -36,7 +37,7 @@ public class Offer implements JSON {
             ResultSet check = checkStatement.executeQuery();
             check.next();
             if (!check.getString(1).equals("pending")) {
-                throw new RuntimeException("The offer is already reviewed.");
+                throw new IllegalStateException("The offer is already reviewed.");
             }
 
             statement.setString(1, status);
@@ -59,13 +60,13 @@ public class Offer implements JSON {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    private Details details() {
+    private Details details() throws Exception {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT customer_email, status, created_at FROM offers WHERE id = ?;"
         )) {
@@ -76,7 +77,7 @@ public class Offer implements JSON {
                     result.getString(2),
                     result.getTimestamp(3).toLocalDateTime());
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 

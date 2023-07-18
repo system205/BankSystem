@@ -1,5 +1,6 @@
 package oop.course.routes;
 
+
 import oop.course.interfaces.*;
 import oop.course.responses.*;
 import org.slf4j.*;
@@ -14,7 +15,7 @@ public class ManagerFork implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         String url = request.url().substring("/manager".length());
         log.debug("Forking from manager with url: {}", url);
         for (Route r : routes) {

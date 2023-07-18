@@ -1,5 +1,6 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MethodNotAllowedException;
 import oop.course.interfaces.*;
 
 public class TransactionsRoute implements Route {
@@ -11,14 +12,14 @@ public class TransactionsRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         String method = request.method();
         for (ProcessMethod m : processes) {
             if (m.accept(method)) {
                 return m.act(request);
             }
         }
-        throw new RuntimeException("Method not supported in /transactions");
+        throw new MethodNotAllowedException("Method not supported in /transactions");
     }
 
     @Override
