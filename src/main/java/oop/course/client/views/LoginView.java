@@ -18,10 +18,12 @@ import java.util.function.Function;
 
 public class LoginView implements IView {
     private final Consumer<IView> onChangeView;
+    private final Runnable onExit;
     private final Function<Request, BasicResponse> requestHandler;
 
-    public LoginView(Consumer<IView> changeViewHandler, Function<Request, BasicResponse> requestHandler) {
+    public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler) {
         onChangeView = changeViewHandler;
+        this.onExit = onExit;
         this.requestHandler = requestHandler;
     }
 
@@ -30,13 +32,13 @@ public class LoginView implements IView {
         TerminalWindow window = new TerminalWindow("BankSystem authentication");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        new TerminalText(
-                "Welcome to the BankSystem client application!\nPlease, register or login into your existing account."
-        ).attachTo(contentPanel);
+        new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your existing" +
+                " account.").attachTo(contentPanel);
 
         var email = new TerminalTextBox();
         var username = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), email));
-        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"), new TerminalPasswordBox()));
+        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
+                new TerminalPasswordBox()));
 
         var form = new TerminalForm(List.of(username, password));
 
@@ -47,25 +49,24 @@ public class LoginView implements IView {
             Request req = new LoginRequest(form);
             var resp = new LoginResponse(requestHandler.apply(req));
             if (resp.isWrongCredentials()) {
-                MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials", MessageDialogButton.Close);
-            }
-            else if (resp.isSuccess()) {
+                MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials",
+                        MessageDialogButton.Close);
+            } else if (resp.isSuccess()) {
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, requestHandler, resp.token()));
-            }
-            else {
+                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, resp.token()));
+            } else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
             }
         }).attachTo(contentPanel);
 
         new TerminalButton("Register page", () -> {
             window.close();
-            onChangeView.accept(new RegisterView(onChangeView, requestHandler));
+            onChangeView.accept(new RegisterView(onChangeView, onExit, requestHandler));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {
             window.close();
-            onChangeView.accept(null);
+            onExit.run();
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

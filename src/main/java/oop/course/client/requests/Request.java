@@ -7,13 +7,11 @@ import java.io.PrintWriter;
 
 public interface Request {
 
-    enum Method {
-        GET,
-        POST,
-        PUT
-    }
-
     void send(PrintWriter printWriter);
 
     BasicResponse response(BufferedReader bufferedReader);
+
+    enum Method {
+        GET, POST, PUT, DELETE
+    }
 }
