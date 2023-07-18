@@ -51,7 +51,7 @@ public class Main {
                 new Fork(
                         new GuardedUrl(connection, rolesConfiguration),
                         new MainRoute(),
-                        new LoginRoute(
+                        new LoginRoute( // /login
                                 connection,
                                 new TokenReturn(
                                         "mySecretKey",
@@ -59,15 +59,15 @@ public class Main {
                                         connection
                                 )
                         ),
-                        new RegisterRoute(
+                        new RegisterRoute( // /register
                                 connection
                         ),
-                        new TransferRoute(
+                        new TransferRoute( // /transfer
                                 new MakeTransaction(
                                         connection
                                 )
                         ),
-                        new CheckAccountRoute(
+                        new CheckAccountRoute( // /account
                                 new GetAccount(
                                         connection
                                 ),
@@ -98,11 +98,11 @@ public class Main {
                                         new PostRequests(connection)
                                 )
                         ),
-                        new RequestsRoute(
+                        new RequestsRoute( // /requests
                                 new GetRequests(connection),
                                 new PutRequests(connection)
                         ),
-                        new JobRoute(
+                        new JobRoute( // /job
                                 new PutOffer(connection)
                         ),
                         new AdminFork( // /admin
