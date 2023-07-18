@@ -32,6 +32,9 @@ public class StatementResponse implements Response {
         while (matcher.find()) {
             var curTrans = new Transaction("", "request", "", "");
             var trans = matcher.group(0);
+            if (!trans.contains("type")) {
+                continue;
+            }
             var matcher2 = patternType.matcher(trans);
             if (matcher2.find()) {
                 curTrans = new Transaction(matcher2.group(1), curTrans.from(), curTrans.amount(), curTrans.date());
