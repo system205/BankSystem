@@ -14,7 +14,7 @@ public class CustomerRequestsRoute implements Route {
     }
 
     @Override
-    public Response act(Request request)  {
+    public Response act(Request request) throws Exception {
         String method = request.method();
         log.debug("Request with method {} received", method);
         for (ProcessMethod m : processes) {

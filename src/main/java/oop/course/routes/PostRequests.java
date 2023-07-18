@@ -22,7 +22,7 @@ public class PostRequests implements ProcessMethod {
      * Takes id and new type (approved or denied) of a request
      */
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         String status = form.stringField("status");
         long id = form.longField("id");

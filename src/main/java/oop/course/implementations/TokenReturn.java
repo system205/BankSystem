@@ -21,7 +21,7 @@ public class TokenReturn implements Process {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         return new SuccessResponse(
                 new Customer(

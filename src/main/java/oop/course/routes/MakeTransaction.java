@@ -19,7 +19,7 @@ public class MakeTransaction implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
 
         Transaction transaction = new Customer(this.connection,

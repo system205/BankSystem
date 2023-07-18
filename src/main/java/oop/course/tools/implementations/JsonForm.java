@@ -29,7 +29,7 @@ public class JsonForm implements Form {
     }
 
     @Override
-    public long longField(String field)  {
+    public long longField(String field) throws Exception {
         Matcher matcher = Pattern
                 .compile(String.format(REGEX, field))
                 .matcher(this.source);
@@ -51,7 +51,7 @@ public class JsonForm implements Form {
     }
 
     @Override
-    public String stringField(String field)  {
+    public String stringField(String field) throws Exception {
         Matcher matcher = Pattern
                 .compile(String.format(REGEX, field))
                 .matcher(this.source);
@@ -77,7 +77,7 @@ public class JsonForm implements Form {
     }
 
     @Override
-    public BigDecimal bigDecimalField(String field)  {
+    public BigDecimal bigDecimalField(String field) throws Exception {
         return new BigDecimal(stringField(field));
     }
 }

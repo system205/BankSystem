@@ -16,7 +16,7 @@ public class HeaderToken implements Id<String> {
     private final Logger log = LoggerFactory.getLogger(HeaderToken.class);
     private final String token;
 
-    public HeaderToken(Collection<String> headers) {
+    public HeaderToken(Collection<String> headers) throws Exception {
         this.token = headers.stream()
                 .filter(header -> header.startsWith("Authorization"))
                 .map(s -> s.substring("Authorization: Bearer ".length()))
@@ -24,7 +24,7 @@ public class HeaderToken implements Id<String> {
     }
 
     @Override
-    public String id() {
+    public String id() throws Exception {
         try {
             DecodedJWT decodedJWT = JWT.require(
                             Algorithm.HMAC256("mySecretKey"))

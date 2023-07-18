@@ -23,7 +23,7 @@ public class Customer {
         this.email = id;
     }
 
-    public Customer(Connection connection, Form form) {
+    public Customer(Connection connection, Form form) throws Exception {
         this(connection, form.stringField("email"));
     }
 
@@ -32,7 +32,7 @@ public class Customer {
         return String.format("Customer with email: %s", this.email);
     }
 
-    public void save(Form details) {
+    public void save(Form details) throws Exception {
         if (this.exists()) {
             throw new ConflictException("Email is already presented");
         }

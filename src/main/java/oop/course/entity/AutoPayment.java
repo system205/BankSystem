@@ -27,9 +27,12 @@ public class AutoPayment implements JSON {
                 () -> {
                     if (!active())
                         task[0].cancel(true);
-
-                    new CheckingAccount(details.senderNumber, this.connection)
-                            .transfer(details.receiverNumber, details.amount);
+                    try {
+                        new CheckingAccount(details.senderNumber, this.connection)
+                                .transfer(details.receiverNumber, details.amount);
+                    } catch (Exception e) {
+                        task[0].cancel(true);
+                    }
                 }, calculateInitDelay(details.startDate.toLocalDate().atStartOfDay(),
                         details.period), details.period, TimeUnit.SECONDS
         );

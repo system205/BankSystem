@@ -5,7 +5,6 @@ import oop.course.tools.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
 
 public class SuccessResponse implements Response {
     private final String body;
@@ -14,10 +13,12 @@ public class SuccessResponse implements Response {
         this.body = json;
     }
 
-    public SuccessResponse(Collection<? extends JSON> jsons) {
-        this("[\n" + jsons.parallelStream().map(JSON::json)
-                .collect(Collectors.joining(",\n")) +
-                "\n]");
+    public SuccessResponse(Collection<? extends JSON> jsons) throws Exception {
+        ArrayList<String> jsonsAsString = new ArrayList<>();
+        for (JSON json : jsons) {
+            jsonsAsString.add(json.json());
+        }
+        this.body = "[\n" + String.join(",\n", jsonsAsString) + "\n]";
     }
 
     @Override

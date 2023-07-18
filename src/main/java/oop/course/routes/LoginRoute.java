@@ -23,7 +23,7 @@ public class LoginRoute implements Route {
     }
 
     @Override
-    public Response act(Request request)  {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         Customer customer = new Customer(connection, form);
         if (!customer.exists()) {

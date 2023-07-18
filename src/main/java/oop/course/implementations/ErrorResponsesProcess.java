@@ -20,7 +20,7 @@ public class ErrorResponsesProcess implements Process {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         try {
             return next.act(request);
         } catch (MalformedDataException | AccountException | IllegalStateException e) {

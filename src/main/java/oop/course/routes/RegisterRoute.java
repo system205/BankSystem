@@ -21,7 +21,7 @@ public class RegisterRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         // provide all the necessary information to register new personal account
         // email name surname password must be provided
 

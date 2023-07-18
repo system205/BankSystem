@@ -9,11 +9,11 @@ import java.time.*;
 import java.util.*;
 
 public interface Account extends JSON {
-    Transaction transfer(String accountNumber, BigDecimal amount);
+    Transaction transfer(String accountNumber, BigDecimal amount) throws Exception;
 
-    void save(String customerId);
+    void save(String customerId) throws Exception;
 
-    CustomerRequest attachRequest(String type, BigDecimal amount);
+    CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception;
 
     Collection<CustomerRequest> requests();
 
@@ -27,7 +27,7 @@ public interface Account extends JSON {
 
     void deactivate();
 
-    AutoPayment createPayment(Form form);
+    AutoPayment createPayment(Form form) throws Exception;
 
     List<AutoPayment> autopayments();
 }

@@ -18,7 +18,7 @@ public class DeleteAutoPayment implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         new Customer(this.connection, new HeaderToken(request.headers()).id())
                 .deleteAutopayment(form.longField("paymentId"));

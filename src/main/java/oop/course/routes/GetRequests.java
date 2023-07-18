@@ -19,7 +19,7 @@ public class GetRequests implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         return new SuccessResponse(
                 new Customer(
                         this.connection,

@@ -4,11 +4,11 @@ package oop.course.interfaces;
 import java.util.*;
 
 public interface Request {
-    Collection<String> headers();
+    Collection<String> headers() throws Exception;
 
     Iterable<String> body();
 
-    String url();
+    String url() throws Exception;
 
-    String method();
+    String method() throws Exception;
 }

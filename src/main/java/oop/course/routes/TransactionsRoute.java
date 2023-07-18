@@ -11,7 +11,7 @@ public class TransactionsRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         String method = request.method();
         for (ProcessMethod m : processes) {
             if (m.accept(method)) {

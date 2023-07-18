@@ -16,7 +16,7 @@ public class PostOffer implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         new Customer(this.connection, form.stringField("customerEmail"))
                 .offer().update(

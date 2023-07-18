@@ -5,5 +5,5 @@ package oop.course.interfaces;
  * <p>It takes a Request and returns the Response</p>
  */
 public interface Process {
-    Response act(Request request);
+    Response act(Request request) throws Exception;
 }

@@ -1,8 +1,6 @@
 package oop.course.exceptions;
 
-import oop.course.tools.JSON;
-
-public class AuthorizationException extends RuntimeException {
+public class AuthorizationException extends Exception {
     public AuthorizationException() {
     }
 

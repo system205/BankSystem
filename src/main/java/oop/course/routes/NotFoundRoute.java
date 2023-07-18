@@ -6,7 +6,7 @@ import oop.course.responses.*;
 public class NotFoundRoute implements Route {
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         return new NotFoundResponse();
     }
 

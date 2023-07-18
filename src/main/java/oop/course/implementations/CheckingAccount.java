@@ -44,7 +44,7 @@ public class CheckingAccount implements Account {
         return id.substring(id.length() - 10);
     }
 
-    private long balance() {
+    private long balance() throws Exception {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT balance from checking_account where account_number=?")
         ) {
@@ -64,7 +64,7 @@ public class CheckingAccount implements Account {
      * The most important method of an Account object
      */
     @Override
-    public Transaction transfer(String accountNumber, BigDecimal amount) {
+    public Transaction transfer(String accountNumber, BigDecimal amount) throws Exception {
         if (!isActive()) throw new RuntimeException("Can't transfer from inactive account");
         try (PreparedStatement transactionStatement = this.connection.prepareStatement(
                 "INSERT INTO transactions (sender_number, receiver_number, amount) VALUES (?, ?, ?)"
@@ -121,13 +121,13 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public String json() {
-        if (!isActive()) throw new RuntimeException("Can't see the inactive account");
+    public String json() throws Exception {
+        if (!isActive()) throw new IllegalStateException("Can't see the inactive account");
         return String.format("{\"accountNumber\":\"%s\", \"balance\":\"%s\"}", this.number, balance());
     }
 
     @Override
-    public void save(String customerEmail) {
+    public void save(String customerEmail) throws Exception {
         // TODO - could be simplified
         try (PreparedStatement accountStatement = this.connection.prepareStatement(
                 "INSERT INTO checking_account (customer_id, bank_name, account_number) VALUES (?, ?, ?)");
@@ -175,7 +175,7 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public CustomerRequest attachRequest(String type, BigDecimal amount) {
+    public CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception {
         if (!isActive()) throw new RuntimeException("Can't put requests to inactive account");
         String sql = "INSERT INTO requests (account_number, amount, type, status) VALUES (?, ?, ?, 'pending') RETURNING id";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
@@ -352,7 +352,7 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public AutoPayment createPayment(Form form) {
+    public AutoPayment createPayment(Form form) throws Exception{
         if (!isActive()) throw new RuntimeException("Can't pay from inactive account");
         String sql = "INSERT INTO autopayments (from_account_id, to_account_id, amount, start_date, period_in_seconds) VALUES " +
                 "((SELECT account_id FROM checking_account account WHERE account_number = ?), " +

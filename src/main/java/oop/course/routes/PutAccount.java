@@ -14,7 +14,7 @@ public class PutAccount implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         // Create and save new account
         Account account = new CheckingAccount(
                 this.connection

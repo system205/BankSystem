@@ -21,7 +21,7 @@ public class HttpRequest implements Request {
         log.info("HttpRequest data:\n{}", this.data);
     }
 
-    private String[] requestLine() {
+    private String[] requestLine() throws Exception{
         if (data.isEmpty()) {
             throw new MalformedDataException("HttpRequest is empty");
         }
@@ -33,7 +33,7 @@ public class HttpRequest implements Request {
     }
 
     @Override
-    public Collection<String> headers() {
+    public Collection<String> headers() throws Exception {
         // a part of the data
         ArrayList<String> headers = new ArrayList<>();
         for (String line : this.data) {
@@ -67,12 +67,12 @@ public class HttpRequest implements Request {
     }
 
     @Override
-    public String url() {
+    public String url() throws Exception {
         return requestLine()[1]; // the second word
     }
 
     @Override
-    public String method() {
+    public String method() throws Exception {
         return requestLine()[0]; // the very first word
     }
 }

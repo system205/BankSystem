@@ -1,6 +1,6 @@
 package oop.course.exceptions;
 
-public class ForbiddenException extends RuntimeException {
+public class ForbiddenException extends Exception {
     public ForbiddenException() {
     }
 
