@@ -1,5 +1,6 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MethodNotAllowedException;
 import oop.course.interfaces.*;
 
 public class TransactionsRoute implements Route {
@@ -18,7 +19,7 @@ public class TransactionsRoute implements Route {
                 return m.act(request);
             }
         }
-        throw new RuntimeException("Method not supported in /transactions");
+        throw new MethodNotAllowedException("Method not supported in /transactions");
     }
 
     @Override

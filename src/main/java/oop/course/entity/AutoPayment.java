@@ -1,5 +1,6 @@
 package oop.course.entity;
 
+import oop.course.exceptions.InternalErrorException;
 import oop.course.implementations.*;
 import oop.course.tools.*;
 
@@ -56,7 +57,7 @@ public class AutoPayment implements JSON {
             statement.setLong(1, this.id);
             ResultSet result = statement.executeQuery();
             if (!result.next()) {
-                throw new RuntimeException("The autopayment with id " + this.id + " does not exist");
+                throw new IllegalStateException("The autopayment with id " + this.id + " does not exist");
             }
             return new PaymentDetails(result.getString(1),
                     result.getString(2),

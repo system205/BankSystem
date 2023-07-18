@@ -3,6 +3,7 @@ package oop.course.implementations;
 import oop.course.entity.*;
 import oop.course.exceptions.AccountException;
 import oop.course.exceptions.ConflictException;
+import oop.course.exceptions.InternalErrorException;
 import oop.course.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class CheckingAccount implements Account {
             return results.getLong(1);
         } catch (SQLException e) {
             System.out.println("Exception when retrieving balance of checking account");
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
@@ -65,7 +66,7 @@ public class CheckingAccount implements Account {
      */
     @Override
     public Transaction transfer(String accountNumber, BigDecimal amount) throws Exception {
-        if (!isActive()) throw new RuntimeException("Can't transfer from inactive account");
+        if (!isActive()) throw new IllegalStateException("Can't transfer from inactive account");
         try (PreparedStatement transactionStatement = this.connection.prepareStatement(
                 "INSERT INTO transactions (sender_number, receiver_number, amount) VALUES (?, ?, ?)"
         );
@@ -112,10 +113,10 @@ public class CheckingAccount implements Account {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
             log.error("SQL error when transferring money. Internal error: " + e);
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
         return new SimpleTransaction(this.number, accountNumber, amount);
     }
@@ -168,15 +169,15 @@ public class CheckingAccount implements Account {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
     @Override
     public CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception {
-        if (!isActive()) throw new RuntimeException("Can't put requests to inactive account");
+        if (!isActive()) throw new IllegalStateException("Can't put requests to inactive account");
         String sql = "INSERT INTO requests (account_number, amount, type, status) VALUES (?, ?, ?, 'pending') RETURNING id";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
@@ -197,15 +198,15 @@ public class CheckingAccount implements Account {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
     @Override
-    public Collection<CustomerRequest> requests() {
-        if (!isActive()) throw new RuntimeException("Can't see requests of inactive account");
+    public Collection<CustomerRequest> requests() throws Exception {
+        if (!isActive()) throw new IllegalStateException("Can't see requests of inactive account");
         String sql = "SELECT id FROM requests WHERE account_number = ?";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
@@ -221,19 +222,19 @@ public class CheckingAccount implements Account {
             }
             return requests;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
     @Override
-    public void deposit(BigDecimal amount) {
-        if (!isActive()) throw new RuntimeException("Can't deposit on inactive account");
+    public void deposit(BigDecimal amount) throws Exception {
+        if (!isActive()) throw new IllegalStateException("Can't deposit on inactive account");
         withdraw(amount.negate());
     }
 
     @Override
-    public void withdraw(BigDecimal amount) {
-        if (!isActive()) throw new RuntimeException("Can't withdraw from inactive account");
+    public void withdraw(BigDecimal amount) throws Exception {
+        if (!isActive()) throw new IllegalStateException("Can't withdraw from inactive account");
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "UPDATE checking_account SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) - ? WHERE account_number = ?"
         )) {
@@ -246,19 +247,19 @@ public class CheckingAccount implements Account {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
     @Override
-    public List<Transaction> transactions() {
+    public List<Transaction> transactions() throws Exception {
         return transactions(Timestamp.from(Instant.ofEpochSecond(0)), Timestamp.from(Instant.ofEpochSecond(10000000000L)));
     }
 
-    private List<Transaction> transactions(Timestamp start, Timestamp end) {
-        if (!isActive()) throw new RuntimeException("Can't see transactions of inactive account");
+    private List<Transaction> transactions(Timestamp start, Timestamp end) throws Exception {
+        if (!isActive()) throw new IllegalStateException("Can't see transactions of inactive account");
         try (PreparedStatement outcomeStatement = this.connection.prepareStatement(
                 "SELECT amount, created_at, receiver_number FROM transactions WHERE sender_number = ? AND created_at BETWEEN ? AND ?"
         ); PreparedStatement incomeStatement = this.connection.prepareStatement(
@@ -313,13 +314,13 @@ public class CheckingAccount implements Account {
             }
             return transactions;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
     @Override
-    public TransactionStatement compose(LocalDate start, LocalDate end) {
-        if (!isActive()) throw new RuntimeException("Can't see the inactive account");
+    public TransactionStatement compose(LocalDate start, LocalDate end) throws Exception {
+        if (!isActive()) throw new IllegalStateException("Can't see the inactive account");
         final Timestamp startTimestamp = Timestamp.valueOf(start.atStartOfDay());
         final Timestamp endTimestamp = Timestamp.valueOf(end.atStartOfDay());
 
@@ -352,8 +353,8 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public AutoPayment createPayment(Form form) throws Exception{
-        if (!isActive()) throw new RuntimeException("Can't pay from inactive account");
+    public AutoPayment createPayment(Form form) throws Exception {
+        if (!isActive()) throw new IllegalStateException("Can't pay from inactive account");
         String sql = "INSERT INTO autopayments (from_account_id, to_account_id, amount, start_date, period_in_seconds) VALUES " +
                 "((SELECT account_id FROM checking_account account WHERE account_number = ?), " +
                 "(SELECT account_id FROM checking_account account WHERE account_number = ?), ?, ?, ?) " +
@@ -373,15 +374,15 @@ public class CheckingAccount implements Account {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
     @Override
-    public List<AutoPayment> autopayments() {
-        if (!isActive()) throw new RuntimeException("Can't see autopayments of inactive account");
+    public List<AutoPayment> autopayments() throws Exception {
+        if (!isActive()) throw new InternalErrorException("Can't see autopayments of inactive account");
         String sql = "SELECT id FROM autopayments WHERE from_account_id = (SELECT account_id FROM checking_account WHERE account_number = ?)";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);

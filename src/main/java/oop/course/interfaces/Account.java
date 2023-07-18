@@ -15,19 +15,19 @@ public interface Account extends JSON {
 
     CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception;
 
-    Collection<CustomerRequest> requests();
+    Collection<CustomerRequest> requests() throws Exception;
 
-    void deposit(BigDecimal amount);
+    void deposit(BigDecimal amount) throws Exception;
 
-    void withdraw(BigDecimal amount);
+    void withdraw(BigDecimal amount) throws Exception;
 
-    List<Transaction> transactions();
+    List<Transaction> transactions() throws Exception;
 
-    TransactionStatement compose(LocalDate start, LocalDate end);
+    TransactionStatement compose(LocalDate start, LocalDate end) throws Exception;
 
     void deactivate();
 
     AutoPayment createPayment(Form form) throws Exception;
 
-    List<AutoPayment> autopayments();
+    List<AutoPayment> autopayments() throws Exception;
 }

@@ -1,5 +1,6 @@
 package oop.course.storage;
 
+import oop.course.exceptions.InternalErrorException;
 import oop.course.storage.interfaces.*;
 
 import java.sql.*;
