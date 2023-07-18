@@ -32,9 +32,8 @@ public class ErrorResponsesProcess implements Process {
             return new MethodNotAllowedResponse();
         }
         catch (Exception e) {
-            logger.error(e.getMessage());
-            return new InternalErrorResponse();
+            logger.error(e.getMessage(), e);
+            return new InternalErrorResponse(e.getMessage());
         }
-
     }
 }

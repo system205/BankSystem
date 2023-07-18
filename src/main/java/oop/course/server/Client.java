@@ -223,7 +223,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = check;
+            final String request = transactions;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
