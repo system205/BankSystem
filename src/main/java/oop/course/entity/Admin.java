@@ -1,6 +1,8 @@
 package oop.course.entity;
 
+
 import oop.course.storage.migrations.*;
+import oop.course.exceptions.InternalErrorException;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -15,7 +17,7 @@ public class Admin implements Initializer {
         log.trace("Admin is created");
     }
 
-    public List<Offer> offers() {
+    public List<Offer> offers() throws Exception {
         log.info("Retrieving all offers from the database");
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT id FROM offers WHERE status = 'pending';"
@@ -29,7 +31,7 @@ public class Admin implements Initializer {
             return offers;
         } catch (SQLException e) {
             log.error("Error when retrieving offers from a database", e);
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 

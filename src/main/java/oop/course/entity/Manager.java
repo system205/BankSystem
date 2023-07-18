@@ -1,5 +1,6 @@
 package oop.course.entity;
 
+import oop.course.exceptions.InternalErrorException;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -15,7 +16,7 @@ public class Manager {
         this.connection = connection;
     }
 
-    public List<CustomerRequest> requests() {
+    public List<CustomerRequest> requests() throws Exception {
         log.debug("Manager retrieves requests from the database");
         final String sql = "SELECT id FROM requests WHERE status = 'pending'";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
@@ -33,7 +34,7 @@ public class Manager {
             return requests;
         } catch (SQLException e) {
             log.error("Error when retrieving customer requests");
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 }

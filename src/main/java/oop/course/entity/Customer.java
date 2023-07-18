@@ -2,6 +2,7 @@ package oop.course.entity;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
+import oop.course.exceptions.*;
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
@@ -21,7 +22,7 @@ public class Customer {
         this.email = id;
     }
 
-    public Customer(Connection connection, Form form) {
+    public Customer(Connection connection, Form form) throws Exception {
         this(connection, form.stringField("email"));
     }
 
@@ -30,7 +31,10 @@ public class Customer {
         return String.format("Customer with email: %s", this.email);
     }
 
-    public void save(Form details) {
+    public void save(Form details) throws Exception {
+        if (this.exists()) {
+            throw new ConflictException("Email is already presented");
+        }
         try (PreparedStatement statement = this.connection
                 .prepareStatement("INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)");
              PreparedStatement roleStatement = this.connection
@@ -48,15 +52,15 @@ public class Customer {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
             log.error("Error when saving a customer with email: {}", this.email);
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    public Account account(String id) {
-        // Check that customer ownes the account and then return.
+    public Account account(String id) throws Exception {
+        // Check that customer owns the account and then return.
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT 1 FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ? AND account_number=?"
         )) {
@@ -64,17 +68,17 @@ public class Customer {
             statement.setString(2, id);
             ResultSet result = statement.executeQuery();
             if (!result.next()) {
-                throw new RuntimeException(
+                throw new IllegalStateException(
                         String.format("The account with number %s is not owned by customer %s", id, this.email)
                 );
             }
             return new CheckingAccount(id, this.connection);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    public Collection<String> roles() {
+    public Collection<String> roles() throws Exception {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT role FROM roles INNER JOIN customer ON id=customer_id WHERE email=?"
         )) {
@@ -86,11 +90,11 @@ public class Customer {
             }
             return roles;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    public List<Account> accounts() {
+    public List<Account> accounts() throws Exception {
         log.debug("Retrieving account from the database");
         final String sql = "SELECT account_number FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ? AND active=true";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
@@ -106,13 +110,13 @@ public class Customer {
             return accounts;
         } catch (SQLException e) {
             log.error("Error when retrieving accounts");
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    public Token token(String signingKey, String password, long duration) {
+    public Token token(String signingKey, String password, long duration) throws Exception {
         if (!password().equals(password))
-            throw new RuntimeException("Illegal access");
+            throw new IllegalAccessException("Illegal access");
         return new Token(
                 JWT.create()
                         .withSubject(this.email)
@@ -122,7 +126,7 @@ public class Customer {
         );
     }
 
-    private String password() {
+    private String password() throws Exception {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT password FROM customer WHERE email = ?")
         ) {
@@ -135,11 +139,11 @@ public class Customer {
             }
         } catch (SQLException e) {
             log.error("Exception when retrieving customer's password", e);
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    public Offer applyForJob() {
+    public Offer applyForJob() throws Exception {
         log.info("Try apply for a job");
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "INSERT INTO offers (customer_email, status) VALUES (?, 'pending') RETURNING id"
@@ -149,8 +153,7 @@ public class Customer {
             checkStatement.setString(1, this.email);
             ResultSet check = checkStatement.executeQuery();
             if (check.next())
-                throw new RuntimeException("Bad request. Customer has already applied for a job");
-
+                throw new IllegalStateException("Bad request. Customer has already applied for a job");
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
             result.next();
@@ -161,28 +164,47 @@ public class Customer {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    public Offer offer() {
+    public Offer offer() throws Exception {
         try (PreparedStatement statement = this.connection.prepareStatement(
                 "SELECT id FROM offers WHERE customer_email = ?"
         )) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
             if (!result.next())
-                throw new RuntimeException("Offer of a customer is not found");
+                // TODO - is it correct exception type?
+                throw new IllegalStateException("Offer of a customer is not found");
             return new Offer(result.getLong(1), this.connection);
         } catch (SQLException e) {
             log.error("Error when extracting offer from the customer");
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
-    public void deleteAutopayment(long paymentId) {
+    public boolean exists() throws Exception {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT COUNT(*) FROM customer WHERE email = ?"
+        )) {
+            statement.setString(1, this.email);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            return result.getInt(1) > 0;
+        } catch (SQLException e) {
+            log.error("Error when checking whether a customer exists");
+            throw new InternalErrorException(e);
+        }
+    }
+
+    public boolean correctCredentials(String password) throws Exception {
+        return this.exists() && password.equals(this.password());
+    }
+
+    public void deleteAutopayment(long paymentId) throws Exception {
         String sql = "DELETE FROM autopayments a WHERE a.id = ? AND from_account_id IN " +
                 "(SELECT c.account_id FROM checking_account c WHERE c.customer_id = (SELECT customer.id FROM customer WHERE email = ?));";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
@@ -194,9 +216,9 @@ public class Customer {
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 }

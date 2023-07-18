@@ -7,7 +7,6 @@ import org.slf4j.*;
 import java.math.*;
 import java.time.*;
 import java.util.*;
-import java.util.stream.*;
 
 public class TransactionStatement implements JSON {
     private static final Logger log = LoggerFactory.getLogger(TransactionStatement.class);
@@ -31,7 +30,12 @@ public class TransactionStatement implements JSON {
 
 
     @Override
-    public String json() {
+    public String json() throws Exception{
+        ArrayList<String> jsonsAsString = new ArrayList<>();
+        for (JSON json : this.transactions) {
+            jsonsAsString.add(json.json());
+        }
+        String body = "[\n" + String.join(",\n", jsonsAsString) + "\n]";
         return String.format("{%n\"accountNumber\":\"%s\",%n" +
                         "\"from\":\"%s\",%n" +
                         "\"to\":\"%s\",%n" +
@@ -39,7 +43,6 @@ public class TransactionStatement implements JSON {
                         "\"endingBalance\":\"%s\",%n" +
                         "\"transactions\":\"%s\"%n}", this.accountNumber, this.startDate, this.endDate,
                 this.startingBalance, this.endingBalance,
-                "[\n" + this.transactions.parallelStream().map(JSON::json)
-                        .collect(Collectors.joining(",\n")) + "\n]");
+                body);
     }
 }

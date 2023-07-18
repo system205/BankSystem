@@ -18,7 +18,7 @@ public class PutRequests implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         BigDecimal amount = form.bigDecimalField("amount");
         String type = form.stringField("type");

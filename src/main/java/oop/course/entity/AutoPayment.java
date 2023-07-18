@@ -1,5 +1,6 @@
 package oop.course.entity;
 
+import oop.course.exceptions.InternalErrorException;
 import oop.course.implementations.*;
 import oop.course.tools.*;
 
@@ -31,9 +32,12 @@ public class AutoPayment implements JSON {
                 () -> {
                     if (!active())
                         task[0].cancel(true);
-
-                    new CheckingAccount(details.senderNumber, this.connection)
-                            .transfer(details.receiverNumber, details.amount);
+                    try {
+                        new CheckingAccount(details.senderNumber, this.connection)
+                                .transfer(details.receiverNumber, details.amount);
+                    } catch (Exception e) {
+                        task[0].cancel(true);
+                    }
                 }, calculateInitDelay(details.startDate.toLocalDate().atStartOfDay(),
                         details.period), details.period, TimeUnit.SECONDS
         );
@@ -57,7 +61,7 @@ public class AutoPayment implements JSON {
             statement.setLong(1, this.id);
             ResultSet result = statement.executeQuery();
             if (!result.next()) {
-                throw new RuntimeException("The autopayment with id " + this.id + " does not exist");
+                throw new IllegalStateException("The autopayment with id " + this.id + " does not exist");
             }
             return new PaymentDetails(result.getString(1),
                     result.getString(2),

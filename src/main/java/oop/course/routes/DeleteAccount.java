@@ -16,7 +16,7 @@ public class DeleteAccount implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         new Customer(this.connection, new HeaderToken(request.headers()).id())
                 .account(new JsonForm(request.body()).stringField("accountNumber"))
                 .deactivate();

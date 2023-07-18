@@ -4,9 +4,10 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
-public class TerminalFixedTextBox implements TerminalInputBox {
+public class TerminalImmutableTextBox implements TerminalInputBox {
     private final TextBox textBox;
-    public TerminalFixedTextBox(String text) {
+
+    public TerminalImmutableTextBox(String text) {
         textBox = new TextBox(new TerminalSize(20, 1));
         textBox.setText(text);
         textBox.setReadOnly(true);

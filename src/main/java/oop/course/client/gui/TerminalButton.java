@@ -5,15 +5,9 @@ import com.googlecode.lanterna.gui2.Panel;
 
 public class TerminalButton implements TerminalGUIElement {
     private final Button button;
-    public TerminalButton(String text, Runnable action){
-        button = new Button(text, action);
-    }
 
-    public TerminalButton(String text, Runnable action, boolean modern){
+    public TerminalButton(String text, Runnable action) {
         button = new Button(text, action);
-        if (modern) {
-            button.setRenderer(new Button.FlatButtonRenderer());
-        }
     }
 
     @Override

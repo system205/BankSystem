@@ -18,7 +18,7 @@ public class PostAutoPayment implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         AutoPayment newPayment = new Customer(this.connection, new HeaderToken(request.headers()).id())
                 .account(form.stringField("senderNumber"))

@@ -6,5 +6,5 @@ import java.sql.*;
  * Database connector
  * */
 public interface Connector {
-    Connection connect();
+    Connection connect() throws Exception;
 }

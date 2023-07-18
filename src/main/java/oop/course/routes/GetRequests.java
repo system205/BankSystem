@@ -7,7 +7,6 @@ import oop.course.responses.*;
 
 import java.sql.*;
 import java.util.*;
-import java.util.stream.*;
 
 /**
  * List the request of all customer's accounts
@@ -20,7 +19,7 @@ public class GetRequests implements ProcessMethod {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         return new SuccessResponse(
                 new Customer(
                         this.connection,

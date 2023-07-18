@@ -23,9 +23,10 @@ public class BasicHttpRequest implements Request {
             requestString += "GET ";
         } else if (method == Method.POST) {
             requestString += "POST ";
-        }
-        else if (method == Method.PUT) {
+        } else if (method == Method.PUT) {
             requestString += "PUT ";
+        } else if (method == Method.DELETE) {
+            requestString += "DELETE ";
         }
         requestString += route + " HTTP/1.1";
         printWriter.println(requestString);

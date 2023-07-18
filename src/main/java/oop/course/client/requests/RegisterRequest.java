@@ -11,10 +11,7 @@ public class RegisterRequest implements Request {
     private final Request base;
 
     public RegisterRequest(TerminalForm terminalForm) {
-        base = new JsonRequest(
-                new BasicHttpRequest(Method.POST, "/register"),
-                terminalForm.json()
-        );
+        base = new JsonRequest(new BasicHttpRequest(Method.POST, "/register"), terminalForm.json());
     }
 
     @Override

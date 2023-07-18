@@ -47,83 +47,82 @@ public class Main {
 
         // Processes
         logger.debug("Start creating processes");
-        final Authorization authorization = new Authorization(
-                Optional.of(
-                        new Fork(
-                                new SimpleUrl(),
-                                new MainRoute(),
-                                new LoginRoute( // /login
-                                        new TokenReturn(
-                                                "mySecretKey",
-                                                24L * 60 * 60 * 1000,
-                                                connection
-                                        )
-                                ),
-                                new RegisterRoute( // /register
-                                        connection
-                                ),
-                                new TransferRoute( // /transfer
-                                        new MakeTransaction(
-                                                connection
-                                        )
-                                ),
-                                new CheckAccountRoute( // /account
-                                        new GetAccount(
-                                                connection
-                                        ),
-                                        new PutAccount(
-                                                connection
-                                        ),
-                                        new DeleteAccount(
-                                                connection
-                                        )
-                                ),
-                                new TransactionsRoute( // /transactions
-                                        new GetTransactions(
-                                                connection
-                                        )
-                                ),
-                                new StatementRoute( // /stats
-                                        connection
-                                ),
-                                new AutoPaymentRoute( // /autopayments
-                                        new ListAutoPayments(connection),
-                                        new PostAutoPayment(connection),
-                                        new DeleteAutoPayment(connection)
-                                ),
-                                new AllAccounts(connection), // /accounts
-                                new ManagerFork( // /manager
-                                        new CustomerRequestsRoute( // /requests
-                                                new ListRequests(connection),
-                                                new PostRequests(connection)
-                                        )
-                                ),
-                                new RequestsRoute( // /requests
-                                        new GetRequests(connection),
-                                        new PutRequests(connection)
-                                ),
-                                new JobRoute( // /job
-                                        new PutOffer(connection)
-                                ),
-                                new AdminFork( // /admin
-                                        new ApplicantsRoute( // / offers
-                                                new ListApplicants(connection),
-                                                new PostOffer(connection)
-                                        )
-                                ),
-                                new NotFoundRoute() // any other
-                        )
-                ),
-                new AuthSecurityConfiguration(
-                        connection,
-                        new RolesConfiguration(
-                                Map.ofEntries(
-                                        entry("/login", List.of("customer", "admin")),
-                                        entry("/admin", List.of("admin"))
-                                )
-                        )
+        final RolesConfiguration rolesConfiguration = new RolesConfiguration(
+                Map.ofEntries(
+                        entry("/manager", List.of("manager", "admin")),
+                        entry("/admin", List.of("admin"))
                 )
         );
+        final Authorization authorization = new Authorization(
+                new Fork(
+                        new GuardedUrl(connection, rolesConfiguration),
+                        new MainRoute(),
+                        new LoginRoute( // /login
+                                connection,
+                                new TokenReturn(
+                                        "mySecretKey",
+                                        24L * 60 * 60 * 1000,
+                                        connection
+                                )
+                        ),
+                        new RegisterRoute( // /register
+                                connection
+                        ),
+                        new TransferRoute( // /transfer
+                                new MakeTransaction(
+                                        connection
+                                )
+                        ),
+                        new CheckAccountRoute( // /account
+                                new GetAccount(
+                                        connection
+                                ),
+                                new PutAccount(
+                                        connection
+                                ),
+                                new DeleteAccount(
+                                        connection
+                                )
+                        ),
+                        new TransactionsRoute( // /transactions
+                                new GetTransactions(
+                                        connection
+                                )
+                        ),
+                        new StatementRoute( // /stats
+                                connection
+                        ),
+                        new AutoPaymentRoute( // /autopayments
+                                new ListAutoPayments(connection),
+                                new PostAutoPayment(connection),
+                                new DeleteAutoPayment(connection)
+                        ),
+                        new AllAccounts(connection),
+                        new ManagerFork( // /manager
+                                new CustomerRequestsRoute(
+                                        new ListRequests(connection),
+                                        new PostRequests(connection)
+                                )
+                        ),
+                        new RequestsRoute( // /requests
+                                new GetRequests(connection),
+                                new PutRequests(connection)
+                        ),
+                        new JobRoute( // /job
+                                new PutOffer(connection)
+                        ),
+                        new AdminFork( // /admin
+                                new ApplicantsRoute( // / offers
+                                        new ListApplicants(connection),
+                                        new PostOffer(connection)
+                                )
+                        ),
+                        new NotFoundRoute()
+                ),
+                connection,
+                rolesConfiguration
+        );
+        final ErrorResponsesProcess errorResponsesProcess = new ErrorResponsesProcess(authorization);
         logger.debug("All processes are created");
 
         final int port = 6666;
@@ -134,7 +133,7 @@ public class Main {
                 new Thread(
                         new Server(
                                 socket,
-                                authorization))
+                                errorResponsesProcess))
                         .start();
             }
         } catch (IOException e) {

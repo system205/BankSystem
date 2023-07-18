@@ -17,14 +17,13 @@ public class BasicResponse implements Response {
         Matcher matcher = pattern.matcher(response);
         if (matcher.find()) {
             return matcher.group(1);
-        }
-        else {
+        } else {
             throw new RuntimeException("The field was not present in the response");
         }
     }
 
     public List<String> values(String key) {
-        Pattern pattern = Pattern.compile("\"" + key + "\": ?\"(.*?)\"");
+        Pattern pattern = Pattern.compile("\"" + key + "\" *: *\"(.*?)\"");
         Matcher matcher = pattern.matcher(response);
         List<String> res = new ArrayList<>();
         while (matcher.find()) {

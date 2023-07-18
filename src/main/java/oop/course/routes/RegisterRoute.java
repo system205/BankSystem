@@ -5,10 +5,14 @@ import oop.course.interfaces.*;
 import oop.course.responses.*;
 import oop.course.tools.implementations.*;
 import oop.course.tools.interfaces.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class RegisterRoute implements Route {
+    private final Logger log = LoggerFactory.getLogger(RegisterRoute.class);
+
 
     private final Connection connection;
 
@@ -17,15 +21,16 @@ public class RegisterRoute implements Route {
     }
 
     @Override
-    public Response act(Request request) {
+    public Response act(Request request) throws Exception {
         // provide all the necessary information to register new personal account
         // email name surname password must be provided
 
         Form form = new JsonForm(request.body());
+
         new Customer(this.connection, form.stringField("email"))
                 .save(form);
 
-        return new CreatedResponse();
+        return new CreatedResponse("The registration was successful");
     }
 
     @Override
