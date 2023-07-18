@@ -4,7 +4,6 @@ import oop.course.interfaces.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +50,7 @@ public class BaseResponse implements Response {
             sb.append("\n");
         }
         sb.append("EOF");
-        log.info("Sent response:\n\n" + sb);
+        log.info("Sent response:\n{}", sb);
         out.println(sb);
     }
 }

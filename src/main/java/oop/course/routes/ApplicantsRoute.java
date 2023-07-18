@@ -22,7 +22,7 @@ public class ApplicantsRoute implements Route {
                 return m.act(request);
             }
         }
-        log.error("Method " + method + " is not allowed in /offers");
+        log.debug("Method {} is not allowed in /offers", method);
         return new MethodNotAllowedResponse();
     }
 

@@ -1,15 +1,13 @@
 package oop.course.implementations;
 
-
 import oop.course.exceptions.MalformedDataException;
 import oop.course.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.*;
 import java.util.*;
 
-// TODO - should I throw an exception if accessing well formatted headers, but at the same time th request line is malformed?
+// TODO - should I throw an exception if accessing well formatted headers, but at the same time the request line is malformed?
 public class HttpRequest implements Request {
     private final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private final LinkedList<String> data;
@@ -17,11 +15,10 @@ public class HttpRequest implements Request {
     public HttpRequest(BufferedReader in) throws IOException {
         this.data = new LinkedList<>();
         String line;
-        // TODO - change it to read until actual EOF
         while (!(line = in.readLine()).equals("EOF")) {
             this.data.add(line);
         }
-        log.info("HttpRequest data:\n" + this.data);
+        log.info("HttpRequest data:\n{}", this.data);
     }
 
     private String[] requestLine() {
@@ -38,7 +35,6 @@ public class HttpRequest implements Request {
     @Override
     public Collection<String> headers() {
         // a part of the data
-        // TODO - multiple line headers are not implemented
         ArrayList<String> headers = new ArrayList<>();
         for (String line : this.data) {
             if (line.isEmpty()) break;
@@ -72,7 +68,7 @@ public class HttpRequest implements Request {
 
     @Override
     public String url() {
-        return requestLine()[1]; // the very first word
+        return requestLine()[1]; // the second word
     }
 
     @Override

@@ -1,7 +1,6 @@
 package oop.course.implementations;
 
 import oop.course.entity.*;
-
 import oop.course.interfaces.*;
 import oop.course.interfaces.Process;
 import oop.course.responses.*;

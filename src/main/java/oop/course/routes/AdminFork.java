@@ -23,7 +23,7 @@ public class AdminFork implements Route {
                 return r.act(request);
             }
         }
-        log.error("Suitable route is not found in /admin");
+        log.debug("Suitable route is not found in /admin");
         return new NotFoundResponse();
     }
 

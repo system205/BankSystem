@@ -28,14 +28,16 @@ public class GuardedUrl implements URL {
         if (rolesConfiguration.isAllowedToGo(url)) {
             return url;
         }
-        String userId = new HeaderToken(request.headers()).id();
-        final Collection<String> roles = new Customer(connection, userId).roles();
+        final Collection<String> roles = new Customer(
+                connection,
+                new HeaderToken(request.headers()).id()
+        ).roles();
         for (String role : roles) {
             if (this.rolesConfiguration.isAllowedToGo(url, role)) {
                 return url;
             }
         }
-        logger.error("User with roles " + roles + " is not allowed to go to " + url);
+        logger.debug("User with roles " + roles + " is not allowed to go to " + url);
         throw new ForbiddenException("User with roles " + roles + " is not allowed to go to " + url);
     }
 }

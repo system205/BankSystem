@@ -13,7 +13,7 @@ public interface Account extends JSON {
 
     void save(String customerId);
 
-    CustomerRequest attachRequest(String type, BigDecimal amount) ;
+    CustomerRequest attachRequest(String type, BigDecimal amount);
 
     Collection<CustomerRequest> requests();
 

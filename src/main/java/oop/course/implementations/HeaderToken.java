@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.*;
 import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.*;
 import oop.course.exceptions.AuthorizationException;
-import oop.course.exceptions.BaseException;
 import oop.course.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

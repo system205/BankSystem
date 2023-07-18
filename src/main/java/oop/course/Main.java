@@ -36,14 +36,20 @@ public class Main {
                         .scan()
         ).init();
 
-        // Resume autopayments
+        // Resume auto-payments
         new Admin(connection).payments().forEach(AutoPayment::pay);
 
         // Processes
         logger.debug("Start creating processes");
+        final RolesConfiguration rolesConfiguration = new RolesConfiguration(
+                Map.ofEntries(
+                        entry("/manager", List.of("manager", "admin")),
+                        entry("/admin", List.of("admin"))
+                )
+        );
         final Authorization authorization = new Authorization(
                 new Fork(
-                        new SimpleUrl(),
+                        new GuardedUrl(connection, rolesConfiguration),
                         new MainRoute(),
                         new LoginRoute(
                                 connection,
@@ -108,12 +114,7 @@ public class Main {
                         new NotFoundRoute()
                 ),
                 connection,
-                new RolesConfiguration(
-                        Map.ofEntries(
-                                entry("/manager", List.of("manager", "admin")),
-                                entry("/admin", List.of("admin"))
-                        )
-                )
+                rolesConfiguration
         );
         final ErrorResponsesProcess errorResponsesProcess = new ErrorResponsesProcess(authorization);
         logger.debug("All processes are created");
