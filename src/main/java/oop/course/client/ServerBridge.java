@@ -6,5 +6,5 @@ import oop.course.client.responses.BasicResponse;
 
 public interface ServerBridge {
 
-     BasicResponse execute(Request request);
+    BasicResponse execute(Request request);
 }

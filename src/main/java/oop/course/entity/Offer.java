@@ -4,6 +4,7 @@ import oop.course.tools.*;
 import org.slf4j.*;
 
 import java.sql.*;
+import java.time.*;
 
 public class Offer implements JSON {
     private static final Logger log = LoggerFactory.getLogger(Offer.class);
@@ -18,8 +19,8 @@ public class Offer implements JSON {
 
     @Override
     public String json() {
-        // TODO return details such as status and customer email
-        return String.format("{%n\"id\":\"%s\"%n}", this.id);
+        Details details = details();
+        return String.format("{%n\"id\":\"%s\",%n%s%n}", this.id, details.json());
     }
 
     public void update(String status) {
@@ -61,6 +62,39 @@ public class Offer implements JSON {
                 throw new RuntimeException(ex);
             }
             throw new RuntimeException(e);
+        }
+    }
+
+    private Details details() {
+        try (PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT customer_email, status, created_at FROM offers WHERE id = ?;"
+        )) {
+            statement.setLong(1, id);
+            ResultSet result = statement.executeQuery();
+            if (!result.next()) throw new IllegalStateException("The offer with id " + this.id + " does not exist");
+            return new Details(result.getString(1),
+                    result.getString(2),
+                    result.getTimestamp(3).toLocalDateTime());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static class Details implements JSON {
+        private final String email;
+        private final String status;
+        private final LocalDateTime timestamp;
+
+        private Details(String email, String status, LocalDateTime timestamp) {
+            this.email = email;
+            this.status = status;
+            this.timestamp = timestamp;
+        }
+
+
+        public String json() {
+            return String.format("\"customerEmail\":\"%s\",%n,\"status\":\"%s\",%n\"date\":\"%s\"",
+                    this.email, this.status, this.timestamp);
         }
     }
 }

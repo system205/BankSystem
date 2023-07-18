@@ -73,10 +73,10 @@ public class Customer {
                         String.format("The account with number %s is not owned by customer %s", id, this.email)
                 );
             }
+            return new CheckingAccount(id, this.connection);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new CheckingAccount(id, this.connection);
     }
 
     public Collection<String> roles() {
@@ -97,7 +97,7 @@ public class Customer {
 
     public List<Account> accounts() {
         log.debug("Retrieving account from the database");
-        final String sql = "SELECT account_number FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ?";
+        final String sql = "SELECT account_number FROM customer INNER JOIN checking_account on customer_id = id WHERE email = ? AND active=true";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.email);
             ResultSet resultSet = statement.executeQuery();

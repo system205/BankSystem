@@ -6,14 +6,13 @@ import com.googlecode.lanterna.gui2.TextBox;
 
 public class TerminalTextBox implements TerminalInputBox {
     private final TextBox textBox;
-    public TerminalTextBox()
-    {
+
+    public TerminalTextBox() {
         textBox = new TextBox(new TerminalSize(20, 1));
     }
 
     @Override
-    public void attachTo(Panel panel)
-    {
+    public void attachTo(Panel panel) {
         panel.addComponent(textBox);
     }
 

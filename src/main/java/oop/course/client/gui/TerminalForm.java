@@ -1,9 +1,12 @@
 package oop.course.client.gui;
 
+import com.googlecode.lanterna.gui2.Panel;
+
 import java.util.List;
 
-public class TerminalForm {
+public class TerminalForm implements TerminalGUIElement {
     private final List<TerminalFormKeyValuePair> values;
+
     public TerminalForm(List<TerminalFormKeyValuePair> values) {
         this.values = values;
     }
@@ -17,12 +20,18 @@ public class TerminalForm {
             builder.append(value.json());
             if (i == 0) {
                 builder.append("\n");
-            }
-            else {
+            } else {
                 builder.append(",\n");
             }
         }
         builder.append("}\n");
         return builder.toString();
+    }
+
+    @Override
+    public void attachTo(Panel panel) {
+        for (var element : values) {
+            element.attachTo(panel);
+        }
     }
 }
