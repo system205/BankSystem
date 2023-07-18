@@ -62,9 +62,14 @@ public class AccountActionsView implements IView {
             onChangeView.accept(new CreateRequestView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
-        new TerminalButton("Set up an autopayment", () -> {
+        new TerminalButton("Set up an auto-payment", () -> {
             window.close();
             onChangeView.accept(new CreateAutoPaymentView(onChangeView, onExit, requestHandler, token, account));
+        }).attachTo(contentPanel);
+
+        new TerminalButton("List/cancel auto-payments", () -> {
+            window.close();
+            onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
         new TerminalButton("Deactivate an account", () -> {
