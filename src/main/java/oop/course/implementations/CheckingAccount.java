@@ -147,11 +147,13 @@ public class CheckingAccount implements Account {
             if (!result.next()) {
                 throw new AccountException("Customer with the email: " + customerEmail + " was not found");
             }
+            accountExistsStatement.setString(1, this.number);
             ResultSet accountExistsResult = accountExistsStatement.executeQuery();
             if (accountExistsResult.next()) {
                 log.debug("Account with number: " + this.number + " is already saved in DB");
                 return;
             }
+            customerAccountsAmountStatement.setString(1, this.number);
             ResultSet customerAccountsAmountResult = customerAccountsAmountStatement.executeQuery();
             customerAccountsAmountResult.next();
             final int numberOfAccounts = customerAccountsAmountResult.getInt(1);
