@@ -2,10 +2,12 @@ package oop.course.storage;
 
 import oop.course.exceptions.InternalErrorException;
 import oop.course.storage.interfaces.*;
+import org.slf4j.*;
 
 import java.sql.*;
 
 public class Postgres implements Connector {
+    private static final Logger log = LoggerFactory.getLogger(Postgres.class);
     private static final String NAME = "postgres";
 
     private final String ip;
@@ -43,16 +45,22 @@ public class Postgres implements Connector {
 
 
     public Connection connect() {
+        log.debug("Create postgres connection");
         try {
-            return DriverManager.getConnection(
-                    String.format("jdbc:postgresql://%s:%s/%s", this.ip, String.valueOf(this.port), this.databaseName),
+            Connection connection = DriverManager.getConnection(
+                    String.format("jdbc:postgresql://%s:%s/%s", this.ip, this.port, this.databaseName),
                     this.user,
-                    this.password);
+                    this.password
+            );
+            connection.setAutoCommit(false);
+            log.debug("Turn off auto commit");
+            return connection;
         } catch (SQLException e) {
-            final String error = "Failed to connect to PostgresDB. Internal error: " + e;
-            System.err.println(error);
-            throw new RuntimeException(e);
+            final String error = "Failed to connect to PostgresDB" + e;
+            log.error(error);
+            throw new RuntimeException("Database can't set up");
+        } finally {
+            log.info("The connection to database is set up");
         }
-
     }
 }

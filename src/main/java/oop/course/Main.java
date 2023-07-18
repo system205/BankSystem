@@ -15,29 +15,35 @@ import java.net.*;
 import java.sql.*;
 import java.util.*;
 
-import static java.util.Map.entry;
+import static java.util.Map.*;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) throws IOException, SQLException {
-        logger.debug("Create postgres connection");
+    public static void main(String[] args) {
+        final long startTime = System.currentTimeMillis();
+
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(
+                        () -> logger.info("App existed {} ms", System.currentTimeMillis() - startTime)
+                )
+        );
+
         Connection connection = new Postgres(
                 new SimpleNetAddress("127.0.0.1", 5432),
                 new SimpleCredentials("postgres", "postgres"),
                 "bank"
         ).connect();
-        logger.debug("Turn off auto commit");
-        connection.setAutoCommit(false);
-        logger.info("The connection to database is set up");
 
-        new DatabaseStartUp(new SimpleSqlExecutor(connection),
-                new MigrationDirectory("migrations")
-                        .scan()
+        new Background(
+                new DatabaseStartUp(
+                        new SimpleSqlExecutor(connection),
+                        new MigrationDirectory(
+                                "migrations"
+                        ).scan()
+                ),
+                new Admin(connection)
         ).init();
-
-        // Resume auto-payments
-        new Admin(connection).payments().forEach(AutoPayment::pay);
 
         // Processes
         logger.debug("Start creating processes");
@@ -121,18 +127,21 @@ public class Main {
 
         final int port = 6666;
         try (ServerSocket socket = new ServerSocket(port)) {
-            logger.info("Server started on port {}", port);
+            logger.info("Server started on port {} in {} ms", port, System.currentTimeMillis() - startTime);
             while (true) {
                 logger.debug("Waiting for new client");
                 new Thread(
                         new Server(
-                                socket.accept(),
+                                socket,
                                 errorResponsesProcess))
                         .start();
             }
         } catch (IOException e) {
-            logger.error("Failed to accept a client", e);
-            throw new RuntimeException(e);
+            logger.error("Failed to create a server socket", e);
+            System.exit(2);
+        } finally {
+            logger.error("The app crashed");
+            System.exit(1);
         }
     }
 }
