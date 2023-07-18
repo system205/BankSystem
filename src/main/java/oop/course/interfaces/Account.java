@@ -15,7 +15,7 @@ public interface Account extends JSON {
 
     CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception;
 
-    Collection<CustomerRequest> requests() throws Exception;
+    Collection<CustomerRequest> requests();
 
     void deposit(BigDecimal amount) throws Exception;
 

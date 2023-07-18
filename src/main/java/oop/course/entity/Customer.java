@@ -68,7 +68,7 @@ public class Customer {
             statement.setString(2, id);
             ResultSet result = statement.executeQuery();
             if (!result.next()) {
-                throw new IllegalAccessException(
+                throw new IllegalStateException(
                         String.format("The account with number %s is not owned by customer %s", id, this.email)
                 );
             }

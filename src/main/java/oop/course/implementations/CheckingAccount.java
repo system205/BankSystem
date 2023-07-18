@@ -205,7 +205,7 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public Collection<CustomerRequest> requests() throws Exception {
+    public Collection<CustomerRequest> requests() {
         if (!isActive()) throw new IllegalStateException("Can't see requests of inactive account");
         String sql = "SELECT id FROM requests WHERE account_number = ?";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
@@ -222,7 +222,7 @@ public class CheckingAccount implements Account {
             }
             return requests;
         } catch (SQLException e) {
-            throw new InternalErrorException(e);
+            throw new RuntimeException(e);
         }
     }
 

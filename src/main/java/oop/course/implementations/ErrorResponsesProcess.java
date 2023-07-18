@@ -26,7 +26,7 @@ public class ErrorResponsesProcess implements Process {
             return new ConflictResponse(e.getMessage());
         } catch (AuthorizationException e) {
             return new UnauthorizedResponse("Bearer", "", e.getMessage());
-        } catch (ForbiddenException e) {
+        } catch (ForbiddenException | IllegalAccessException e) {
             return new ForbiddenResponse(e.getMessage());
         } catch (MethodNotAllowedException e) {
             return new MethodNotAllowedResponse();

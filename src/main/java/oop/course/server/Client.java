@@ -61,7 +61,7 @@ public class Client {
                     }
                     EOF""";
 
-            String managerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyIiwiaWF0IjoxNjg5MzUyMjE0LCJleHAiOjE2ODk0Mzg2MTR9.sQyiIuCoeICICD7UT0yaLkzaDDQPG3nNVNp4eIDv81A";
+            String managerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4OTY3ODM1NSwiZXhwIjoxNjg5NzY0NzU1fQ.JMuMsG0NaCh5I7W1ThCtkROD6ccdKKq9L0fWEBVlqM8";
 
             String loginWrongPassword = """
                     POST /login HTTP/1.1
@@ -83,7 +83,7 @@ public class Client {
 
             String check = """
                     GET /account HTTP/1.1
-                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4ODM2NzA2OCwiZXhwIjoxNjg4NDUzNDY4fQ.UknUS-BxwCal0CurSOckSIsRk-zVsxzOGa6tttsL7AY
+                    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY4OTY3ODM1NSwiZXhwIjoxNjg5NzY0NzU1fQ.JMuMsG0NaCh5I7W1ThCtkROD6ccdKKq9L0fWEBVlqM8
 
                     {
                       "accountNumber": "1234567890",
@@ -223,7 +223,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = requests;
+            final String request = check;
 
             System.out.println("Sent:\n" + request);
             out.println(request);
