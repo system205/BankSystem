@@ -5,9 +5,6 @@ import java.util.Map;
 
 /**
  * Class that for each url says whether the user is allowed to access it
- * По идее, мне нужен процесс, который выбросит исключение, если текущий пользователь не может зайти по текущему юрл
- * Так же нужно для каждого юрл знать, какие роли имеют к ней доступ.
- * Что если создать класс GuardedUrl, который выбросит исключение, если юзер не может по ней пройти.
  */
 public class RolesConfiguration {
     /**

@@ -27,11 +27,7 @@ public class LoginRoute implements Route {
         Form form = new JsonForm(request.body());
         Customer customer = new Customer(connection, form);
         if (!customer.exists()) {
-            log.error("Customer not found:\nEmail: " +
-                    form.stringField("email") +
-                    "\nPassword: " +
-                    form.stringField("password")
-            );
+            log.error("Customer not found");
             return new UnauthorizedResponse("Bearer", "/login", "No such customer");
         }
         if (!customer.correctCredentials(form.stringField("password"))) {
