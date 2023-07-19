@@ -4,14 +4,12 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import oop.course.client.Transaction;
 import oop.course.client.gui.*;
 import oop.course.client.requests.Request;
 import oop.course.client.requests.StatementRequest;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.StatementResponse;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -46,8 +44,7 @@ public class StatementView implements IView {
             //experimental raw lanterna table
             new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(contentPanel);
             new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(contentPanel);
-            List<Transaction> transactions = response.transactions();
-            new TerminalTransactionTable(transactions).attachTo(contentPanel);
+            response.transactionsTable().attachTo(contentPanel);
         }
 
         new TerminalButton("Return", () -> {

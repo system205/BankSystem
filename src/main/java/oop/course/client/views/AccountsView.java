@@ -7,7 +7,6 @@ import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.gui.TerminalButton;
-import oop.course.client.gui.TerminalModernButton;
 import oop.course.client.gui.TerminalWindow;
 import oop.course.client.requests.AccountsRequest;
 import oop.course.client.requests.BecomeManagerRequest;
@@ -42,16 +41,8 @@ public class AccountsView implements IView {
 
         Request req = new AccountsRequest(token);
         var resp = new AccountsResponse(requestHandler.apply(req));
-        var accounts = resp.accounts();
 
-        for (var account : accounts) {
-            var t = "Account number: " + account.accountNumber() + " " + "Balance: " + account.balance();
-            new TerminalModernButton(t, () -> {
-                window.close();
-                onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token,
-                        account.accountNumber()));
-            }).attachTo(contentPanel);
-        }
+        resp.accountsTable().attachTo(contentPanel);
 
         new TerminalButton("Create an account", () -> {
             Request newAccountRequest = new NewAccountRequest(token);

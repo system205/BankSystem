@@ -1,8 +1,9 @@
 package oop.course.client.responses;
 
-import oop.course.client.Account;
+import oop.course.client.gui.TerminalAccountsTable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AccountsResponse implements Response {
@@ -12,13 +13,13 @@ public class AccountsResponse implements Response {
         this.response = response;
     }
 
-    public List<Account> accounts() {
+    public TerminalAccountsTable accountsTable() {
         var numbers = response.values("accountNumber");
         var balances = response.values("balance");
-        List<Account> res = new ArrayList<>(numbers.size());
+        List<List<String>> res = new ArrayList<>(numbers.size());
         for (int i = 0; i < numbers.size(); i++) {
-            res.add(new Account(numbers.get(i), balances.get(i)));
+            res.add(Arrays.asList(numbers.get(i), balances.get(i)));
         }
-        return res;
+        return new TerminalAccountsTable(res, (List<String> row) -> {});
     }
 }

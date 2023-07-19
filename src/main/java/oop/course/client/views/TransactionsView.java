@@ -46,7 +46,7 @@ public class TransactionsView implements IView {
         if (!response.isSuccess()) {
             new TerminalText("Could not fetch data").attachTo(panel);
         } else {
-            new TerminalTransactionTable(response.transactions()).attachTo(panel);
+            response.transactionsTable().attachTo(panel);
         }
 
         new TerminalButton("Return", () -> {

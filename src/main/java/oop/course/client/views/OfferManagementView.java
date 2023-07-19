@@ -44,7 +44,7 @@ public class OfferManagementView implements IView {
         var response = new GetOffersResponse(requestHandler.apply(req));
 
         if (response.isSuccess()) {
-            new TerminalOffersTable(response.offers(), (List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
+            response.offersTable((List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
         }
         else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
