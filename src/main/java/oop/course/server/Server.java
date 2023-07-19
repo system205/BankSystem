@@ -2,23 +2,35 @@ package oop.course.server;
 
 import oop.course.implementations.*;
 import oop.course.interfaces.Process;
+import org.slf4j.*;
 
 import java.io.*;
 import java.net.*;
 
 public class Server implements Runnable, Closeable {
+    private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final Socket socket;
     private final PrintWriter out;
     private final BufferedReader in;
     private final Process process;
 
     public Server(ServerSocket client, Process process) {
+        log.debug("Server is accepting a client");
         try {
             this.socket = client.accept();
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.out = new PrintWriter(
+                    socket.getOutputStream(),
+                    true
+            );
+            this.in = new BufferedReader(
+                    new InputStreamReader(
+                            socket.getInputStream()
+                    )
+            );
+            log.info("New client is accepted");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Error when accepting a client", e);
+            throw new RuntimeException("Client is not accepted");
         }
 
         this.process = process;
@@ -27,10 +39,12 @@ public class Server implements Runnable, Closeable {
     @Override
     public void run() {
         try {
-            // process the request here
-            this.process.act(new HttpRequest(in)).print(out);
+            log.debug("Start client processing");
+            this.process.act(
+                    new HttpRequest(in)
+            ).print(out);
         } catch (Exception e) {
-            System.out.println("Exception when receiving a request");
+            log.error("Unhandled error when processing a client", e);
         } finally {
             close();
         }
@@ -38,11 +52,12 @@ public class Server implements Runnable, Closeable {
 
     public void close() {
         try {
+            log.trace("Closing input and output streams of a client");
             in.close();
             out.close();
             socket.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Exception when closing client's connection", e);
         }
     }
 }
