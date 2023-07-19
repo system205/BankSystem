@@ -30,8 +30,8 @@ public class StatementInputView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Account Statement request");
         var panel = new Panel(new LinearLayout(Direction.VERTICAL));
+        var window = new TerminalWindow("Account Statement request", panel);
 
         var accKV = new TerminalFormKeyValuePair("accountNumber", new TerminalInputPair(new TerminalText("Account " +
                 "Number"), new TerminalImmutableTextBox(accountNumber)));
@@ -56,7 +56,6 @@ public class StatementInputView implements IView {
             onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token, accountNumber));
         }).attachTo(panel);
 
-        window.setContent(panel);
         window.addToGui(gui);
         window.open();
     }

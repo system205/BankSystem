@@ -34,8 +34,8 @@ public class StatementView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Account Statement");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Account Statement", contentPanel);
 
         var request = new StatementRequest(token, form);
         var response = new StatementResponse(requestHandler.apply(request));
@@ -55,7 +55,6 @@ public class StatementView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

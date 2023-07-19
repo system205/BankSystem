@@ -34,8 +34,8 @@ public class CreateAutoPaymentView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Auto payment");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Auto payment", contentPanel);
 
         var form = new TerminalForm(List.of(
                 new TerminalFormKeyValuePair("senderNumber",
@@ -91,7 +91,6 @@ public class CreateAutoPaymentView implements IView {
             onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token, account));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

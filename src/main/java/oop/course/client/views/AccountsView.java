@@ -37,8 +37,8 @@ public class AccountsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Account selection");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Account selection", contentPanel);
 
         Request req = new AccountsRequest(token);
         var resp = new AccountsResponse(requestHandler.apply(req));
@@ -100,7 +100,6 @@ public class AccountsView implements IView {
             onExit.run();
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

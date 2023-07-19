@@ -26,6 +26,7 @@ public class ListAutoPaymentsView implements IView {
     private final String token;
     private final String account;
     private final TerminalWindow window;
+    private final Panel panel;
 
     public ListAutoPaymentsView(Consumer<IView> changeViewHandler, Runnable onExit,
                                 Function<Request, BasicResponse> requestHandler, String token, String account) {
@@ -34,13 +35,13 @@ public class ListAutoPaymentsView implements IView {
         this.token = token;
         this.onExit = onExit;
         this.account = account;
-        this.window = new TerminalWindow("Account Statement request");
+        this.panel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Autopayments", panel);
     }
 
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        var panel = new Panel(new LinearLayout(Direction.VERTICAL));
 
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account number"), new TerminalImmutableTextBox(account)))));
@@ -59,7 +60,6 @@ public class ListAutoPaymentsView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(panel);
 
-        window.setContent(panel);
         window.addToGui(gui);
         window.open();
     }

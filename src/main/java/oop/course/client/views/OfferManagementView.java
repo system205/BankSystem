@@ -25,6 +25,7 @@ public class OfferManagementView implements IView {
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
     private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public OfferManagementView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                                String token) {
@@ -32,13 +33,13 @@ public class OfferManagementView implements IView {
         this.requestHandler = requestHandler;
         this.onExit = onExit;
         this.token = token;
-        this.window = new TerminalWindow("Account selection");
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+
+        this.window = new TerminalWindow("Account selection", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-
         Request req = new GetOffersRequest(token);
         var response = new GetOffersResponse(requestHandler.apply(req));
 
@@ -54,7 +55,6 @@ public class OfferManagementView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

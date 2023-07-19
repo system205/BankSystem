@@ -26,6 +26,7 @@ public class AdminRequestsView implements IView {
     private final Function<Request, BasicResponse> requestHandler;
     private final String token;
     private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public AdminRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
                              String token) {
@@ -33,14 +34,13 @@ public class AdminRequestsView implements IView {
         this.requestHandler = requestHandler;
         this.token = token;
         this.onExit = onExit;
-        this.window = new TerminalWindow("Account selection");
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Admin requests panel", contentPanel);
     }
 
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-
         var request = new ManagerRequestsRequest(token);
         var response = new ManagerRequestsResponse(requestHandler.apply(request));
 
@@ -56,7 +56,6 @@ public class AdminRequestsView implements IView {
             onChangeView.accept(new AdminActionsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

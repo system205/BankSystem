@@ -30,8 +30,8 @@ public class AdminActionsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        TerminalWindow window = new TerminalWindow("Account selection");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Admin panel", contentPanel);
 
         new TerminalButton("Manage offers", () -> {
             window.close();
@@ -48,7 +48,6 @@ public class AdminActionsView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }
