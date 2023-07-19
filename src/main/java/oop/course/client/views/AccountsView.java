@@ -17,6 +17,7 @@ import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.BecomeManagerResponse;
 import oop.course.client.responses.NewAccountResponse;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -42,7 +43,10 @@ public class AccountsView implements IView {
         Request req = new AccountsRequest(token);
         var resp = new AccountsResponse(requestHandler.apply(req));
 
-        resp.accountsTable().attachTo(contentPanel);
+        resp.accountsTable((List<String> row) -> {
+            window.close();
+            onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token, row.get(0)));
+        }).attachTo(contentPanel);
 
         new TerminalButton("Create an account", () -> {
             Request newAccountRequest = new NewAccountRequest(token);

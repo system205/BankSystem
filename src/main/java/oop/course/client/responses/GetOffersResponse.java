@@ -34,6 +34,9 @@ public class GetOffersResponse implements Response {
         while (matcher.find()) {
             var offer = new String[4];
             var total = matcher.group(0);
+            if (!total.contains("id")) {
+                continue;
+            }
             var matcher2 = patternId.matcher(total);
             if (matcher2.find()) {
                 offer[0] = matcher2.group(1);
