@@ -1,14 +1,12 @@
 package oop.course.client;
 
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TerminalScreen;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
+import com.googlecode.lanterna.screen.*;
+import com.googlecode.lanterna.terminal.*;
+import oop.course.client.requests.*;
+import oop.course.client.responses.*;
 
-import java.io.IOException;
-import java.util.function.Function;
+import java.io.*;
+import java.util.function.*;
 
 public class TerminalGUI implements GUI {
     private final Terminal terminal;
@@ -23,11 +21,10 @@ public class TerminalGUI implements GUI {
     public void startLooping(Function<Request, BasicResponse> requestHandler) {
         try {
             screen.startScreen();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        new GUIOrchestrator(screen, requestHandler).mainLoop();
-        try {
+            new GUIOrchestrator(
+                    screen,
+                    requestHandler
+            ).mainLoop();
             screen.stopScreen();
             terminal.close();
         } catch (IOException e) {
