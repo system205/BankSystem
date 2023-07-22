@@ -4,17 +4,12 @@ import oop.course.client.BankRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ManagerRequestsResponse implements Response {
-    private final BasicResponse response;
+    private final Response response;
 
-    public ManagerRequestsResponse(BasicResponse response) {
+    public ManagerRequestsResponse(Response response) {
         this.response = response;
-    }
-
-    public boolean isSuccess() {
-        return !Objects.equals(response.raw(), "");
     }
 
     public List<BankRequest> requests() {
@@ -24,14 +19,39 @@ public class ManagerRequestsResponse implements Response {
         var types = response.values("type");
         var statuses = response.values("status");
         List<BankRequest> res = new ArrayList<>();
-        for (int i = 0; i < ids.size(); i++) {
-            res.add(new BankRequest(ids.get(i), numbers.get(i), amounts.get(i), types.get(i), statuses.get(i)));
+        for (int i = 0; i < ids.length; i++) {
+            res.add(new BankRequest(ids[i], numbers[i], amounts[i], types[i], statuses[i]));
         }
         return res;
     }
 
     @Override
+    public boolean isSuccess() {
+        return response.isSuccess();
+    }
+
+    @Override
     public int statusCode() {
         return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }

@@ -45,7 +45,7 @@ public class LoginView implements IView {
         new TerminalButton("Login", () -> {
             var resp = serverBridge.execute(new LoginRequest(form));
             if (!resp.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Authentication error", resp.errorMessage(),
+                MessageDialog.showMessageDialog(gui, "Authentication error", resp.message(),
                         MessageDialogButton.Close);
             } else {
                 window.close();

@@ -4,19 +4,14 @@ import oop.course.client.AutoPayment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ListAutoPaymentsResponse implements Response {
-    private final BasicResponse response;
+    private final Response response;
 
-    public ListAutoPaymentsResponse(BasicResponse response) {
+    public ListAutoPaymentsResponse(Response response) {
         this.response = response;
-    }
-
-    public boolean isSuccess() {
-        return !Objects.equals(response.raw(), "");
     }
 
     public List<AutoPayment> autoPayments() {
@@ -30,7 +25,7 @@ public class ListAutoPaymentsResponse implements Response {
         Pattern patternPeriod = Pattern.compile("\"" + "period" + basicPattern);
         Pattern main = Pattern.compile("\\{(.|\\n)*?\\}");
 
-        Matcher matcher = main.matcher(response.raw());
+        Matcher matcher = main.matcher(response.body());
         while (matcher.find()) {
             var autopayment = new AutoPayment("", "", "", "", "", "");
             var total = matcher.group(0);
@@ -70,7 +65,32 @@ public class ListAutoPaymentsResponse implements Response {
     }
 
     @Override
+    public boolean isSuccess() {
+        return response.isSuccess();
+    }
+
+    @Override
     public int statusCode() {
         return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }
