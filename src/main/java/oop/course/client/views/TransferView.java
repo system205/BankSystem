@@ -19,6 +19,8 @@ public class TransferView implements IView {
     private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public TransferView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge, String token,
                         String accountNumber) {
@@ -27,45 +29,39 @@ public class TransferView implements IView {
         this.token = token;
         this.onExit = onExit;
         this.accountNumber = accountNumber;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Money transfer", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        TerminalWindow window = new TerminalWindow("Money transfer", contentPanel);
-
-        var sender = new TerminalFormKeyValuePair("senderAccount", new TerminalInputPair(new TerminalText("Sender"),
-                new TerminalImmutableTextBox(accountNumber)));
-        var receiver = new TerminalFormKeyValuePair("receiverAccount", new TerminalInputPair(new TerminalText(
-                "Receiver"), new TerminalTextBox()));
-        var sum = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Sum"),
-                new TerminalTextBox()));
-
-        sender.attachTo(contentPanel);
-        receiver.attachTo(contentPanel);
-        sum.attachTo(contentPanel);
-
-        var form = new TerminalForm(List.of(sender, receiver, sum));
-
-        new TerminalButton("Transfer money", () -> {
-            var resp = serverBridge.execute(new TransferRequest(token, form));
-            if (resp.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.",
-                        MessageDialogButton.OK);
-                window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.",
-                        MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Cancel", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
+        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("senderAccount",
+                new TerminalInputPair(new TerminalText("Sender"), new TerminalImmutableTextBox(accountNumber))),
+                new TerminalFormKeyValuePair("receiverAccount", new TerminalInputPair(new TerminalText("Receiver"),
+                        new TerminalTextBox())), new TerminalFormKeyValuePair("amount",
+                        new TerminalInputPair(new TerminalText("Sum"), new TerminalTextBox()))));
+        form.attachTo(contentPanel);
+        new TerminalButton("Transfer money", () -> onTransfer(gui, form)).attachTo(contentPanel);
+        new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onCancel() {
+        window.close();
+        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+    }
+
+    private void onTransfer(WindowBasedTextGUI gui, TerminalForm form) {
+        var resp = serverBridge.execute(new TransferRequest(token, form));
+        if (resp.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.",
+                    MessageDialogButton.OK);
+            window.close();
+            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.",
+                    MessageDialogButton.Close);
+        }
     }
 }

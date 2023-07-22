@@ -16,6 +16,8 @@ public class StatementInputView implements IView {
     private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public StatementInputView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
                               String token, String accountNumber) {
@@ -24,38 +26,31 @@ public class StatementInputView implements IView {
         this.token = token;
         this.onExit = onExit;
         this.accountNumber = accountNumber;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Account Statement request", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var panel = new Panel(new LinearLayout(Direction.VERTICAL));
-        var window = new TerminalWindow("Account Statement request", panel);
-
-        var accKV = new TerminalFormKeyValuePair("accountNumber",
+        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account " + "Number"),
-                        new TerminalImmutableTextBox(accountNumber)));
-        var startDate = new TerminalFormKeyValuePair("startDate", new TerminalInputPair(new TerminalText("Start date "
-                + "(YYYY-MM-DD format)"), new TerminalTextBox()));
-        var endDate = new TerminalFormKeyValuePair("endDate", new TerminalInputPair(new TerminalText("End date " +
-                "(YYYY-MM-DD format)"), new TerminalTextBox()));
+                        new TerminalImmutableTextBox(accountNumber))), new TerminalFormKeyValuePair("startDate",
+                new TerminalInputPair(new TerminalText("Start date " + "(YYYY-MM-DD format)"), new TerminalTextBox())), new TerminalFormKeyValuePair("endDate", new TerminalInputPair(new TerminalText("End date " + "(YYYY-MM-DD format)"), new TerminalTextBox()))));
+        form.attachTo(contentPanel);
 
-        accKV.attachTo(panel);
-        startDate.attachTo(panel);
-        endDate.attachTo(panel);
-
-        var form = new TerminalForm(List.of(accKV, startDate, endDate));
-
-        new TerminalButton("Request", () -> {
-            window.close();
-            onChangeView.accept(new StatementView(onChangeView, onExit, serverBridge, token, form));
-        }).attachTo(panel);
-
-        new TerminalButton("Cancel", () -> {
-            window.close();
-            onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, accountNumber));
-        }).attachTo(panel);
-
+        new TerminalButton("Request", () -> onRequest(form)).attachTo(contentPanel);
+        new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onRequest(TerminalForm form) {
+        window.close();
+        onChangeView.accept(new StatementView(onChangeView, onExit, serverBridge, token, form));
+    }
+
+    private void onCancel() {
+        window.close();
+        onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, accountNumber));
     }
 }

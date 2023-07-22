@@ -17,62 +17,53 @@ public class RegisterView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public RegisterView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge) {
         onChangeView = changeViewHandler;
         this.onExit = onExit;
         this.serverBridge = serverBridge;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("BankSystem registration", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        TerminalWindow window = new TerminalWindow("BankSystem registration", contentPanel);
         new TerminalText("Please enter your data for registration.").attachTo(contentPanel);
-        var email = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"),
-                new TerminalTextBox()));
-        var name = new TerminalFormKeyValuePair("name", new TerminalInputPair(new TerminalText("Name"),
-                new TerminalTextBox()));
-        var surname = new TerminalFormKeyValuePair("surname", new TerminalInputPair(new TerminalText("Surname"),
-                new TerminalTextBox()));
-        var passwordField1 = new TerminalPasswordBox();
-        var passwordField2 = new TerminalPasswordBox();
-        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
-                passwordField1));
-        var password2 = new TerminalInputPair(new TerminalText("Repeat password"), passwordField2);
 
-        var form = new TerminalForm(List.of(email, name, surname, password));
+        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("email",
+                new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox())),
+                new TerminalFormKeyValuePair("name", new TerminalInputPair(new TerminalText("Name"),
+                        new TerminalTextBox())), new TerminalFormKeyValuePair("surname",
+                        new TerminalInputPair(new TerminalText("Surname"), new TerminalTextBox())),
+                new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
+                        new TerminalPasswordBox()))));
 
-        email.attachTo(contentPanel);
-        name.attachTo(contentPanel);
-        surname.attachTo(contentPanel);
-        password.attachTo(contentPanel);
-        password2.attachTo(contentPanel);
-
-        new TerminalButton("Register", () -> {
-            if (!passwordField1.text().equals(passwordField2.text())) {
-                MessageDialog.showMessageDialog(gui, "Error", "Passwords do not match", MessageDialogButton.Close);
-                return;
-            }
-            //Check all other requirements for the fields
-            var resp = serverBridge.execute(new RegisterRequest(form));
-            MessageDialog.showMessageDialog(gui, "Result", resp.message(), MessageDialogButton.OK);
-            if (resp.isSuccess()) {
-                window.close();
-                onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
-            }
-        }).attachTo(contentPanel);
-        new TerminalButton("Back to login page", () -> {
-            window.close();
-            onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Exit", () -> {
-            window.close();
-            onExit.run();
-        });
-
+        form.attachTo(contentPanel);
+        new TerminalButton("Register", () -> onRegister(gui, form)).attachTo(contentPanel);
+        new TerminalButton("Back to login page", this::onReturn).attachTo(contentPanel);
+        new TerminalButton("Exit", this::onExit);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onExit() {
+        window.close();
+        onExit.run();
+    }
+
+    private void onReturn() {
+        window.close();
+        onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+    }
+
+    private void onRegister(WindowBasedTextGUI gui, TerminalForm form) {
+        var resp = serverBridge.execute(new RegisterRequest(form));
+        MessageDialog.showMessageDialog(gui, "Result", resp.message(), MessageDialogButton.OK);
+        if (resp.isSuccess()) {
+            window.close();
+            onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+        }
     }
 }

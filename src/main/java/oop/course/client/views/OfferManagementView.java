@@ -35,23 +35,21 @@ public class OfferManagementView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-
         var response = serverBridge.execute(new GetOffersRequest(token));
-
         if (response.isSuccess()) {
             response.offersTable((List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
         }
         else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
-
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
+        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onReturn() {
+        window.close();
+        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 
     private void onRowSelected(List<String> offer, WindowBasedTextGUI gui) {

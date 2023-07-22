@@ -17,6 +17,8 @@ public class TransactionsView implements IView {
     private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public TransactionsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
                             String token, String accountNumber) {
@@ -25,32 +27,28 @@ public class TransactionsView implements IView {
         this.token = token;
         this.onExit = onExit;
         this.accountNumber = accountNumber;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Account transactions", contentPanel);
     }
-
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var panel = new Panel(new LinearLayout(Direction.VERTICAL));
-        var window = new TerminalWindow("Account transactions", panel);
-
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account Number"),
                         new TerminalImmutableTextBox(accountNumber)))));
-
         var response = serverBridge.execute(new TransactionsRequest(token, form));
-
         if (!response.isSuccess()) {
-            new TerminalText("Could not fetch data").attachTo(panel);
+            new TerminalText("Could not fetch data").attachTo(contentPanel);
         } else {
-            response.transactionsTable().attachTo(panel);
+            response.transactionsTable().attachTo(contentPanel);
         }
-
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(panel);
-
+        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onReturn() {
+        window.close();
+        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 }

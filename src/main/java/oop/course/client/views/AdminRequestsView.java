@@ -37,8 +37,6 @@ public class AdminRequestsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
 
         if (response.isSuccess()) {
@@ -48,13 +46,14 @@ public class AdminRequestsView implements IView {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
 
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
+        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onReturn() {
+        window.close();
+        onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {

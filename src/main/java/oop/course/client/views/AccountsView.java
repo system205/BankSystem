@@ -21,72 +21,78 @@ public class AccountsView implements IView {
     private final Runnable onExit;
     private final ServerBridge serverBridge;
     private final String token;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public AccountsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge, String token) {
         onChangeView = changeViewHandler;
         this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Account selection", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        TerminalWindow window = new TerminalWindow("Account selection", contentPanel);
-
         var resp = serverBridge.execute(new AccountsRequest(token));
-
-        resp.accountsTable((List<String> row) -> {
-            window.close();
-            onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, row.get(0)));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Create an account", () -> {
-            var newAccountResponse = serverBridge.execute(new NewAccountRequest(token));
-            if (newAccountResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success",
-                        "Successfully created an account with number " + newAccountResponse.accountNumber() + " with "
-                                + "the starting balance " + newAccountResponse.accountBalance());
-                window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred",
-                        MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Check my requests", () -> {
-            window.close();
-            onChangeView.accept(new CheckRequestsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Request a manager status", () -> {
-            var response = serverBridge.execute(new BecomeManagerRequest(token));
-            if (response.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "The request has been sent successfully. Assigned " +
-                        "id:" + " " + response.id(), MessageDialogButton.Continue);
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "The request could not be sent or you already " +
-                        "applied" + " to the job", MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Admin actions", () -> {
-            window.close();
-            onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Logout", () -> {
-            window.close();
-            onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Logout & exit", () -> {
-            window.close();
-            onExit.run();
-        }).attachTo(contentPanel);
-
+        resp.accountsTable(this::onAccountSelected).attachTo(contentPanel);
+        new TerminalButton("Create an account", () -> onCreateAccount(gui)).attachTo(contentPanel);
+        new TerminalButton("Check my requests", this::onCheckRequests).attachTo(contentPanel);
+        new TerminalButton("Request a manager status", () -> onRequestManager(gui)).attachTo(contentPanel);
+        new TerminalButton("Admin actions", this::onAdminActions).attachTo(contentPanel);
+        new TerminalButton("Logout", this::onLogout).attachTo(contentPanel);
+        new TerminalButton("Logout & exit", this::onExit).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onAccountSelected(List<String> row) {
+        window.close();
+        onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, row.get(0)));
+    }
+
+    private void onCreateAccount(WindowBasedTextGUI gui) {
+        var newAccountResponse = serverBridge.execute(new NewAccountRequest(token));
+        if (newAccountResponse.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success",
+                    "Successfully created an account with number " + newAccountResponse.accountNumber() + " with " +
+                            "the starting balance " + newAccountResponse.accountBalance());
+            window.close();
+            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred", MessageDialogButton.Close);
+        }
+    }
+
+    private void onCheckRequests() {
+        window.close();
+        onChangeView.accept(new CheckRequestsView(onChangeView, onExit, serverBridge, token));
+    }
+
+    private void onRequestManager(WindowBasedTextGUI gui) {
+        var response = serverBridge.execute(new BecomeManagerRequest(token));
+        if (response.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", "The request has been sent successfully. Assigned " + "id" +
+                    ":" + " " + response.id(), MessageDialogButton.Continue);
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", "The request could not be sent or you already " +
+                    "applied" + " to the job", MessageDialogButton.Close);
+        }
+    }
+
+    private void onAdminActions() {
+        window.close();
+        onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
+    }
+
+    private void onLogout() {
+        window.close();
+        onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+    }
+
+    private void onExit() {
+        window.close();
+        onExit.run();
     }
 }

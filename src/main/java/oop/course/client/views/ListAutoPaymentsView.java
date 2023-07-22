@@ -38,25 +38,22 @@ public class ListAutoPaymentsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account number"), new TerminalImmutableTextBox(account)))));
-
         var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form));
-
         if (response.isSuccess()) {
             new TerminalAutoPaymentsTable(response.autoPayments(), (List<String> row) -> onRowSelected(row, gui)).attachTo(panel);
         } else {
             new TerminalText("Could not fetch data from the server").attachTo(panel);
         }
-
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(panel);
-
+        new TerminalButton("Return", this::onReturn).attachTo(panel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onReturn() {
+        window.close();
+        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {

@@ -17,53 +17,50 @@ public class LoginView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge) {
         onChangeView = changeViewHandler;
         this.onExit = onExit;
         this.serverBridge = serverBridge;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("BankSystem authentication", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        TerminalWindow window = new TerminalWindow("BankSystem authentication", contentPanel);
-
         new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your " +
-                "existing" + " account.").attachTo(contentPanel);
-
-        var email = new TerminalTextBox();
-        var username = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), email));
-        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
-                new TerminalPasswordBox()));
-
-        var form = new TerminalForm(List.of(username, password));
-
-        username.attachTo(contentPanel);
-        password.attachTo(contentPanel);
-
-        new TerminalButton("Login", () -> {
-            var resp = serverBridge.execute(new LoginRequest(form));
-            if (!resp.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Authentication error", resp.message(),
-                        MessageDialogButton.Close);
-            } else {
-                window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, resp.token()));
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Register page", () -> {
-            window.close();
-            onChangeView.accept(new RegisterView(onChangeView, onExit, serverBridge));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Exit", () -> {
-            window.close();
-            onExit.run();
-        }).attachTo(contentPanel);
-
+                "existing account.").attachTo(contentPanel);
+        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("email",
+                new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox())),
+                new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
+                        new TerminalPasswordBox()))));
+        form.attachTo(contentPanel);
+        new TerminalButton("Login", () -> onLogin(gui, form)).attachTo(contentPanel);
+        new TerminalButton("Register page", this::onRegister).attachTo(contentPanel);
+        new TerminalButton("Exit", this::onExit).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onLogin(WindowBasedTextGUI gui, TerminalForm form) {
+        var resp = serverBridge.execute(new LoginRequest(form));
+        if (!resp.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Authentication error", resp.message(), MessageDialogButton.Close);
+        } else {
+            window.close();
+            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, resp.token()));
+        }
+    }
+
+    private void onRegister() {
+        window.close();
+        onChangeView.accept(new RegisterView(onChangeView, onExit, serverBridge));
+    }
+
+    private void onExit() {
+        window.close();
+        onExit.run();
     }
 }

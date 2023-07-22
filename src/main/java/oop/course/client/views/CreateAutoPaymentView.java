@@ -17,6 +17,8 @@ public class CreateAutoPaymentView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
     private final String token;
     private final String account;
 
@@ -27,13 +29,12 @@ public class CreateAutoPaymentView implements IView {
         this.token = token;
         this.onExit = onExit;
         this.account = accountNumber;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Auto payment", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        TerminalWindow window = new TerminalWindow("Auto payment", contentPanel);
-
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("senderNumber",
                 new TerminalInputPair(new TerminalText("From"), new TerminalImmutableTextBox(account))),
                 new TerminalFormKeyValuePair("receiverNumber", new TerminalInputPair(new TerminalText("To"),
@@ -44,26 +45,28 @@ public class CreateAutoPaymentView implements IView {
                         new TerminalInputPair(new TerminalText("Starting date"), new TerminalTextBox()))));
         form.attachTo(contentPanel);
 
-
-        new TerminalButton("Set up", () -> {
-            var response = serverBridge.execute(new NewAutoPaymentRequest(token, form));
-            if (response.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "The auto-payment was successfully set up",
-                        MessageDialogButton.OK);
-                window.close();
-                onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "The auto-payment could not be set up",
-                        MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
-        }).attachTo(contentPanel);
+        new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)).attachTo(contentPanel);
+        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
 
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onReturn() {
+        window.close();
+        onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
+    }
+
+    private void onAutoPaymentSetup(WindowBasedTextGUI gui, TerminalForm form) {
+        var response = serverBridge.execute(new NewAutoPaymentRequest(token, form));
+        if (response.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", "The auto-payment was successfully set up",
+                    MessageDialogButton.OK);
+            window.close();
+            onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", "The auto-payment could not be set up",
+                    MessageDialogButton.Close);
+        }
     }
 }

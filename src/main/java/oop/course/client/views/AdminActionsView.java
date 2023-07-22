@@ -16,6 +16,8 @@ public class AdminActionsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;
+    private final TerminalWindow window;
+    private final Panel contentPanel;
     private final String token;
 
     public AdminActionsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
@@ -24,29 +26,31 @@ public class AdminActionsView implements IView {
         this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Admin panel", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        TerminalWindow window = new TerminalWindow("Admin panel", contentPanel);
-
-        new TerminalButton("Manage offers", () -> {
-            window.close();
-            onChangeView.accept(new OfferManagementView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("View requests", () -> {
-            window.close();
-            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
-        }).attachTo(contentPanel);
-
+        new TerminalButton("Manage offers", this::onManageOffers).attachTo(contentPanel);
+        new TerminalButton("View requests", this::onViewRequests).attachTo(contentPanel);
+        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+    }
+
+    private void onManageOffers() {
+        window.close();
+        onChangeView.accept(new OfferManagementView(onChangeView, onExit, serverBridge, token));
+    }
+
+    private void onViewRequests() {
+        window.close();
+        onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
+    }
+
+    private void onReturn() {
+        window.close();
+        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 }

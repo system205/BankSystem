@@ -12,6 +12,7 @@ public class NewAutoPaymentRequest implements Request<NewAutoPaymentResponse> {
     private final Request<BasicResponse> base;
 
     public NewAutoPaymentRequest(String token, TerminalForm form) {
+        //TODO: pass json directly
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/autopayments"), token),
                 form.json());
     }
