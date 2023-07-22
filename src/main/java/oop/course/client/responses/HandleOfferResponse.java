@@ -2,7 +2,7 @@ package oop.course.client.responses;
 
 import java.util.Objects;
 
-public class HandleOfferResponse {
+public class HandleOfferResponse implements Response {
     private final BasicResponse response;
 
     public HandleOfferResponse(BasicResponse response) {

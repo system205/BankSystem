@@ -6,11 +6,11 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class AuthorizedRequest implements Request {
-    private final Request request;
+public class AuthorizedRequest implements Request<BasicResponse> {
+    private final Request<BasicResponse> request;
     private final String token;
 
-    public AuthorizedRequest(Request request, String token) {
+    public AuthorizedRequest(Request<BasicResponse> request, String token) {
         this.request = request;
         this.token = token;
     }

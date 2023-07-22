@@ -6,25 +6,22 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.RegisterRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.RegisterResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class RegisterView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
 
-    public RegisterView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler) {
+    public RegisterView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge) {
         onChangeView = changeViewHandler;
         this.onExit = onExit;
-        this.requestHandler = requestHandler;
+        this.serverBridge = serverBridge;
     }
 
     @Override
@@ -58,13 +55,12 @@ public class RegisterView implements IView {
                 return;
             }
             //Check all other requirements for the fields
-            Request req = new RegisterRequest(form);
-            var resp = new RegisterResponse(requestHandler.apply(req));
+            var resp = serverBridge.execute(new RegisterRequest(form));
             if (resp.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in",
                         MessageDialogButton.OK);
                 window.close();
-                onChangeView.accept(new LoginView(onChangeView, onExit, requestHandler));
+                onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
             } else {
                 MessageDialog.showMessageDialog(gui, "Result", "Something went terribly wrong!",
                         MessageDialogButton.Abort);
@@ -72,7 +68,7 @@ public class RegisterView implements IView {
         }).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
             window.close();
-            onChangeView.accept(new LoginView(onChangeView, onExit, requestHandler));
+            onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {

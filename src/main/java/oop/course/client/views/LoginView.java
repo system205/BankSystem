@@ -6,25 +6,22 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.LoginRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.LoginResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class LoginView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
 
-    public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler) {
+    public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge) {
         onChangeView = changeViewHandler;
         this.onExit = onExit;
-        this.requestHandler = requestHandler;
+        this.serverBridge = serverBridge;
     }
 
     @Override
@@ -32,8 +29,8 @@ public class LoginView implements IView {
         TerminalWindow window = new TerminalWindow("BankSystem authentication");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your existing" +
-                " account.").attachTo(contentPanel);
+        new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your " +
+                "existing" + " account.").attachTo(contentPanel);
 
         var email = new TerminalTextBox();
         var username = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), email));
@@ -46,14 +43,13 @@ public class LoginView implements IView {
         password.attachTo(contentPanel);
 
         new TerminalButton("Login", () -> {
-            Request req = new LoginRequest(form);
-            var resp = new LoginResponse(requestHandler.apply(req));
+            var resp = serverBridge.execute(new LoginRequest(form));
             if (resp.isWrongCredentials()) {
                 MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials",
                         MessageDialogButton.Close);
             } else if (resp.isSuccess()) {
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, resp.token()));
+                onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, resp.token()));
             } else {
                 MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
             }
@@ -61,7 +57,7 @@ public class LoginView implements IView {
 
         new TerminalButton("Register page", () -> {
             window.close();
-            onChangeView.accept(new RegisterView(onChangeView, onExit, requestHandler));
+            onChangeView.accept(new RegisterView(onChangeView, onExit, serverBridge));
         }).attachTo(contentPanel);
 
         new TerminalButton("Exit", () -> {

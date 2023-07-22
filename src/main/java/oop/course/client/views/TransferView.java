@@ -6,27 +6,24 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
-import oop.course.client.requests.Request;
 import oop.course.client.requests.TransferRequest;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.TransferResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class TransferView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
 
-    public TransferView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
-                        String token, String accountNumber) {
+    public TransferView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge, String token,
+                        String accountNumber) {
         onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+        this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
         this.accountNumber = accountNumber;
@@ -51,13 +48,12 @@ public class TransferView implements IView {
         var form = new TerminalForm(List.of(sender, receiver, sum));
 
         new TerminalButton("Transfer money", () -> {
-            var req = new TransferRequest(token, form);
-            var resp = new TransferResponse(requestHandler.apply(req));
+            var resp = serverBridge.execute(new TransferRequest(token, form));
             if (resp.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.",
                         MessageDialogButton.OK);
                 window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
+                onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.",
                         MessageDialogButton.Close);
@@ -66,7 +62,7 @@ public class TransferView implements IView {
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

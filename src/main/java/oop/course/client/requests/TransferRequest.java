@@ -2,13 +2,14 @@ package oop.course.client.requests;
 
 import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.TransferResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class TransferRequest implements Request {
-    private final Request base;
+public class TransferRequest implements Request<TransferResponse> {
+    private final Request<BasicResponse> base;
 
     public TransferRequest(String token, TerminalForm form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/transfer"), token),
@@ -21,8 +22,8 @@ public class TransferRequest implements Request {
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public TransferResponse response(BufferedReader bufferedReader) {
+        return new TransferResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 
 }

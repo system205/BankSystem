@@ -4,26 +4,24 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalWindow;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
 
 import java.io.IOException;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class AdminActionsView implements IView {
 
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
     private final String token;
 
-    public AdminActionsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
+    public AdminActionsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
                             String token) {
         this.onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+        this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
     }
@@ -35,17 +33,17 @@ public class AdminActionsView implements IView {
 
         new TerminalButton("Manage offers", () -> {
             window.close();
-            onChangeView.accept(new OfferManagementView(onChangeView, onExit, requestHandler, token));
+            onChangeView.accept(new OfferManagementView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
         new TerminalButton("View requests", () -> {
             window.close();
-            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, requestHandler, token));
+            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
         window.setContent(contentPanel);

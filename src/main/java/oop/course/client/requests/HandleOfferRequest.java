@@ -2,13 +2,14 @@ package oop.course.client.requests;
 
 import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.HandleOfferResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class HandleOfferRequest implements Request {
-    private final Request base;
+public class HandleOfferRequest implements Request<HandleOfferResponse> {
+    private final Request<BasicResponse> base;
 
     public HandleOfferRequest(String token, TerminalForm form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/admin/offers"), token),
@@ -21,7 +22,7 @@ public class HandleOfferRequest implements Request {
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public HandleOfferResponse response(BufferedReader bufferedReader) {
+        return new HandleOfferResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

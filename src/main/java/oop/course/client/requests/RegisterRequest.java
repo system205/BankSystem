@@ -2,13 +2,14 @@ package oop.course.client.requests;
 
 import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.RegisterResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class RegisterRequest implements Request {
-    private final Request base;
+public class RegisterRequest implements Request<RegisterResponse> {
+    private final Request<BasicResponse> base;
 
     public RegisterRequest(TerminalForm terminalForm) {
         base = new JsonRequest(new BasicHttpRequest(Method.POST, "/register"), terminalForm.json());
@@ -20,7 +21,7 @@ public class RegisterRequest implements Request {
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public RegisterResponse response(BufferedReader bufferedReader) {
+        return new RegisterResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

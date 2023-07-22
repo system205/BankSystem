@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class BasicHttpRequest implements Request {
+public class BasicHttpRequest implements Request<BasicResponse> {
     private final String route;
     private final Method method;
 
@@ -34,7 +34,6 @@ public class BasicHttpRequest implements Request {
 
     @Override
     public BasicResponse response(BufferedReader bufferedReader) {
-        var s = bufferedReader.lines().collect(Collectors.joining("\n"));
-        return new BasicResponse(s);
+        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
     }
 }

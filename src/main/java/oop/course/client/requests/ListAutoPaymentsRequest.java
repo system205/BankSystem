@@ -2,13 +2,14 @@ package oop.course.client.requests;
 
 import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.ListAutoPaymentsResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class ListAutoPaymentsRequest implements Request {
-    private final Request base;
+public class ListAutoPaymentsRequest implements Request<ListAutoPaymentsResponse> {
+    private final Request<BasicResponse> base;
 
     public ListAutoPaymentsRequest(String token, TerminalForm form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/autopayments"), token),
@@ -21,7 +22,7 @@ public class ListAutoPaymentsRequest implements Request {
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public ListAutoPaymentsResponse response(BufferedReader bufferedReader) {
+        return new ListAutoPaymentsResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

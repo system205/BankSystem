@@ -33,6 +33,6 @@ public class Client {
     }
 
     public void run() {
-        clientGui.startLooping(serverBridge::execute);
+        clientGui.startLooping(serverBridge);
     }
 }

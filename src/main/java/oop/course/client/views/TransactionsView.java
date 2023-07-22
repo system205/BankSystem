@@ -4,27 +4,24 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
-import oop.course.client.requests.Request;
 import oop.course.client.requests.TransactionsRequest;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.TransactionsResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class TransactionsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
 
-    public TransactionsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
+    public TransactionsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
                             String token, String accountNumber) {
         onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+        this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
         this.accountNumber = accountNumber;
@@ -40,8 +37,7 @@ public class TransactionsView implements IView {
                 new TerminalInputPair(new TerminalText("Account Number"),
                         new TerminalImmutableTextBox(accountNumber)))));
 
-        var request = new TransactionsRequest(token, form);
-        var response = new TransactionsResponse(requestHandler.apply(request));
+        var response = serverBridge.execute(new TransactionsRequest(token, form));
 
         if (!response.isSuccess()) {
             new TerminalText("Could not fetch data").attachTo(panel);
@@ -51,7 +47,7 @@ public class TransactionsView implements IView {
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(panel);
 
         window.setContent(panel);

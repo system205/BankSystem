@@ -1,13 +1,14 @@
 package oop.course.client.requests;
 
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.BecomeManagerResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class BecomeManagerRequest implements Request {
-    private final Request base;
+public class BecomeManagerRequest implements Request<BecomeManagerResponse> {
+    private final Request<BasicResponse> base;
 
     public BecomeManagerRequest(String token) {
         base = new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/job"), token);
@@ -19,7 +20,7 @@ public class BecomeManagerRequest implements Request {
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public BecomeManagerResponse response(BufferedReader bufferedReader) {
+        return new BecomeManagerResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

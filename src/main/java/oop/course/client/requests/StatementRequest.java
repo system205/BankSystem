@@ -2,14 +2,15 @@ package oop.course.client.requests;
 
 import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.StatementResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class StatementRequest implements Request {
+public class StatementRequest implements Request<StatementResponse> {
 
-    private final Request base;
+    private final Request<BasicResponse> base;
 
     public StatementRequest(String token, TerminalForm form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/stats"), token), form.json());
@@ -21,7 +22,7 @@ public class StatementRequest implements Request {
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public StatementResponse response(BufferedReader bufferedReader) {
+        return new StatementResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

@@ -6,31 +6,27 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.DeleteAutoPaymentRequest;
 import oop.course.client.requests.ListAutoPaymentsRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.DeleteAutoPaymentResponse;
-import oop.course.client.responses.ListAutoPaymentsResponse;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class ListAutoPaymentsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
     private final String token;
     private final String account;
     private final TerminalWindow window;
 
-    public ListAutoPaymentsView(Consumer<IView> changeViewHandler, Runnable onExit,
-                                Function<Request, BasicResponse> requestHandler, String token, String account) {
+    public ListAutoPaymentsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+                                String token, String account) {
         onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+        this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
         this.account = account;
@@ -45,8 +41,7 @@ public class ListAutoPaymentsView implements IView {
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account number"), new TerminalImmutableTextBox(account)))));
 
-        var request = new ListAutoPaymentsRequest(token, form);
-        var response = new ListAutoPaymentsResponse(requestHandler.apply(request));
+        var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form));
 
         if (response.isSuccess()) {
             new TerminalAutoPaymentsTable(response.autoPayments(), (List<String> row) -> onRowSelected(row, gui)).attachTo(panel);
@@ -56,7 +51,7 @@ public class ListAutoPaymentsView implements IView {
 
         new TerminalButton("Return", () -> {
             window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
+            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(panel);
 
         window.setContent(panel);
@@ -70,13 +65,12 @@ public class ListAutoPaymentsView implements IView {
         if (res == MessageDialogButton.Yes) {
             var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("paymentId",
                     new TerminalInputPair(new TerminalText("Payment Id"), new TerminalImmutableTextBox(row.get(0))))));
-            var deleteRequest = new DeleteAutoPaymentRequest(token, form);
-            var deleteResponse = new DeleteAutoPaymentResponse(requestHandler.apply(deleteRequest));
+            var deleteResponse = serverBridge.execute(new DeleteAutoPaymentRequest(token, form));
             if (deleteResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully canceled an auto-payment",
                         MessageDialogButton.OK);
                 window.close();
-                onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, requestHandler, token, account));
+                onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, serverBridge, token, account));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to cancel an auto-payment",
                         MessageDialogButton.Close);

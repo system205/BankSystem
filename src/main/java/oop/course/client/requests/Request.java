@@ -1,15 +1,15 @@
 package oop.course.client.requests;
 
-import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.Response;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
-public interface Request {
+public interface Request<T extends Response> {
 
     void send(PrintWriter printWriter);
 
-    BasicResponse response(BufferedReader bufferedReader);
+    T response(BufferedReader bufferedReader);
 
     enum Method {
         GET, POST, PUT, DELETE

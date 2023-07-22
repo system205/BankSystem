@@ -2,9 +2,9 @@ package oop.course.client;
 
 
 import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.Response;
 
 public interface ServerBridge {
 
-    BasicResponse execute(Request request);
+    <T extends Response> T execute(Request<T> request);
 }

@@ -4,25 +4,23 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class StatementInputView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
 
-    public StatementInputView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
+    public StatementInputView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
                               String token, String accountNumber) {
         onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+        this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
         this.accountNumber = accountNumber;
@@ -33,10 +31,11 @@ public class StatementInputView implements IView {
         var window = new TerminalWindow("Account Statement request");
         var panel = new Panel(new LinearLayout(Direction.VERTICAL));
 
-        var accKV = new TerminalFormKeyValuePair("accountNumber", new TerminalInputPair(new TerminalText("Account " +
-                "Number"), new TerminalImmutableTextBox(accountNumber)));
-        var startDate = new TerminalFormKeyValuePair("startDate", new TerminalInputPair(new TerminalText("Start date " +
-                "(YYYY-MM-DD format)"), new TerminalTextBox()));
+        var accKV = new TerminalFormKeyValuePair("accountNumber",
+                new TerminalInputPair(new TerminalText("Account " + "Number"),
+                        new TerminalImmutableTextBox(accountNumber)));
+        var startDate = new TerminalFormKeyValuePair("startDate", new TerminalInputPair(new TerminalText("Start date "
+                + "(YYYY-MM-DD format)"), new TerminalTextBox()));
         var endDate = new TerminalFormKeyValuePair("endDate", new TerminalInputPair(new TerminalText("End date " +
                 "(YYYY-MM-DD format)"), new TerminalTextBox()));
 
@@ -48,12 +47,12 @@ public class StatementInputView implements IView {
 
         new TerminalButton("Request", () -> {
             window.close();
-            onChangeView.accept(new StatementView(onChangeView, onExit, requestHandler, token, form));
+            onChangeView.accept(new StatementView(onChangeView, onExit, serverBridge, token, form));
         }).attachTo(panel);
 
         new TerminalButton("Cancel", () -> {
             window.close();
-            onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token, accountNumber));
+            onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, accountNumber));
         }).attachTo(panel);
 
         window.setContent(panel);
