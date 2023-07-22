@@ -18,10 +18,12 @@ public class PostOffer implements ProcessMethod {
     @Override
     public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
-        new Customer(this.connection, form.stringField("customerEmail"))
-                .offer().update(
-                        form.stringField("status")
-                );
+        new Customer(
+                this.connection,
+                form.stringField("customerEmail")
+        ).offer().update(
+                form.stringField("status")
+        );
         return new SuccessResponse("Offer is review successfully");
     }
 
