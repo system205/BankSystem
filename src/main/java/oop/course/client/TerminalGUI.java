@@ -24,7 +24,7 @@ public class TerminalGUI implements GUI {
 
             // Main loop
             new GUIOrchestrator(
-                    screen,
+                    this.screen,
                     serverBridge
             ).mainLoop();
 

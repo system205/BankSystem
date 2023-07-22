@@ -8,8 +8,8 @@ public class Client {
 
     public Client(GUIFactory guiFactory, ServerBridgeFactory serverFactory) throws RuntimeException {
         try {
-            clientGui = guiFactory.bestGUIImplementation();
-            serverBridge = serverFactory.bestServerImplementation();
+            this.clientGui = guiFactory.bestGUIImplementation();
+            this.serverBridge = serverFactory.bestServerImplementation();
         } catch (IOException e) {
             throw new RuntimeException("Unable to create GUI");
         }

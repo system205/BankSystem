@@ -12,7 +12,10 @@ public class LoginRequest implements Request<LoginResponse> {
     private final Request<BasicResponse> base;
 
     public LoginRequest(TerminalForm terminalForm) {
-        base = new JsonRequest(new BasicHttpRequest(Method.POST, "/login"), terminalForm.json());
+        this.base = new JsonRequest(
+                new BasicHttpRequest(Method.POST, "/login"),
+                terminalForm.json()
+        );
     }
 
     @Override
@@ -22,6 +25,10 @@ public class LoginRequest implements Request<LoginResponse> {
 
     @Override
     public LoginResponse response(BufferedReader bufferedReader) {
-        return new LoginResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
+        return new LoginResponse(
+                new BasicResponse(
+                        bufferedReader.lines().collect(Collectors.joining("\n"))
+                )
+        );
     }
 }
