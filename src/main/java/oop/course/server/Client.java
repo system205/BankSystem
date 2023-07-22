@@ -32,6 +32,17 @@ public class Client {
                     }
                     EOF""";
 
+            String malformed = """
+                    POST /regist HTTP/1.1
+
+                    {
+                      "email": "admin4321",
+                      "name": "admin",
+                      "surname": "admin",
+                      "password": "123"
+                    }
+                    EOF""";
+
             String registerManager = """
                     POST /register HTTP/1.1
 
@@ -223,7 +234,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = transactions;
+            final String request = malformed;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

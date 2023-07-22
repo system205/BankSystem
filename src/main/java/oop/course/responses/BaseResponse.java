@@ -40,9 +40,8 @@ public class BaseResponse implements Response {
 
         if (!headers.isEmpty()) {
             for (Map.Entry<String, Object> entry : headers.entrySet()) {
-                sb.append(entry.getKey()).append(": ").append(entry.getValue());
+                sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
             }
-            sb.append("\n");
         }
         sb.append("\n");
         if (!body.isEmpty()) {

@@ -2,6 +2,7 @@ package oop.course.routes;
 
 import oop.course.entity.Customer;
 
+import oop.course.exceptions.AuthorizationException;
 import oop.course.interfaces.Process;
 import oop.course.interfaces.*;
 import oop.course.responses.UnauthorizedResponse;
@@ -28,7 +29,8 @@ public class LoginRoute implements Route {
         Customer customer = new Customer(connection, form);
         if (!customer.exists()) {
             log.error("Customer not found");
-            return new UnauthorizedResponse("Bearer", "/login", "No such customer");
+            throw new AuthorizationException("/login", "No such customer");
+//            return new UnauthorizedResponse("Bearer", "/login", "No such customer");
         }
         if (!customer.correctCredentials(form.stringField("password"))) {
             log.info("Invalid credentials:\nEmail: " +
@@ -36,7 +38,8 @@ public class LoginRoute implements Route {
                     "\nPassword: " +
                     form.stringField("password")
             );
-            return new UnauthorizedResponse("Bearer", "/login", "Wrong password");
+            throw new AuthorizationException("/login", "Wrong password");
+//            return new UnauthorizedResponse("Bearer", "/login", "Wrong password");
         }
         return next.act(request);
     }
