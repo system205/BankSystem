@@ -1,7 +1,5 @@
 package oop.course.client.responses;
 
-import java.util.Objects;
-
 public class RegisterResponse implements Response {
 
     private final BasicResponse response;
@@ -11,7 +9,11 @@ public class RegisterResponse implements Response {
     }
 
     public boolean isSuccess() {
-        return Objects.equals(response.raw(), "Created");
+        return statusCode() == 201;
+    }
+
+    public String errorMessage() {
+        return response.value("message");
     }
 
     @Override

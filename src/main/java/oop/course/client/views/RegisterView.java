@@ -57,13 +57,12 @@ public class RegisterView implements IView {
             //Check all other requirements for the fields
             var resp = serverBridge.execute(new RegisterRequest(form));
             if (resp.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in",
+                MessageDialog.showMessageDialog(gui, "Result", "Account successfully created! You may now log in.",
                         MessageDialogButton.OK);
                 window.close();
                 onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
             } else {
-                MessageDialog.showMessageDialog(gui, "Result", "Something went terribly wrong!",
-                        MessageDialogButton.Abort);
+                MessageDialog.showMessageDialog(gui, "Registration error", resp.errorMessage(), MessageDialogButton.Close);
             }
         }).attachTo(contentPanel);
         new TerminalButton("Back to login page", () -> {
