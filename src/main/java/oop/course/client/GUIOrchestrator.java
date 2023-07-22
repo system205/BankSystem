@@ -15,20 +15,26 @@ public class GUIOrchestrator {
     private boolean exitCondition;
 
     public GUIOrchestrator(Screen screen, ServerBridge serverBridge) {
-        currentView = new LoginView(this::changeView, this::exit, serverBridge);
-        changePending = true;
-        textGUI = new MultiWindowTextGUI(screen);
-        exitCondition = false;
+        this.currentView = new LoginView(
+                this::changeView,
+                this::exit,
+                serverBridge
+        );
+        this.changePending = true;
+        this.textGUI = new MultiWindowTextGUI(screen);
+        this.exitCondition = false;
     }
 
     public void mainLoop() {
         try {
-            while (!exitCondition) {
-                if (changePending) {
-                    changePending = false;
-                    currentView.show(textGUI);
+            while (!this.exitCondition) {
+                if (this.changePending) {
+                    this.changePending = false;
+                    this.currentView.show(this.textGUI);
                 }
-                textGUI.getGUIThread().processEventsAndUpdate();
+                this.textGUI
+                        .getGUIThread()
+                        .processEventsAndUpdate();
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -41,8 +47,7 @@ public class GUIOrchestrator {
         currentView = type;
     }
 
-    private void exit()
-    {
+    private void exit() {
         exitCondition = true;
     }
 }

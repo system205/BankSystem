@@ -21,10 +21,14 @@ public class LoginView implements IView {
     private final Panel contentPanel;
 
     public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge) {
-        onChangeView = changeViewHandler;
+        this.onChangeView = changeViewHandler;
         this.onExit = onExit;
         this.serverBridge = serverBridge;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.contentPanel = new Panel(
+                new LinearLayout(
+                        Direction.VERTICAL
+                )
+        );
         this.window = new TerminalWindow("BankSystem authentication", contentPanel);
     }
 
@@ -33,7 +37,7 @@ public class LoginView implements IView {
         new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your " +
                 "existing account.").attachTo(contentPanel);
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("email",
-                new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox())),
+                        new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox())),
                 new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
                         new TerminalPasswordBox()))));
         form.attachTo(contentPanel);

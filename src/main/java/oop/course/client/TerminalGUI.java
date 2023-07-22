@@ -12,21 +12,25 @@ public class TerminalGUI implements GUI {
     private final Screen screen;
 
     public TerminalGUI() throws IOException {
-        terminal = new DefaultTerminalFactory().createTerminal();
-        screen = new TerminalScreen(terminal);
+        this.terminal = new DefaultTerminalFactory().createTerminal();
+        this.screen = new TerminalScreen(terminal);
     }
 
     @Override
     public void startLooping(ServerBridge serverBridge) {
         try {
-            screen.startScreen();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        new GUIOrchestrator(screen, serverBridge).mainLoop();
-        try {
-            screen.stopScreen();
-            terminal.close();
+            // Starting
+            this.screen.startScreen();
+
+            // Main loop
+            new GUIOrchestrator(
+                    screen,
+                    serverBridge
+            ).mainLoop();
+
+            // Closing
+            this.screen.stopScreen();
+            this.terminal.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
