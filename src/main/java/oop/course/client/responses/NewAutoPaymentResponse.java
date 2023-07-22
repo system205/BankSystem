@@ -12,4 +12,9 @@ public class NewAutoPaymentResponse implements Response {
     public boolean isSuccess() {
         return !Objects.equals(response.raw(), "");
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

@@ -52,4 +52,9 @@ public class GetOffersResponse implements Response {
         }
         return offers;
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

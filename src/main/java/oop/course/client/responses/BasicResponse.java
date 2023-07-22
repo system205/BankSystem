@@ -35,4 +35,15 @@ public class BasicResponse implements Response {
     public String raw() {
         return response;
     }
+
+    @Override
+    public int statusCode() {
+        var strings = response.split("\n");
+        try {
+            return Integer.parseInt(strings[0].split(" ")[1]);
+        }
+        catch (NumberFormatException exception) {
+            return 500;
+        }
+    }
 }

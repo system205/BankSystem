@@ -21,4 +21,9 @@ public class AccountsResponse implements Response {
         }
         return res;
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

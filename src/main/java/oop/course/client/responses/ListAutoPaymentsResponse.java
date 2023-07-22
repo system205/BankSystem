@@ -68,4 +68,9 @@ public class ListAutoPaymentsResponse implements Response {
         }
         return autoPayments;
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

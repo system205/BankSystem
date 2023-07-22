@@ -13,4 +13,9 @@ public class RegisterResponse implements Response {
     public boolean isSuccess() {
         return Objects.equals(response.raw(), "Created");
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

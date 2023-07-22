@@ -16,4 +16,8 @@ public class BecomeManagerResponse implements Response {
     public String id() {
         return response.value("id");
     }
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

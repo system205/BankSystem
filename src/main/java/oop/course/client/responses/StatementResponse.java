@@ -63,4 +63,9 @@ public class StatementResponse implements Response {
     public String endingBalance() {
         return response.value("endingBalance");
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

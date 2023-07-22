@@ -18,4 +18,9 @@ public class NewAccountResponse implements Response {
     public String accountBalance() {
         return response.value("balance");
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

@@ -55,4 +55,9 @@ public class TransactionsResponse implements Response {
         }
         return transactions;
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

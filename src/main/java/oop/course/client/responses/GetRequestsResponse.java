@@ -29,4 +29,8 @@ public class GetRequestsResponse implements Response {
         }
         return res;
     }
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

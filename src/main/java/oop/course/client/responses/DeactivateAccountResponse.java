@@ -12,4 +12,8 @@ public class DeactivateAccountResponse implements Response {
     public boolean isSuccess() {
         return Objects.equals(response.raw(), "OK");
     }
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

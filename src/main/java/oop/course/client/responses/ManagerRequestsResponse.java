@@ -29,4 +29,9 @@ public class ManagerRequestsResponse implements Response {
         }
         return res;
     }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
 }

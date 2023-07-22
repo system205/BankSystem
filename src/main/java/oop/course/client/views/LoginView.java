@@ -44,14 +44,12 @@ public class LoginView implements IView {
 
         new TerminalButton("Login", () -> {
             var resp = serverBridge.execute(new LoginRequest(form));
-            if (resp.isWrongCredentials()) {
-                MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials",
+            if (!resp.isSuccess()) {
+                MessageDialog.showMessageDialog(gui, "Authentication error", resp.errorMessage(),
                         MessageDialogButton.Close);
-            } else if (resp.isSuccess()) {
+            } else {
                 window.close();
                 onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, resp.token()));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
             }
         }).attachTo(contentPanel);
 

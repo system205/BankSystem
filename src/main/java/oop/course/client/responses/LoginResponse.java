@@ -1,7 +1,5 @@
 package oop.course.client.responses;
 
-import java.util.Objects;
-
 public class LoginResponse implements Response {
     private final BasicResponse response;
 
@@ -10,14 +8,19 @@ public class LoginResponse implements Response {
     }
 
     public boolean isSuccess() {
-        return response.raw().contains("token");
+        return statusCode() == 200;
     }
 
-    public boolean isWrongCredentials() {
-        return Objects.equals(response.raw(), "Wrong credentials");
+    public String errorMessage() {
+        return response.value("message");
     }
 
     public String token() {
         return response.value("token");
+    }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
     }
 }
