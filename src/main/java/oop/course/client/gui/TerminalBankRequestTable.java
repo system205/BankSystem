@@ -1,7 +1,6 @@
 package oop.course.client.gui;
 
 import com.googlecode.lanterna.gui2.Panel;
-import oop.course.client.BankRequest;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -9,10 +8,9 @@ import java.util.function.Consumer;
 public class TerminalBankRequestTable implements TerminalGUIElement {
     private final TerminalTable table;
 
-    public TerminalBankRequestTable(List<BankRequest> transactions, Consumer<List<String>> onRowSelected) {
+    public TerminalBankRequestTable(List<List<String>> requests, Consumer<List<String>> onRowSelected) {
         var columns = new String[]{"Id", "Account Number", "Amount", "Type", "Status"};
-        var rows = transactions.stream().map(x -> new String[]{x.id(), x.accountNumber(), x.amount(), x.type(),
-                x.status()}).toArray(x -> new String[x][1]);
+        var rows = requests.stream().map(x -> new String[]{x.get(0), x.get(1), x.get(2), x.get(3), x.get(4)}).toArray(x -> new String[x][1]);
         table = new TerminalTable(columns, rows, onRowSelected);
     }
 

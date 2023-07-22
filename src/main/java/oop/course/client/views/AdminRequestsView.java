@@ -6,7 +6,6 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.BankRequest;
 import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.HandleRequestRequest;
@@ -40,8 +39,7 @@ public class AdminRequestsView implements IView {
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
 
         if (response.isSuccess()) {
-            List<BankRequest> requests = response.requests();
-            new TerminalBankRequestTable(requests, (List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
+            response.requests((List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
         } else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }

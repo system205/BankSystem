@@ -42,7 +42,7 @@ public class ListAutoPaymentsView implements IView {
                 new TerminalInputPair(new TerminalText("Account number"), new TerminalImmutableTextBox(account)))));
         var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form));
         if (response.isSuccess()) {
-            new TerminalAutoPaymentsTable(response.autoPayments(), (List<String> row) -> onRowSelected(row, gui)).attachTo(panel);
+            response.autoPayments((List<String> row) -> onRowSelected(row, gui)).attachTo(panel);
         } else {
             new TerminalText("Could not fetch data from the server").attachTo(panel);
         }

@@ -5,7 +5,6 @@ import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import oop.course.client.ServerBridge;
-import oop.course.client.gui.TerminalBankRequestTable;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalText;
 import oop.course.client.gui.TerminalWindow;
@@ -37,7 +36,7 @@ public class CheckRequestsView implements IView {
     public void show(WindowBasedTextGUI gui) throws IOException {
         var response = serverBridge.execute(new GetRequestsRequest(token));
         if (response.isSuccess()) {
-            new TerminalBankRequestTable(response.requests(), (List<String> row) -> {}).attachTo(contentPanel);
+            response.requests((List<String> row) -> {}).attachTo(contentPanel);
         } else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }

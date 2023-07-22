@@ -8,9 +8,9 @@ import java.util.function.Consumer;
 public class TerminalAccountsTable implements TerminalGUIElement {
     private final TerminalTable table;
 
-    public TerminalAccountsTable(List<List<String>> transactions, Consumer<List<String>> onRowSelected) {
+    public TerminalAccountsTable(List<List<String>> accounts, Consumer<List<String>> onRowSelected) {
         var columns = new String[]{"Id", "Balance"};
-        String[][] rows = transactions.stream().map(l -> l.toArray(String[]::new)).toArray(String[][]::new);
+        String[][] rows = accounts.stream().map(l -> l.toArray(String[]::new)).toArray(String[][]::new);
         table = new TerminalTable(columns, rows, onRowSelected);
     }
 
