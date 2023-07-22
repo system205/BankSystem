@@ -21,14 +21,19 @@ public class ErrorResponsesProcess implements Process {
         try {
             return next.act(request);
         } catch (MalformedDataException | AccountException | IllegalStateException e) {
+            logger.error(e.getMessage(), e);
             return new BadRequestResponse(e.getMessage());
         } catch (ConflictException e) {
+            logger.error(e.getMessage(), e);
             return new ConflictResponse(e.getMessage());
         } catch (AuthorizationException e) {
+            logger.error(e.getMessage(), e);
             return new UnauthorizedResponse("Bearer", "", e.getMessage());
         } catch (ForbiddenException | IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
             return new ForbiddenResponse(e.getMessage());
         } catch (MethodNotAllowedException e) {
+            logger.error(e.getMessage(), e);
             return new MethodNotAllowedResponse();
         }
         catch (Exception e) {
