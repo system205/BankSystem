@@ -29,12 +29,12 @@ public class OfferManagementView implements IView {
         this.serverBridge = serverBridge;
         this.onExit = onExit;
         this.token = token;
-        this.window = new TerminalWindow("Account selection");
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Account selection", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
 
         var response = serverBridge.execute(new GetOffersRequest(token));
 
@@ -50,7 +50,6 @@ public class OfferManagementView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }
