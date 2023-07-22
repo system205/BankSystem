@@ -31,8 +31,8 @@ public class CheckRequestsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        TerminalWindow window = new TerminalWindow("Action selector");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Requests list", contentPanel);
 
         var response = serverBridge.execute(new GetRequestsRequest(token));
 
@@ -48,7 +48,6 @@ public class CheckRequestsView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

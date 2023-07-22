@@ -31,8 +31,8 @@ public class AccountActionsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Action selector");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Action selector", contentPanel);
         new TerminalText("Please select an action.").attachTo(contentPanel);
 
         new TerminalButton("Money transfer", () -> {
@@ -87,7 +87,6 @@ public class AccountActionsView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

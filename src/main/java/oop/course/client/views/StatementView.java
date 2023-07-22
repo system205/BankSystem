@@ -9,7 +9,6 @@ import oop.course.client.Transaction;
 import oop.course.client.gui.*;
 import oop.course.client.requests.StatementRequest;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class StatementView implements IView {
@@ -31,8 +30,8 @@ public class StatementView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Account Statement");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Account Statement", contentPanel);
 
         var response = serverBridge.execute(new StatementRequest(token, form));
 
@@ -42,8 +41,7 @@ public class StatementView implements IView {
             //experimental raw lanterna table
             new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(contentPanel);
             new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(contentPanel);
-            List<Transaction> transactions = response.transactions();
-            new TerminalTransactionTable(transactions).attachTo(contentPanel);
+            response.transactionsTable().attachTo(contentPanel);
         }
 
         new TerminalButton("Return", () -> {
@@ -51,7 +49,6 @@ public class StatementView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

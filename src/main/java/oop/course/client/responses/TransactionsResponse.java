@@ -1,8 +1,10 @@
 package oop.course.client.responses;
 
-import oop.course.client.Transaction;
+
+import oop.course.client.gui.TerminalTransactionTable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -19,41 +21,41 @@ public class TransactionsResponse implements Response {
         return !Objects.equals(response.raw(), "");
     }
 
-    public List<Transaction> transactions() {
-        List<Transaction> transactions = new ArrayList<>();
-        var basicPattern = "\" *: *\"(.*?)\"";
-        Pattern patternType = Pattern.compile("\"" + "type" + basicPattern);
-        Pattern patternFrom = Pattern.compile("\"" + "from" + basicPattern);
-        Pattern patternAmount = Pattern.compile("\"" + "amount" + basicPattern);
-        Pattern patternDate = Pattern.compile("\"" + "date" + basicPattern);
+    public TerminalTransactionTable transactionsTable() {
+        List<List<String>> transactions = new ArrayList<>();
+
+        Pattern patternType = Pattern.compile("\"" + "type" + "\" *: *\"(.*?)\"");
+        Pattern patternFrom = Pattern.compile("\"" + "from" + "\" *: *\"(.*?)\"");
+        Pattern patternAmount = Pattern.compile("\"" + "amount" + "\" *: *\"(.*?)\"");
+        Pattern patternDate = Pattern.compile("\"" + "date" + "\" *: *\"(.*?)\"");
         Pattern main = Pattern.compile("\\{(.|\\n)*?\\}");
 
         Matcher matcher = main.matcher(response.raw());
         while (matcher.find()) {
-            var curTrans = new Transaction("", "request", "", "");
+            var curTrans = new String[]{"", "request", "", ""};
             var trans = matcher.group(0);
             if (!trans.contains("type")) {
                 continue;
             }
             var matcher2 = patternType.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(matcher2.group(1), curTrans.from(), curTrans.amount(), curTrans.date());
+                curTrans[0] = matcher2.group(1);
             }
             matcher2 = patternFrom.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(curTrans.type(), matcher2.group(1), curTrans.amount(), curTrans.date());
+                curTrans[1] = matcher2.group(1);
             }
             matcher2 = patternAmount.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(curTrans.type(), curTrans.from(), matcher2.group(1), curTrans.date());
+                curTrans[2] = matcher2.group(1);
             }
             matcher2 = patternDate.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(curTrans.type(), curTrans.from(), curTrans.amount(), matcher2.group(1));
+                curTrans[3] = matcher2.group(1);
             }
-            transactions.add(curTrans);
+            transactions.add(Arrays.stream(curTrans).toList());
         }
-        return transactions;
+        return new TerminalTransactionTable(transactions);
     }
 
     @Override

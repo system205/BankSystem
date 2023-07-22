@@ -10,10 +10,11 @@ import java.util.List;
 public class TerminalWindow {
     private final BasicWindow window;
 
-    public TerminalWindow(String title) {
+    public TerminalWindow(String title, Panel panel) {
         window = new BasicWindow(title);
         window.setHints(List.of(Window.Hint.CENTERED));
         window.setVisible(false);
+        window.setComponent(panel);
     }
 
     public void close() {
@@ -22,10 +23,6 @@ public class TerminalWindow {
 
     public void open() {
         window.setVisible(true);
-    }
-
-    public void setContent(Panel panel) {
-        window.setComponent(panel);
     }
 
     public void addToGui(WindowBasedTextGUI gui) {

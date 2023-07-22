@@ -21,6 +21,7 @@ public class OfferManagementView implements IView {
     private final ServerBridge serverBridge;
     private final String token;
     private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public OfferManagementView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
                                String token) {
@@ -38,8 +39,9 @@ public class OfferManagementView implements IView {
         var response = serverBridge.execute(new GetOffersRequest(token));
 
         if (response.isSuccess()) {
-            new TerminalOffersTable(response.offers(), (List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
-        } else {
+            response.offersTable((List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
+        }
+        else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
 

@@ -31,8 +31,8 @@ public class TransferView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Money transfer");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Money transfer", contentPanel);
 
         var sender = new TerminalFormKeyValuePair("senderAccount", new TerminalInputPair(new TerminalText("Sender"),
                 new TerminalImmutableTextBox(accountNumber)));
@@ -65,7 +65,6 @@ public class TransferView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

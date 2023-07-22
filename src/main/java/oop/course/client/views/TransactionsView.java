@@ -30,8 +30,8 @@ public class TransactionsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Account Statement request");
         var panel = new Panel(new LinearLayout(Direction.VERTICAL));
+        var window = new TerminalWindow("Account transactions", panel);
 
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account Number"),
@@ -42,7 +42,7 @@ public class TransactionsView implements IView {
         if (!response.isSuccess()) {
             new TerminalText("Could not fetch data").attachTo(panel);
         } else {
-            new TerminalTransactionTable(response.transactions()).attachTo(panel);
+            response.transactionsTable().attachTo(panel);
         }
 
         new TerminalButton("Return", () -> {
@@ -50,7 +50,6 @@ public class TransactionsView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(panel);
 
-        window.setContent(panel);
         window.addToGui(gui);
         window.open();
     }

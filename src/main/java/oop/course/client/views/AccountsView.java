@@ -8,12 +8,12 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.ServerBridge;
 import oop.course.client.gui.TerminalButton;
-import oop.course.client.gui.TerminalModernButton;
 import oop.course.client.gui.TerminalWindow;
 import oop.course.client.requests.AccountsRequest;
 import oop.course.client.requests.BecomeManagerRequest;
 import oop.course.client.requests.NewAccountRequest;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class AccountsView implements IView {
@@ -31,20 +31,15 @@ public class AccountsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Account selection");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Account selection", contentPanel);
 
         var resp = serverBridge.execute(new AccountsRequest(token));
-        var accounts = resp.accounts();
 
-        for (var account : accounts) {
-            var t = "Account number: " + account.accountNumber() + " " + "Balance: " + account.balance();
-            new TerminalModernButton(t, () -> {
-                window.close();
-                onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token,
-                        account.accountNumber()));
-            }).attachTo(contentPanel);
-        }
+        resp.accountsTable((List<String> row) -> {
+            window.close();
+            onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, row.get(0)));
+        }).attachTo(contentPanel);
 
         new TerminalButton("Create an account", () -> {
             var newAccountResponse = serverBridge.execute(new NewAccountRequest(token));
@@ -91,7 +86,6 @@ public class AccountsView implements IView {
             onExit.run();
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

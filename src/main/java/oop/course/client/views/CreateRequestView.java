@@ -32,8 +32,9 @@ public class CreateRequestView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) throws IOException {
-        TerminalWindow window = new TerminalWindow("Action selector");
         Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalWindow window = new TerminalWindow("Create request", contentPanel);
+
 
         var number = new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account " + "number"), new TerminalImmutableTextBox(account)));
@@ -66,7 +67,6 @@ public class CreateRequestView implements IView {
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }

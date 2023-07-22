@@ -22,6 +22,7 @@ public class AdminRequestsView implements IView {
     private final ServerBridge serverBridge;
     private final String token;
     private final TerminalWindow window;
+    private final Panel contentPanel;
 
     public AdminRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
                              String token) {
@@ -29,7 +30,8 @@ public class AdminRequestsView implements IView {
         this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
-        this.window = new TerminalWindow("Account selection");
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        this.window = new TerminalWindow("Admin requests panel", contentPanel);
     }
 
 
@@ -51,7 +53,6 @@ public class AdminRequestsView implements IView {
             onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
         }).attachTo(contentPanel);
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
     }
