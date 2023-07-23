@@ -44,7 +44,7 @@ public class ListAutoPaymentsView implements IView {
             response.fillAutopayments((List<List<String>> rows) -> new TerminalAutoPaymentsTable(rows,
                     (List<String> row) -> onRowSelected(row, gui))).attachTo(panel);
         } else {
-            new TerminalText("Could not fetch data from the server").attachTo(panel);
+            new TerminalText(response.message()).attachTo(panel);
         }
         new TerminalButton("Return", this::onReturn).attachTo(panel);
         window.addToGui(gui);
@@ -64,12 +64,10 @@ public class ListAutoPaymentsView implements IView {
                     new TerminalInputPair(new TerminalText("Payment Id"), new TerminalImmutableTextBox(row.get(0))))));
             var deleteResponse = serverBridge.execute(new DeleteAutoPaymentRequest(token, form.json()));
             if (deleteResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully canceled an auto-payment",
-                        MessageDialogButton.OK);
+                MessageDialog.showMessageDialog(gui, "Success", deleteResponse.message(), MessageDialogButton.OK);
                 onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, serverBridge, token, account));
             } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "Failed to cancel an auto-payment",
-                        MessageDialogButton.Close);
+                MessageDialog.showMessageDialog(gui, "Failure", deleteResponse.message(), MessageDialogButton.Close);
             }
         }
     }

@@ -19,7 +19,12 @@ public class CreateRequestResponse implements Response {
 
     @Override
     public String message() {
-        return response.message();
+        if (isSuccess()) {
+            return "Successfully placed a request";
+        }
+        else {
+            return "Could not create a request";
+        }
     }
 
     @Override

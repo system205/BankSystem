@@ -19,7 +19,12 @@ public class DeactivateAccountResponse implements Response {
 
     @Override
     public String message() {
-        return response.message();
+        if (isSuccess()) {
+            return "Successfully deactivated an account";
+        }
+        else {
+            return "Could not deactivate an account";
+        }
     }
 
     @Override

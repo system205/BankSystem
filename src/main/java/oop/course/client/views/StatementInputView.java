@@ -35,7 +35,9 @@ public class StatementInputView implements IView {
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account " + "Number"),
                         new TerminalImmutableTextBox(accountNumber))), new TerminalFormKeyValuePair("startDate",
-                new TerminalInputPair(new TerminalText("Start date " + "(YYYY-MM-DD format)"), new TerminalTextBox())), new TerminalFormKeyValuePair("endDate", new TerminalInputPair(new TerminalText("End date " + "(YYYY-MM-DD format)"), new TerminalTextBox()))));
+                new TerminalInputPair(new TerminalText("Start date (YYYY-MM-DD format)"), new TerminalTextBox())),
+                new TerminalFormKeyValuePair("endDate", new TerminalInputPair(new TerminalText("End date (YYYY-MM-DD " +
+                        "format)"), new TerminalTextBox()))));
         form.attachTo(contentPanel);
 
         new TerminalButton("Request", () -> onRequest(form)).attachTo(contentPanel);

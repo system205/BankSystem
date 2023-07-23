@@ -35,7 +35,7 @@ public class StatementView implements IView {
     public void show(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new StatementRequest(token, form.json()));
         if (!response.isSuccess()) {
-            new TerminalText("Could not fetch data").attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(contentPanel);
         } else {
             new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(contentPanel);
             new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(contentPanel);

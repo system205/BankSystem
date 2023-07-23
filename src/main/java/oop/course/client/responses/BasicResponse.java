@@ -24,7 +24,7 @@ public class BasicResponse implements Response {
 
     @Override
     public String value(String key) {
-        Pattern pattern = Pattern.compile("\"" + key + "\": ?\"(.*?)\"");
+        Pattern pattern = Pattern.compile("\"" + key + "\" *: *\"((.|\n)*?)\"");
         Matcher matcher = pattern.matcher(response);
         if (matcher.find()) {
             return matcher.group(1);

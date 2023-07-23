@@ -39,7 +39,7 @@ public class OfferManagementView implements IView {
             response.fillOffersTable((List<List<String>> rows) -> new TerminalOffersTable(rows,
                     (List<String> row) -> onRowSelected(row, gui))).attachTo(contentPanel);
         } else {
-            new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(contentPanel);
         }
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);
@@ -52,34 +52,28 @@ public class OfferManagementView implements IView {
     }
 
     private void onRowSelected(List<String> offer, WindowBasedTextGUI gui) {
-        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to approve an " + "offer?",
+        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to approve an offer?",
                 MessageDialogButton.Yes, MessageDialogButton.No, MessageDialogButton.Cancel);
+        TerminalForm form;
         if (res == MessageDialogButton.Yes) {
-            var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("customerEmail",
+            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("customerEmail",
                     new TerminalInputPair(new TerminalText("Customer email"),
                             new TerminalImmutableTextBox(offer.get(1)))), new TerminalFormKeyValuePair("status",
                     new TerminalInputPair(new TerminalText("Status"), new TerminalImmutableTextBox("accepted")))));
-            var acceptResponse = serverBridge.execute(new HandleOfferRequest(token, form.json()));
-            if (acceptResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully approved an offer",
-                        MessageDialogButton.OK);
-                onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "Failed to approve the request",
-                        MessageDialogButton.Close);
-            }
         } else if (res == MessageDialogButton.No) {
-            var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("customerEmail",
+            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("customerEmail",
                     new TerminalInputPair(new TerminalText("Customer email"),
                             new TerminalImmutableTextBox(offer.get(1)))), new TerminalFormKeyValuePair("status",
                     new TerminalInputPair(new TerminalText("Status"), new TerminalImmutableTextBox("rejected")))));
-            var rejectResponse = serverBridge.execute(new HandleOfferRequest(token, form.json()));
-            if (rejectResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully denied an offer", MessageDialogButton.OK);
-                onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "Failed to deny the offer", MessageDialogButton.Close);
-            }
+        } else {
+            return;
+        }
+        var response = serverBridge.execute(new HandleOfferRequest(token, form.json()));
+        if (response.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
+            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }
     }
 }

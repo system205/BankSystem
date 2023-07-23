@@ -19,7 +19,12 @@ public class DeleteAutoPaymentResponse implements Response {
 
     @Override
     public String message() {
-        return response.message();
+        if (isSuccess()) {
+            return "Successfully deleted an autopayment";
+        }
+        else {
+            return "Could not delete an autopayment";
+        }
     }
 
     @Override

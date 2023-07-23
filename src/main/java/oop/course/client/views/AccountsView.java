@@ -9,6 +9,7 @@ import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.ServerBridge;
 import oop.course.client.gui.TerminalAccountsTable;
 import oop.course.client.gui.TerminalButton;
+import oop.course.client.gui.TerminalText;
 import oop.course.client.gui.TerminalWindow;
 import oop.course.client.requests.AccountsRequest;
 import oop.course.client.requests.BecomeManagerRequest;
@@ -37,7 +38,11 @@ public class AccountsView implements IView {
     @Override
     public void show(WindowBasedTextGUI gui) {
         var resp = serverBridge.execute(new AccountsRequest(token));
-        resp.fillAccountsTable((List<List<String>> rows) -> new TerminalAccountsTable(rows, this::onAccountSelected)).attachTo(contentPanel);
+        if (resp.isSuccess()) {
+            resp.fillAccountsTable((List<List<String>> rows) -> new TerminalAccountsTable(rows, this::onAccountSelected)).attachTo(contentPanel);
+        } else {
+            new TerminalText(resp.message()).attachTo(contentPanel);
+        }
         new TerminalButton("Create an account", () -> onCreateAccount(gui)).attachTo(contentPanel);
         new TerminalButton("Check my requests", this::onCheckRequests).attachTo(contentPanel);
         new TerminalButton("Request a manager status", () -> onRequestManager(gui)).attachTo(contentPanel);
@@ -56,12 +61,10 @@ public class AccountsView implements IView {
     private void onCreateAccount(WindowBasedTextGUI gui) {
         var newAccountResponse = serverBridge.execute(new NewAccountRequest(token));
         if (newAccountResponse.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Success",
-                    "Successfully created an account with number " + newAccountResponse.accountNumber() + " with " +
-                            "the starting balance " + newAccountResponse.accountBalance());
+            MessageDialog.showMessageDialog(gui, "Success", newAccountResponse.message(), MessageDialogButton.OK);
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         } else {
-            MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred", MessageDialogButton.Close);
+            MessageDialog.showMessageDialog(gui, "Error", newAccountResponse.message(), MessageDialogButton.Close);
         }
     }
 
@@ -72,11 +75,9 @@ public class AccountsView implements IView {
     private void onRequestManager(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new BecomeManagerRequest(token));
         if (response.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Success", "The request has been sent successfully. Assigned " + "id"
-                    + ":" + " " + response.id(), MessageDialogButton.Continue);
+            MessageDialog.showMessageDialog(gui, "Success", "Successfully posted a job offer", MessageDialogButton.OK);
         } else {
-            MessageDialog.showMessageDialog(gui, "Failure", "The request could not be sent or you already " +
-                    "applied" + " to the job", MessageDialogButton.Close);
+            MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }
     }
 

@@ -18,7 +18,12 @@ public class HandleRequestResponse implements Response {
 
     @Override
     public String message() {
-        return response.message();
+        if (isSuccess()) {
+            return "Successfully handled the request";
+        }
+        else {
+            return "Could not handle the request";
+        }
     }
 
     @Override

@@ -40,7 +40,7 @@ public class CheckRequestsView implements IView {
                     (List<String> row) -> {
             })).attachTo(contentPanel);
         } else {
-            new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(contentPanel);
         }
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);

@@ -48,10 +48,10 @@ public class CreateRequestView implements IView {
     private void onCreate(WindowBasedTextGUI gui, TerminalForm form) {
         var response = serverBridge.execute(new CreateRequestRequest(token, form.json()));
         if (response.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Success", "Successfully created a request", MessageDialogButton.OK);
+            MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         } else {
-            MessageDialog.showMessageDialog(gui, "Failure", "Failed to create a request", MessageDialogButton.Close);
+            MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }
     }
 

@@ -38,7 +38,7 @@ public class TransactionsView implements IView {
                         new TerminalImmutableTextBox(accountNumber)))));
         var response = serverBridge.execute(new TransactionsRequest(token, form.json()));
         if (!response.isSuccess()) {
-            new TerminalText("Could not fetch data").attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(contentPanel);
         } else {
             response.fillTransactionsTable(TerminalTransactionTable::new).attachTo(contentPanel);
         }

@@ -32,7 +32,6 @@ public class AdminRequestsView implements IView {
         this.window = new TerminalWindow("Admin requests panel", contentPanel);
     }
 
-
     @Override
     public void show(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
@@ -41,7 +40,7 @@ public class AdminRequestsView implements IView {
             response.fillRequestsTable((List<List<String>> rows) -> new TerminalBankRequestTable(rows,
                     (List<String> row) -> onRowSelected(row, gui))).attachTo(contentPanel);
         } else {
-            new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(contentPanel);
         }
 
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
@@ -55,35 +54,28 @@ public class AdminRequestsView implements IView {
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {
-        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to approve the " + "request?"
-                , MessageDialogButton.Yes, MessageDialogButton.No, MessageDialogButton.Cancel);
+        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to approve the request?",
+                MessageDialogButton.Yes, MessageDialogButton.No, MessageDialogButton.Cancel);
+        TerminalForm form;
         if (res == MessageDialogButton.Yes) {
-            var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("id",
+            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("id",
                     new TerminalInputPair(new TerminalText("Request id"), new TerminalImmutableTextBox(row.get(0)))),
                     new TerminalFormKeyValuePair("status", new TerminalInputPair(new TerminalText("Status"),
                             new TerminalImmutableTextBox("approved")))));
-            var approveResponse = serverBridge.execute(new HandleRequestRequest(token, form.json()));
-            if (approveResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully approved request",
-                        MessageDialogButton.OK);
-                onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "Failed to approve the request",
-                        MessageDialogButton.Close);
-            }
         } else if (res == MessageDialogButton.No) {
-            var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("id",
+            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("id",
                     new TerminalInputPair(new TerminalText("Request id"), new TerminalImmutableTextBox(row.get(0)))),
                     new TerminalFormKeyValuePair("status", new TerminalInputPair(new TerminalText("Status"),
                             new TerminalImmutableTextBox("denied")))));
-            var denyResponse = serverBridge.execute(new HandleRequestRequest(token, form.json()));
-            if (denyResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully denied request", MessageDialogButton.OK);
-                onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "Failed to deny the request",
-                        MessageDialogButton.Close);
-            }
+        } else {
+            return;
+        }
+        var response = serverBridge.execute(new HandleRequestRequest(token, form.json()));
+        if (response.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
+            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }
     }
 }

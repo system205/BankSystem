@@ -60,12 +60,10 @@ public class CreateAutoPaymentView implements IView {
     private void onAutoPaymentSetup(WindowBasedTextGUI gui, TerminalForm form) {
         var response = serverBridge.execute(new NewAutoPaymentRequest(token, form.json()));
         if (response.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Success", "The auto-payment was successfully set up",
-                    MessageDialogButton.OK);
+            MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
             onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
         } else {
-            MessageDialog.showMessageDialog(gui, "Failure", "The auto-payment could not be set up",
-                    MessageDialogButton.Close);
+            MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }
     }
 }

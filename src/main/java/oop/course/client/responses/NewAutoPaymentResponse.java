@@ -19,7 +19,12 @@ public class NewAutoPaymentResponse implements Response {
 
     @Override
     public String message() {
-        return response.message();
+        if (isSuccess()) {
+            return "Successfully created an autopayment";
+        }
+        else {
+            return "Could not create an autopayment";
+        }
     }
 
     @Override
