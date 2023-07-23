@@ -19,9 +19,11 @@ public class Admin implements Initializer {
 
     public List<Offer> offers() throws Exception {
         log.info("Retrieving all offers from the database");
-        try (PreparedStatement statement = this.connection.prepareStatement(
-                "SELECT id FROM offers WHERE status = 'pending';"
-        )) {
+        try (
+                PreparedStatement statement = this.connection.prepareStatement(
+                        "SELECT id FROM offers WHERE status = 'pending';"
+                )
+        ) {
             ResultSet result = statement.executeQuery();
             List<Offer> offers = new LinkedList<>();
             while (result.next()) {
@@ -36,9 +38,11 @@ public class Admin implements Initializer {
     }
 
     private List<AutoPayment> payments() {
-        try (PreparedStatement statement = this.connection.prepareStatement(
-                "SELECT id FROM autopayments;"
-        )) {
+        try (
+                PreparedStatement statement = this.connection.prepareStatement(
+                        "SELECT id FROM autopayments;"
+                )
+        ) {
             ResultSet result = statement.executeQuery();
             List<AutoPayment> payments = new LinkedList<>();
             while (result.next()) {
@@ -56,13 +60,21 @@ public class Admin implements Initializer {
     public void init() {
         log.debug("Start initializing admin");
         // Create or check that admin exists
-        try (PreparedStatement statement = this.connection.prepareStatement(
-                "SELECT * FROM customer WHERE email = 'admin';"
-        ); PreparedStatement createStatement = this.connection.prepareStatement(
-                "INSERT INTO customer (email, name, surname, password) VALUES ('admin', 'admin', 'admin', 'admin') RETURNING id;"
-        ); PreparedStatement roleStatement = this.connection.prepareStatement(
-                "INSERT INTO roles (role, customer_id) VALUES ('admin', ?);"
-        )) {
+        try (
+                PreparedStatement statement = this.connection.prepareStatement(
+                        "SELECT * FROM customer WHERE email = 'admin';"
+                );
+                PreparedStatement createStatement = this.connection.prepareStatement(
+                        """
+                                INSERT INTO customer (email, name, surname, password)
+                                VALUES ('admin', 'admin', 'admin', 'admin')
+                                RETURNING id;
+                                """
+                );
+                PreparedStatement roleStatement = this.connection.prepareStatement(
+                        "INSERT INTO roles (role, customer_id) VALUES ('admin', ?);"
+                )
+        ) {
             ResultSet result = statement.executeQuery();
             if (!result.next()) { // create admin
                 log.debug("Start creating new Admin");

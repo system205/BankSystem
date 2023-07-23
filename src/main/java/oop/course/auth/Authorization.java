@@ -29,6 +29,7 @@ public class Authorization implements Process {
     @Override
     public Response act(Request request) throws Exception {
         // throws exception if user does not have a necessary role
+        // TODO - creating object inside another object - bad
         new GuardedUrl(connection, rolesConfiguration).path(request);
         // Process next if OK so far
         logger.info("Authorization stage has passed successfully");
