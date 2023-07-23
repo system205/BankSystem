@@ -24,10 +24,12 @@ public class ApprovedRequest implements Transaction {
 
     @Override
     public BigDecimal balanceChange() {
-        if ("withdraw".equals(this.type))
+        if ("withdraw".equals(this.type)) {
             return amount.negate();
-        else if ("deposit".equals(this.type)) {
+        } else if ("deposit".equals(this.type)) {
             return amount;
-        } else throw new IllegalStateException("Type of a request should be either withdraw or deposit");
+        } else {
+            throw new IllegalStateException("Type of a request should be either withdraw or deposit");
+        }
     }
 }
