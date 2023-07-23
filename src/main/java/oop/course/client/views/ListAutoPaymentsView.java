@@ -11,7 +11,6 @@ import oop.course.client.gui.*;
 import oop.course.client.requests.DeleteAutoPaymentRequest;
 import oop.course.client.requests.ListAutoPaymentsRequest;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -37,7 +36,7 @@ public class ListAutoPaymentsView implements IView {
 
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
+    public void show(WindowBasedTextGUI gui) {
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account number"), new TerminalImmutableTextBox(account)))));
         var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form.json()));

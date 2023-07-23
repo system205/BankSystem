@@ -11,7 +11,6 @@ import oop.course.client.gui.*;
 import oop.course.client.requests.GetOffersRequest;
 import oop.course.client.requests.HandleOfferRequest;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -34,7 +33,7 @@ public class OfferManagementView implements IView {
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
+    public void show(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new GetOffersRequest(token));
         if (response.isSuccess()) {
             response.fillOffersTable((List<List<String>> rows) -> new TerminalOffersTable(rows,

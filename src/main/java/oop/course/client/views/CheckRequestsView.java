@@ -11,7 +11,6 @@ import oop.course.client.gui.TerminalText;
 import oop.course.client.gui.TerminalWindow;
 import oop.course.client.requests.GetRequestsRequest;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -34,7 +33,7 @@ public class CheckRequestsView implements IView {
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
+    public void show(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new GetRequestsRequest(token));
         if (response.isSuccess()) {
             response.fillRequestsTable((List<List<String>> rows) -> new TerminalBankRequestTable(rows,

@@ -33,7 +33,7 @@ public class SocketServerBridge implements ServerBridge {
             out.println("EOF");
             return request.response(in);
         } catch (IOException e) {
-            throw new RuntimeException();
+            throw new RuntimeException("Could not connect to the server. Please check your internet connection and try again later");
         }
     }
 }

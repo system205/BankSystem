@@ -10,7 +10,6 @@ import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.CreateRequestRequest;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -35,7 +34,7 @@ public class CreateRequestView implements IView {
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
+    public void show(WindowBasedTextGUI gui) {
         var form = new TerminalForm(List.of(
                 new TerminalFormKeyValuePair(
                         "accountNumber",

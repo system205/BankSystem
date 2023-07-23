@@ -8,7 +8,6 @@ import oop.course.client.ServerBridge;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalWindow;
 
-import java.io.IOException;
 import java.util.function.Consumer;
 
 public class AdminActionsView implements IView {
@@ -31,7 +30,7 @@ public class AdminActionsView implements IView {
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
+    public void show(WindowBasedTextGUI gui) {
         new TerminalButton("Manage offers", this::onManageOffers).attachTo(contentPanel);
         new TerminalButton("View requests", this::onViewRequests).attachTo(contentPanel);
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);

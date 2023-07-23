@@ -11,7 +11,6 @@ import oop.course.client.gui.*;
 import oop.course.client.requests.HandleRequestRequest;
 import oop.course.client.requests.ManagerRequestsRequest;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -35,7 +34,7 @@ public class AdminRequestsView implements IView {
 
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
+    public void show(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
 
         if (response.isSuccess()) {
