@@ -54,7 +54,6 @@ public class CreateAutoPaymentView implements IView {
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
     }
 
@@ -63,7 +62,6 @@ public class CreateAutoPaymentView implements IView {
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", "The auto-payment was successfully set up",
                     MessageDialogButton.OK);
-            window.close();
             onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", "The auto-payment could not be set up",

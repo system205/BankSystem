@@ -48,7 +48,6 @@ public class OfferManagementView implements IView {
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 
@@ -64,7 +63,6 @@ public class OfferManagementView implements IView {
             if (acceptResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully approved an offer",
                         MessageDialogButton.OK);
-                window.close();
                 onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to approve the request",
@@ -78,7 +76,6 @@ public class OfferManagementView implements IView {
             var rejectResponse = serverBridge.execute(new HandleOfferRequest(token, form.json()));
             if (rejectResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully denied an offer", MessageDialogButton.OK);
-                window.close();
                 onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to deny the offer", MessageDialogButton.Close);

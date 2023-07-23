@@ -49,7 +49,6 @@ public class TransactionsView implements IView {
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 }

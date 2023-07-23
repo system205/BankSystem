@@ -35,22 +35,8 @@ public class CreateRequestView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var form = new TerminalForm(List.of(
-                new TerminalFormKeyValuePair(
-                        "accountNumber",
-                        new TerminalInputPair(
-                                new TerminalText("Account " + "number"),
-                                new TerminalImmutableTextBox(account))),
-                new TerminalFormKeyValuePair(
-                        "type",
-                        new TerminalInputPair(
-                                new TerminalText("Type"),
-                                new DropDownTextBox(List.of("deposit", "withdraw")))),
-                new TerminalFormKeyValuePair(
-                        "amount",
-                        new TerminalInputPair(
-                                new TerminalText("Amount"),
-                                new TerminalTextBox()))));
+        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
+                new TerminalInputPair(new TerminalText("Account " + "number"), new TerminalImmutableTextBox(account))), new TerminalFormKeyValuePair("type", new TerminalInputPair(new TerminalText("Type"), new DropDownTextBox(List.of("deposit", "withdraw")))), new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Amount"), new TerminalTextBox()))));
         form.attachTo(contentPanel);
         new TerminalButton("Create", () -> onCreate(gui, form)).attachTo(contentPanel);
         new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
@@ -62,18 +48,14 @@ public class CreateRequestView implements IView {
     private void onCreate(WindowBasedTextGUI gui, TerminalForm form) {
         var response = serverBridge.execute(new CreateRequestRequest(token, form.json()));
         if (response.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Success", "Successfully created a request",
-                    MessageDialogButton.OK);
-            window.close();
+            MessageDialog.showMessageDialog(gui, "Success", "Successfully created a request", MessageDialogButton.OK);
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         } else {
-            MessageDialog.showMessageDialog(gui, "Failure", "Failed to create a request",
-                    MessageDialogButton.Close);
+            MessageDialog.showMessageDialog(gui, "Failure", "Failed to create a request", MessageDialogButton.Close);
         }
     }
 
     private void onCancel() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 }

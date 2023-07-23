@@ -53,7 +53,6 @@ public class ListAutoPaymentsView implements IView {
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 
@@ -67,7 +66,6 @@ public class ListAutoPaymentsView implements IView {
             if (deleteResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully canceled an auto-payment",
                         MessageDialogButton.OK);
-                window.close();
                 onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, serverBridge, token, account));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to cancel an auto-payment",

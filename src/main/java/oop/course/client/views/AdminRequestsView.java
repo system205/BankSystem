@@ -51,7 +51,6 @@ public class AdminRequestsView implements IView {
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
     }
 
@@ -67,7 +66,6 @@ public class AdminRequestsView implements IView {
             if (approveResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully approved request",
                         MessageDialogButton.OK);
-                window.close();
                 onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to approve the request",
@@ -81,7 +79,6 @@ public class AdminRequestsView implements IView {
             var denyResponse = serverBridge.execute(new HandleRequestRequest(token, form.json()));
             if (denyResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully denied request", MessageDialogButton.OK);
-                window.close();
                 onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", "Failed to deny the request",

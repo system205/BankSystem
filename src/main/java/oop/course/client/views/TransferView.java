@@ -49,16 +49,13 @@ public class TransferView implements IView {
     }
 
     private void onCancel() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 
     private void onTransfer(WindowBasedTextGUI gui, TerminalForm form) {
         var resp = serverBridge.execute(new TransferRequest(token, form.json()));
         if (resp.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.",
-                    MessageDialogButton.OK);
-            window.close();
+            MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.", MessageDialogButton.OK);
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.",

@@ -37,7 +37,8 @@ public class CheckRequestsView implements IView {
         var response = serverBridge.execute(new GetRequestsRequest(token));
         if (response.isSuccess()) {
             response.fillRequestsTable((List<List<String>> rows) -> new TerminalBankRequestTable(rows,
-                    (List<String> row) -> {})).attachTo(contentPanel);
+                    (List<String> row) -> {
+            })).attachTo(contentPanel);
         } else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
@@ -48,7 +49,6 @@ public class CheckRequestsView implements IView {
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 }

@@ -40,17 +40,14 @@ public class AdminActionsView implements IView {
     }
 
     private void onManageOffers() {
-        window.close();
         onChangeView.accept(new OfferManagementView(onChangeView, onExit, serverBridge, token));
     }
 
     private void onViewRequests() {
-        window.close();
         onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 }

@@ -50,7 +50,6 @@ public class AccountsView implements IView {
     }
 
     private void onAccountSelected(List<String> row) {
-        window.close();
         onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, row.get(0)));
     }
 
@@ -60,7 +59,6 @@ public class AccountsView implements IView {
             MessageDialog.showMessageDialog(gui, "Success",
                     "Successfully created an account with number " + newAccountResponse.accountNumber() + " with " +
                             "the starting balance " + newAccountResponse.accountBalance());
-            window.close();
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred", MessageDialogButton.Close);
@@ -68,7 +66,6 @@ public class AccountsView implements IView {
     }
 
     private void onCheckRequests() {
-        window.close();
         onChangeView.accept(new CheckRequestsView(onChangeView, onExit, serverBridge, token));
     }
 
@@ -84,17 +81,14 @@ public class AccountsView implements IView {
     }
 
     private void onAdminActions() {
-        window.close();
         onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
     }
 
     private void onLogout() {
-        window.close();
         onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
     }
 
     private void onExit() {
-        window.close();
         onExit.run();
     }
 }

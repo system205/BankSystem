@@ -57,32 +57,26 @@ public class AccountActionsView implements IView {
     }
 
     private void onMoneyTransfer() {
-        window.close();
         onChangeView.accept(new TransferView(onChangeView, onExit, serverBridge, token, account));
     }
 
     private void onStatementRequest() {
-        window.close();
         onChangeView.accept(new StatementInputView(onChangeView, onExit, serverBridge, token, account));
     }
 
     private void onTransactionHistory() {
-        window.close();
         onChangeView.accept(new TransactionsView(onChangeView, onExit, serverBridge, token, account));
     }
 
     private void onRequestCreate() {
-        window.close();
         onChangeView.accept(new CreateRequestView(onChangeView, onExit, serverBridge, token, account));
     }
 
     private void onAutoPaymentCreate() {
-        window.close();
         onChangeView.accept(new CreateAutoPaymentView(onChangeView, onExit, serverBridge, token, account));
     }
 
     private void onAutoPaymentList() {
-        window.close();
         onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, serverBridge, token, account));
     }
 
@@ -91,7 +85,7 @@ public class AccountActionsView implements IView {
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", "Account successfully deactivated",
                     MessageDialogButton.Continue);
-            window.close();
+
             onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", "Account could not be deactivated",
@@ -100,7 +94,6 @@ public class AccountActionsView implements IView {
     }
 
     private void onCancel() {
-        window.close();
         onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
     }
 }

@@ -24,39 +24,19 @@ public class LoginView implements IView {
         this.onChangeView = changeViewHandler;
         this.onExit = onExit;
         this.serverBridge = serverBridge;
-        this.contentPanel = new Panel(
-                new LinearLayout(
-                        Direction.VERTICAL
-                )
-        );
+        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         this.window = new TerminalWindow("BankSystem authentication", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        new TerminalText(
-                "Welcome to the BankSystem client application!\n" +
-                        "Please, register or login into your existing account."
-        ).attachTo(this.contentPanel);
+        new TerminalText("Welcome to the BankSystem client application!\n" + "Please, register or login into your " +
+                "existing account.").attachTo(this.contentPanel);
 
-        TerminalForm form = new TerminalForm(
-                List.of(
-                        new TerminalFormKeyValuePair(
-                                "email",
-                                new TerminalInputPair(
-                                        new TerminalText("Email"),
-                                        new TerminalTextBox()
-                                )
-                        ),
-                        new TerminalFormKeyValuePair(
-                                "password",
-                                new TerminalInputPair(
-                                        new TerminalText("Password"),
-                                        new TerminalPasswordBox()
-                                )
-                        )
-                )
-        );
+        TerminalForm form = new TerminalForm(List.of(new TerminalFormKeyValuePair("email",
+                new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox())),
+                new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
+                        new TerminalPasswordBox()))));
 
         form.attachTo(this.contentPanel);
 
@@ -70,31 +50,20 @@ public class LoginView implements IView {
     }
 
     private void onLogin(WindowBasedTextGUI gui, TerminalForm form) {
-        var resp = this.serverBridge.execute(
-                new LoginRequest(form.json())
-        );
+        var resp = this.serverBridge.execute(new LoginRequest(form.json()));
 
         if (resp.isSuccess()) {
-            this.window.close();
-            this.onChangeView.accept(
-                    new AccountsView(this.onChangeView, this.onExit, this.serverBridge, resp.token())
-            );
+            this.onChangeView.accept(new AccountsView(this.onChangeView, this.onExit, this.serverBridge, resp.token()));
         } else {
-            MessageDialog.showMessageDialog(gui, "Authentication error",
-                    resp.message(), MessageDialogButton.Close
-            );
+            MessageDialog.showMessageDialog(gui, "Authentication error", resp.message(), MessageDialogButton.Close);
         }
     }
 
     private void onRegister() {
-        this.window.close();
-        this.onChangeView.accept(
-                new RegisterView(this.onChangeView, this.onExit, this.serverBridge)
-        );
+        this.onChangeView.accept(new RegisterView(this.onChangeView, this.onExit, this.serverBridge));
     }
 
     private void onExit() {
-        this.window.close();
         this.onExit.run();
     }
 }

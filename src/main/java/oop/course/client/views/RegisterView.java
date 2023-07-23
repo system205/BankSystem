@@ -50,12 +50,10 @@ public class RegisterView implements IView {
     }
 
     private void onExit() {
-        window.close();
         onExit.run();
     }
 
     private void onReturn() {
-        window.close();
         onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
     }
 
@@ -63,7 +61,6 @@ public class RegisterView implements IView {
         var resp = serverBridge.execute(new RegisterRequest(form.json()));
         MessageDialog.showMessageDialog(gui, "Result", resp.message(), MessageDialogButton.OK);
         if (resp.isSuccess()) {
-            window.close();
             onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
         }
     }

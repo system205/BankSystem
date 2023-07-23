@@ -46,12 +46,10 @@ public class StatementInputView implements IView {
     }
 
     private void onRequest(TerminalForm form) {
-        window.close();
         onChangeView.accept(new StatementView(onChangeView, onExit, serverBridge, token, form));
     }
 
     private void onCancel() {
-        window.close();
         onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, accountNumber));
     }
 }
