@@ -46,6 +46,7 @@ public class RegisterView implements IView {
         new TerminalButton("Exit", this::onExit);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onExit() {

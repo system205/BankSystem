@@ -42,6 +42,7 @@ public class StatementInputView implements IView {
         new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onRequest(TerminalForm form) {

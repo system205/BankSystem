@@ -44,6 +44,7 @@ public class OfferManagementView implements IView {
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onReturn() {

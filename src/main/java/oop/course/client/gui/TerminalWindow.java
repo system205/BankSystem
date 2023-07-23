@@ -28,4 +28,8 @@ public class TerminalWindow {
     public void addToGui(WindowBasedTextGUI gui) {
         gui.addWindow(window);
     }
+
+    public void waitUntilClosed() {
+        window.waitUntilClosed();
+    }
 }

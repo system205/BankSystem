@@ -50,6 +50,7 @@ public class CreateAutoPaymentView implements IView {
 
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onReturn() {

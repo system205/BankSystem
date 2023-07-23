@@ -56,6 +56,7 @@ public class CreateRequestView implements IView {
         new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onCreate(WindowBasedTextGUI gui, TerminalForm form) {

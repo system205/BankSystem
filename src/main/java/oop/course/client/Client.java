@@ -6,16 +6,16 @@ public class Client {
     private final GUI clientGui;
     private final ServerBridge serverBridge;
 
-    public Client(GUIFactory guiFactory, ServerBridgeFactory serverFactory) throws RuntimeException {
+    public Client(GUIFactory guiFactory, ServerBridgeFactory serverFactory) throws IOException {
         try {
             this.clientGui = guiFactory.bestGUIImplementation();
             this.serverBridge = serverFactory.bestServerImplementation();
         } catch (IOException e) {
-            throw new RuntimeException("Unable to create GUI");
+            throw new IOException("Unable to create GUI");
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new Client(
                 new GUIFactory(),
                 new ServerBridgeFactory(
@@ -25,7 +25,7 @@ public class Client {
         ).run();
     }
 
-    public void run() {
+    public void run() throws IOException {
         clientGui.startLooping(serverBridge);
     }
 }

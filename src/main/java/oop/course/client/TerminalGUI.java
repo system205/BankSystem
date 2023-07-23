@@ -17,22 +17,22 @@ public class TerminalGUI implements GUI {
     }
 
     @Override
-    public void startLooping(ServerBridge serverBridge) {
-        try {
-            // Starting
-            this.screen.startScreen();
+    public void startLooping(ServerBridge serverBridge) throws IOException {
+        this.screen.startScreen();
 
-            // Main loop
-            new GUIOrchestrator(
-                    this.screen,
-                    serverBridge
-            ).mainLoop();
-
-            // Closing
-            this.screen.stopScreen();
-            this.terminal.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        while (true) {
+            try {
+                new GUIOrchestrator(
+                        this.screen,
+                        serverBridge
+                ).mainLoop();
+            }
+            catch (RuntimeException e) {
+                System.err.println("Connection error while sending the request.");
+            }
         }
+
+        /*this.screen.stopScreen();
+        this.terminal.close();*/
     }
 }

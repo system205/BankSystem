@@ -49,6 +49,7 @@ public class ListAutoPaymentsView implements IView {
         new TerminalButton("Return", this::onReturn).attachTo(panel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onReturn() {

@@ -66,6 +66,7 @@ public class LoginView implements IView {
 
         this.window.addToGui(gui);
         this.window.open();
+        this.window.waitUntilClosed();
     }
 
     private void onLogin(WindowBasedTextGUI gui, TerminalForm form) {

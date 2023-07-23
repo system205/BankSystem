@@ -53,6 +53,7 @@ public class AccountActionsView implements IView {
 
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onMoneyTransfer() {

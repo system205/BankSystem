@@ -46,6 +46,7 @@ public class AccountsView implements IView {
         new TerminalButton("Logout & exit", this::onExit).attachTo(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
     }
 
     private void onAccountSelected(List<String> row) {
