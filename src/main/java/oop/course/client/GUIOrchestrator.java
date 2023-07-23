@@ -19,7 +19,7 @@ public class GUIOrchestrator {
 
     public void mainLoop() {
         try {
-            new LoginView(this::changeView, this::exit, serverBridge).show(textGUI);
+            new LoginView(this::changeView, this::exit, this.serverBridge).show(this.textGUI);
         } catch (RuntimeException e) {
             if (!this.textGUI.getWindows().isEmpty()) {
                 this.textGUI.getActiveWindow().close();
@@ -29,10 +29,10 @@ public class GUIOrchestrator {
     }
 
     private void changeView(IView view) {
-        for (var window : textGUI.getWindows()) {
+        for (var window : this.textGUI.getWindows()) {
             window.close();
         }
-        view.show(textGUI);
+        view.show(this.textGUI);
     }
 
     private void exit() {
