@@ -1,6 +1,5 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.HandleRequestResponse;
 
@@ -11,9 +10,9 @@ import java.util.stream.Collectors;
 public class HandleRequestRequest implements Request<HandleRequestResponse> {
     private final Request<BasicResponse> base;
 
-    public HandleRequestRequest(String token, TerminalForm form) {
+    public HandleRequestRequest(String token, String form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/manager/requests"), token),
-                form.json());
+                form);
     }
 
     @Override

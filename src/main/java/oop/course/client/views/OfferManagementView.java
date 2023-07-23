@@ -37,9 +37,9 @@ public class OfferManagementView implements IView {
     public void show(WindowBasedTextGUI gui) throws IOException {
         var response = serverBridge.execute(new GetOffersRequest(token));
         if (response.isSuccess()) {
-            response.offersTable((List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
-        }
-        else {
+            response.fillOffersTable((List<List<String>> rows) -> new TerminalOffersTable(rows,
+                    (List<String> row) -> onRowSelected(row, gui))).attachTo(contentPanel);
+        } else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
@@ -60,7 +60,7 @@ public class OfferManagementView implements IView {
                     new TerminalInputPair(new TerminalText("Customer email"),
                             new TerminalImmutableTextBox(offer.get(1)))), new TerminalFormKeyValuePair("status",
                     new TerminalInputPair(new TerminalText("Status"), new TerminalImmutableTextBox("accepted")))));
-            var acceptResponse = serverBridge.execute(new HandleOfferRequest(token, form));
+            var acceptResponse = serverBridge.execute(new HandleOfferRequest(token, form.json()));
             if (acceptResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully approved an offer",
                         MessageDialogButton.OK);
@@ -75,7 +75,7 @@ public class OfferManagementView implements IView {
                     new TerminalInputPair(new TerminalText("Customer email"),
                             new TerminalImmutableTextBox(offer.get(1)))), new TerminalFormKeyValuePair("status",
                     new TerminalInputPair(new TerminalText("Status"), new TerminalImmutableTextBox("rejected")))));
-            var rejectResponse = serverBridge.execute(new HandleOfferRequest(token, form));
+            var rejectResponse = serverBridge.execute(new HandleOfferRequest(token, form.json()));
             if (rejectResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully denied an offer", MessageDialogButton.OK);
                 window.close();

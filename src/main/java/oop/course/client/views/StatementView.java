@@ -33,13 +33,13 @@ public class StatementView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var response = serverBridge.execute(new StatementRequest(token, form));
+        var response = serverBridge.execute(new StatementRequest(token, form.json()));
         if (!response.isSuccess()) {
             new TerminalText("Could not fetch data").attachTo(contentPanel);
         } else {
             new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(contentPanel);
             new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(contentPanel);
-            response.transactionsTable().attachTo(contentPanel);
+            response.fillTransactionsTable(TerminalTransactionTable::new).attachTo(contentPanel);
         }
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);

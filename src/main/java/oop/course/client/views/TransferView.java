@@ -53,7 +53,7 @@ public class TransferView implements IView {
     }
 
     private void onTransfer(WindowBasedTextGUI gui, TerminalForm form) {
-        var resp = serverBridge.execute(new TransferRequest(token, form));
+        var resp = serverBridge.execute(new TransferRequest(token, form.json()));
         if (resp.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.",
                     MessageDialogButton.OK);

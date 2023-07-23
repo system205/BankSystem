@@ -1,6 +1,5 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.DeactivateAccountResponse;
 
@@ -11,9 +10,9 @@ import java.util.stream.Collectors;
 public class DeactivateAccountRequest implements Request<DeactivateAccountResponse> {
     private final Request<BasicResponse> base;
 
-    public DeactivateAccountRequest(String token, TerminalForm terminalForm) {
+    public DeactivateAccountRequest(String token, String form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.DELETE, "/account"), token),
-                terminalForm.json());
+                form);
     }
 
     @Override

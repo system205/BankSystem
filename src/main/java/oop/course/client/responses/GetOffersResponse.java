@@ -1,11 +1,9 @@
 package oop.course.client.responses;
 
-import oop.course.client.gui.TerminalOffersTable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,8 +14,7 @@ public class GetOffersResponse implements Response {
         this.response = response;
     }
 
-    public TerminalOffersTable offersTable(Consumer<List<String>> selectAction) {
-        //TODO: make table creation independent of gui
+    public <T> T fillOffersTable(Function<List<List<String>>, T> renderer) {
         List<List<String>> offers = new ArrayList<>();
         var basicPattern = "\" *: *\"(.*?)\"";
         Pattern patternId = Pattern.compile("\"" + "id" + basicPattern);
@@ -51,7 +48,7 @@ public class GetOffersResponse implements Response {
             }
             offers.add(Arrays.stream(offer).toList());
         }
-        return new TerminalOffersTable(offers, selectAction);
+        return renderer.apply(offers);
     }
 
     @Override

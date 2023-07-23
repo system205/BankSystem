@@ -7,6 +7,7 @@ import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.ServerBridge;
+import oop.course.client.gui.TerminalAccountsTable;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalWindow;
 import oop.course.client.requests.AccountsRequest;
@@ -36,7 +37,7 @@ public class AccountsView implements IView {
     @Override
     public void show(WindowBasedTextGUI gui) {
         var resp = serverBridge.execute(new AccountsRequest(token));
-        resp.accountsTable(this::onAccountSelected).attachTo(contentPanel);
+        resp.fillAccountsTable((List<List<String>> rows) -> new TerminalAccountsTable(rows, this::onAccountSelected)).attachTo(contentPanel);
         new TerminalButton("Create an account", () -> onCreateAccount(gui)).attachTo(contentPanel);
         new TerminalButton("Check my requests", this::onCheckRequests).attachTo(contentPanel);
         new TerminalButton("Request a manager status", () -> onRequestManager(gui)).attachTo(contentPanel);
@@ -73,8 +74,8 @@ public class AccountsView implements IView {
     private void onRequestManager(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new BecomeManagerRequest(token));
         if (response.isSuccess()) {
-            MessageDialog.showMessageDialog(gui, "Success", "The request has been sent successfully. Assigned " + "id" +
-                    ":" + " " + response.id(), MessageDialogButton.Continue);
+            MessageDialog.showMessageDialog(gui, "Success", "The request has been sent successfully. Assigned " + "id"
+                    + ":" + " " + response.id(), MessageDialogButton.Continue);
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", "The request could not be sent or you already " +
                     "applied" + " to the job", MessageDialogButton.Close);

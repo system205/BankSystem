@@ -39,7 +39,8 @@ public class AdminRequestsView implements IView {
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
 
         if (response.isSuccess()) {
-            response.requests((List<String> row) -> onRowSelected(row, gui)).attachTo(contentPanel);
+            response.fillRequestsTable((List<List<String>> rows) -> new TerminalBankRequestTable(rows,
+                    (List<String> row) -> onRowSelected(row, gui))).attachTo(contentPanel);
         } else {
             new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
         }
@@ -62,7 +63,7 @@ public class AdminRequestsView implements IView {
                     new TerminalInputPair(new TerminalText("Request id"), new TerminalImmutableTextBox(row.get(0)))),
                     new TerminalFormKeyValuePair("status", new TerminalInputPair(new TerminalText("Status"),
                             new TerminalImmutableTextBox("approved")))));
-            var approveResponse = serverBridge.execute(new HandleRequestRequest(token, form));
+            var approveResponse = serverBridge.execute(new HandleRequestRequest(token, form.json()));
             if (approveResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully approved request",
                         MessageDialogButton.OK);
@@ -77,7 +78,7 @@ public class AdminRequestsView implements IView {
                     new TerminalInputPair(new TerminalText("Request id"), new TerminalImmutableTextBox(row.get(0)))),
                     new TerminalFormKeyValuePair("status", new TerminalInputPair(new TerminalText("Status"),
                             new TerminalImmutableTextBox("denied")))));
-            var denyResponse = serverBridge.execute(new HandleRequestRequest(token, form));
+            var denyResponse = serverBridge.execute(new HandleRequestRequest(token, form.json()));
             if (denyResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", "Successfully denied request", MessageDialogButton.OK);
                 window.close();

@@ -86,7 +86,7 @@ public class AccountActionsView implements IView {
     }
 
     private void onDeactivate(WindowBasedTextGUI gui) {
-        var response = serverBridge.execute(new DeactivateAccountRequest(token, accountDeactivationForm));
+        var response = serverBridge.execute(new DeactivateAccountRequest(token, accountDeactivationForm.json()));
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", "Account successfully deactivated",
                     MessageDialogButton.Continue);

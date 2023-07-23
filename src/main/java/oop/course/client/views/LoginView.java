@@ -70,7 +70,7 @@ public class LoginView implements IView {
 
     private void onLogin(WindowBasedTextGUI gui, TerminalForm form) {
         var resp = this.serverBridge.execute(
-                new LoginRequest(form)
+                new LoginRequest(form.json())
         );
 
         if (resp.isSuccess()) {

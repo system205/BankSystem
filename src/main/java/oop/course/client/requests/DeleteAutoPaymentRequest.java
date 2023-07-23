@@ -1,6 +1,5 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.DeleteAutoPaymentResponse;
 
@@ -11,9 +10,9 @@ import java.util.stream.Collectors;
 public class DeleteAutoPaymentRequest implements Request<DeleteAutoPaymentResponse> {
     private final Request<BasicResponse> base;
 
-    public DeleteAutoPaymentRequest(String token, TerminalForm form) {
+    public DeleteAutoPaymentRequest(String token, String form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.DELETE, "/autopayments"), token),
-                form.json());
+                form);
     }
 
     @Override

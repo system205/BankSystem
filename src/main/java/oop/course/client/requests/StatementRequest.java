@@ -1,6 +1,5 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.StatementResponse;
 
@@ -12,8 +11,8 @@ public class StatementRequest implements Request<StatementResponse> {
 
     private final Request<BasicResponse> base;
 
-    public StatementRequest(String token, TerminalForm form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/stats"), token), form.json());
+    public StatementRequest(String token, String form) {
+        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/stats"), token), form);
     }
 
     @Override

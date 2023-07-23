@@ -1,11 +1,10 @@
 package oop.course.client.responses;
 
 
-import oop.course.client.gui.TerminalTransactionTable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +15,7 @@ public class TransactionsResponse implements Response {
         this.response = response;
     }
 
-    public TerminalTransactionTable transactionsTable() {
+    public <T> T fillTransactionsTable(Function<List<List<String>>, T> renderer) {
         List<List<String>> transactions = new ArrayList<>();
 
         Pattern patternType = Pattern.compile("\"" + "type" + "\" *: *\"(.*?)\"");
@@ -50,7 +49,7 @@ public class TransactionsResponse implements Response {
             }
             transactions.add(Arrays.stream(curTrans).toList());
         }
-        return new TerminalTransactionTable(transactions);
+        return renderer.apply(transactions);
     }
 
     @Override

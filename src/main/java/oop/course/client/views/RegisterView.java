@@ -59,7 +59,7 @@ public class RegisterView implements IView {
     }
 
     private void onRegister(WindowBasedTextGUI gui, TerminalForm form) {
-        var resp = serverBridge.execute(new RegisterRequest(form));
+        var resp = serverBridge.execute(new RegisterRequest(form.json()));
         MessageDialog.showMessageDialog(gui, "Result", resp.message(), MessageDialogButton.OK);
         if (resp.isSuccess()) {
             window.close();

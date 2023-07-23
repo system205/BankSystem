@@ -1,11 +1,9 @@
 package oop.course.client.responses;
 
-import oop.course.client.gui.TerminalAutoPaymentsTable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +14,7 @@ public class ListAutoPaymentsResponse implements Response {
         this.response = response;
     }
 
-    public TerminalAutoPaymentsTable autoPayments(Consumer<List<String>> selectAction) {
+    public <T> T fillAutopayments(Function<List<List<String>>, T> renderer) {
         List<List<String>> autoPayments = new ArrayList<>();
         var basicPattern = "\" *: *\"(.*?)\"";
         Pattern patternId = Pattern.compile("\"" + "id" + basicPattern);
@@ -57,7 +55,7 @@ public class ListAutoPaymentsResponse implements Response {
             }
             autoPayments.add(Arrays.stream(autopayment).toList());
         }
-        return new TerminalAutoPaymentsTable(autoPayments, selectAction);
+        return renderer.apply(autoPayments);
     }
 
     @Override

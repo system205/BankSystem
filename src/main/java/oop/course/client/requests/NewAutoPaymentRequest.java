@@ -1,6 +1,5 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.NewAutoPaymentResponse;
 
@@ -11,10 +10,9 @@ import java.util.stream.Collectors;
 public class NewAutoPaymentRequest implements Request<NewAutoPaymentResponse> {
     private final Request<BasicResponse> base;
 
-    public NewAutoPaymentRequest(String token, TerminalForm form) {
-        //TODO: pass json directly
+    public NewAutoPaymentRequest(String token, String form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/autopayments"), token),
-                form.json());
+                form);
     }
 
     @Override

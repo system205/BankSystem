@@ -1,11 +1,9 @@
 package oop.course.client.responses;
 
-import oop.course.client.gui.TerminalAccountsTable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class AccountsResponse implements Response {
     private final Response response;
@@ -14,15 +12,14 @@ public class AccountsResponse implements Response {
         this.response = response;
     }
 
-    public TerminalAccountsTable accountsTable(Consumer<List<String>> onSelected) {
-        //TODO: make rendering the table gui-independent
+    public <T> T fillAccountsTable(Function<List<List<String>>, T> renderer) {
         var numbers = response.values("accountNumber");
         var balances = response.values("balance");
         List<List<String>> res = new ArrayList<>(numbers.length);
         for (int i = 0; i < numbers.length; i++) {
             res.add(Arrays.asList(numbers[i], balances[i]));
         }
-        return new TerminalAccountsTable(res, onSelected);
+        return renderer.apply(res);
     }
 
     @Override

@@ -1,11 +1,9 @@
 package oop.course.client.responses;
 
-import oop.course.client.gui.TerminalBankRequestTable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ManagerRequestsResponse implements Response {
     private final Response response;
@@ -14,7 +12,7 @@ public class ManagerRequestsResponse implements Response {
         this.response = response;
     }
 
-    public TerminalBankRequestTable requests(Consumer<List<String>> selectAction) {
+    public <T> T fillRequestsTable(Function<List<List<String>>, T> renderer) {
         var ids = response.values("id");
         var numbers = response.values("accountNumber");
         var amounts = response.values("amount");
@@ -24,7 +22,7 @@ public class ManagerRequestsResponse implements Response {
         for (int i = 0; i < ids.length; i++) {
             res.add(Arrays.asList(ids[i], numbers[i], amounts[i], types[i], statuses[i]));
         }
-        return new TerminalBankRequestTable(res, selectAction);
+        return renderer.apply(res);
     }
 
     @Override

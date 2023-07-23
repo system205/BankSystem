@@ -1,6 +1,5 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.TransactionsResponse;
 
@@ -11,9 +10,9 @@ import java.util.stream.Collectors;
 public class TransactionsRequest implements Request<TransactionsResponse> {
     private final Request<BasicResponse> base;
 
-    public TransactionsRequest(String token, TerminalForm form) {
+    public TransactionsRequest(String token, String form) {
         base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/transactions"), token),
-                form.json());
+                form);
     }
 
     @Override

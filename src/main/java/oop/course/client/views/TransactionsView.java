@@ -36,11 +36,11 @@ public class TransactionsView implements IView {
         var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
                 new TerminalInputPair(new TerminalText("Account Number"),
                         new TerminalImmutableTextBox(accountNumber)))));
-        var response = serverBridge.execute(new TransactionsRequest(token, form));
+        var response = serverBridge.execute(new TransactionsRequest(token, form.json()));
         if (!response.isSuccess()) {
             new TerminalText("Could not fetch data").attachTo(contentPanel);
         } else {
-            response.transactionsTable().attachTo(contentPanel);
+            response.fillTransactionsTable(TerminalTransactionTable::new).attachTo(contentPanel);
         }
         new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
         window.addToGui(gui);

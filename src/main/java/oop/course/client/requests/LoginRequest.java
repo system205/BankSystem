@@ -1,6 +1,5 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
 import oop.course.client.responses.LoginResponse;
 
@@ -11,10 +10,10 @@ import java.util.stream.Collectors;
 public class LoginRequest implements Request<LoginResponse> {
     private final Request<BasicResponse> base;
 
-    public LoginRequest(TerminalForm terminalForm) {
+    public LoginRequest(String form) {
         this.base = new JsonRequest(
                 new BasicHttpRequest(Method.POST, "/login"),
-                terminalForm.json()
+                form
         );
     }
 
