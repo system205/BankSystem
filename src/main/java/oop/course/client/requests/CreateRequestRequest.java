@@ -11,8 +11,12 @@ public class CreateRequestRequest implements Request<CreateRequestResponse> {
     private final Request<BasicResponse> base;
 
     public CreateRequestRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/requests"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.PUT, "/requests"),
+                        token),
+                form
+        );
     }
 
     @Override

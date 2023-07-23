@@ -11,8 +11,12 @@ public class DeactivateAccountRequest implements Request<DeactivateAccountRespon
     private final Request<BasicResponse> base;
 
     public DeactivateAccountRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.DELETE, "/account"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.DELETE, "/account"),
+                        token),
+                form
+        );
     }
 
     @Override

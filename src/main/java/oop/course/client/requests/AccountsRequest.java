@@ -11,7 +11,10 @@ public class AccountsRequest implements Request<AccountsResponse> {
     private final Request<BasicResponse> base;
 
     public AccountsRequest(String token) {
-        base = new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/accounts"), token);
+        base = new AuthorizedRequest(
+                new BasicHttpRequest(Method.GET, "/accounts"),
+                token
+        );
     }
 
     @Override

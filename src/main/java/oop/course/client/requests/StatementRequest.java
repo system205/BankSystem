@@ -12,7 +12,13 @@ public class StatementRequest implements Request<StatementResponse> {
     private final Request<BasicResponse> base;
 
     public StatementRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/stats"), token), form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.GET, "/stats"),
+                        token
+                ),
+                form
+        );
     }
 
     @Override

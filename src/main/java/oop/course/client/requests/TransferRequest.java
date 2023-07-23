@@ -11,8 +11,13 @@ public class TransferRequest implements Request<TransferResponse> {
     private final Request<BasicResponse> base;
 
     public TransferRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/transfer"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.PUT, "/transfer"),
+                        token
+                ),
+                form
+        );
     }
 
     @Override

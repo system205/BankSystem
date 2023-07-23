@@ -35,11 +35,31 @@ public class TransferView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("senderAccount",
-                new TerminalInputPair(new TerminalText("Sender"), new TerminalImmutableTextBox(accountNumber))),
-                new TerminalFormKeyValuePair("receiverAccount", new TerminalInputPair(new TerminalText("Receiver"),
-                        new TerminalTextBox())), new TerminalFormKeyValuePair("amount",
-                        new TerminalInputPair(new TerminalText("Sum"), new TerminalTextBox()))));
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "senderAccount",
+                                new TerminalInputPair(
+                                        new TerminalText("Sender"),
+                                        new TerminalImmutableTextBox(accountNumber)
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "receiverAccount",
+                                new TerminalInputPair(
+                                        new TerminalText("Receiver"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "amount",
+                                new TerminalInputPair(
+                                        new TerminalText("Sum"),
+                                        new TerminalTextBox()
+                                )
+                        )
+                )
+        );
         form.attachTo(contentPanel);
         new TerminalButton("Transfer money", () -> onTransfer(gui, form)).attachTo(contentPanel);
         new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);

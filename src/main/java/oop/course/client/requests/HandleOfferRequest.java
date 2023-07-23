@@ -11,8 +11,13 @@ public class HandleOfferRequest implements Request<HandleOfferResponse> {
     private final Request<BasicResponse> base;
 
     public HandleOfferRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/admin/offers"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.POST, "/admin/offers"),
+                        token
+                ),
+                form
+        );
     }
 
     @Override

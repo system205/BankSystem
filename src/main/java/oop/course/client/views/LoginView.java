@@ -33,10 +33,24 @@ public class LoginView implements IView {
         new TerminalText("Welcome to the BankSystem client application!\n" + "Please, register or login into your " +
                 "existing account.").attachTo(this.contentPanel);
 
-        TerminalForm form = new TerminalForm(List.of(new TerminalFormKeyValuePair("email",
-                new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox())),
-                new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
-                        new TerminalPasswordBox()))));
+        TerminalForm form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "email",
+                                new TerminalInputPair(
+                                        new TerminalText("Email"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "password",
+                                new TerminalInputPair(
+                                        new TerminalText("Password"),
+                                        new TerminalPasswordBox()
+                                )
+                        )
+                )
+        );
 
         form.attachTo(this.contentPanel);
 

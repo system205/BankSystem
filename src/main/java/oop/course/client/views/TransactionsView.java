@@ -33,9 +33,17 @@ public class TransactionsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
-                new TerminalInputPair(new TerminalText("Account Number"),
-                        new TerminalImmutableTextBox(accountNumber)))));
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "accountNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("Account Number"),
+                                        new TerminalImmutableTextBox(accountNumber)
+                                )
+                        )
+                )
+        );
         var response = serverBridge.execute(new TransactionsRequest(token, form.json()));
         if (!response.isSuccess()) {
             new TerminalText(response.message()).attachTo(contentPanel);

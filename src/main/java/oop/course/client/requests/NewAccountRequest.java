@@ -11,7 +11,10 @@ public class NewAccountRequest implements Request<NewAccountResponse> {
     private final Request<BasicResponse> base;
 
     public NewAccountRequest(String token) {
-        base = new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/account"), token);
+        base = new AuthorizedRequest(
+                new BasicHttpRequest(Method.PUT, "/account"),
+                token
+        );
     }
 
     @Override

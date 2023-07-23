@@ -37,8 +37,9 @@ public class AdminRequestsView implements IView {
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
 
         if (response.isSuccess()) {
-            response.fillRequestsTable((List<List<String>> rows) -> new TerminalBankRequestTable(rows,
-                    (List<String> row) -> onRowSelected(row, gui))).attachTo(contentPanel);
+            response.fillRequestsTable(
+                    (List<List<String>> rows) -> new TerminalBankRequestTable(rows, (List<String> row) -> onRowSelected(row, gui))
+            ).attachTo(contentPanel);
         } else {
             new TerminalText(response.message()).attachTo(contentPanel);
         }
@@ -54,19 +55,44 @@ public class AdminRequestsView implements IView {
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {
-        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to approve the request?",
+        var res = MessageDialog.showMessageDialog(gui,
+                "Select an action", "Do you want to approve the request?",
                 MessageDialogButton.Yes, MessageDialogButton.No, MessageDialogButton.Cancel);
         TerminalForm form;
         if (res == MessageDialogButton.Yes) {
-            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("id",
-                    new TerminalInputPair(new TerminalText("Request id"), new TerminalImmutableTextBox(row.get(0)))),
-                    new TerminalFormKeyValuePair("status", new TerminalInputPair(new TerminalText("Status"),
-                            new TerminalImmutableTextBox("approved")))));
+            form = new TerminalForm(
+                    List.of(
+                            new TerminalFormKeyValuePair(
+                                    "id",
+                                    new TerminalInputPair(
+                                            new TerminalText("Request id"),
+                                            new TerminalImmutableTextBox(row.get(0)))
+                            ),
+                            new TerminalFormKeyValuePair(
+                                    "status",
+                                    new TerminalInputPair(
+                                            new TerminalText("Status"),
+                                            new TerminalImmutableTextBox("approved"))
+                            )
+                    )
+            );
         } else if (res == MessageDialogButton.No) {
-            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("id",
-                    new TerminalInputPair(new TerminalText("Request id"), new TerminalImmutableTextBox(row.get(0)))),
-                    new TerminalFormKeyValuePair("status", new TerminalInputPair(new TerminalText("Status"),
-                            new TerminalImmutableTextBox("denied")))));
+            form = new TerminalForm(
+                    List.of(
+                            new TerminalFormKeyValuePair(
+                                    "id",
+                                    new TerminalInputPair(
+                                            new TerminalText("Request id"),
+                                            new TerminalImmutableTextBox(row.get(0)))
+                            ),
+                            new TerminalFormKeyValuePair(
+                                    "status",
+                                    new TerminalInputPair(
+                                            new TerminalText("Status"),
+                                            new TerminalImmutableTextBox("denied"))
+                            )
+                    )
+            );
         } else {
             return;
         }

@@ -11,8 +11,13 @@ public class HandleRequestRequest implements Request<HandleRequestResponse> {
     private final Request<BasicResponse> base;
 
     public HandleRequestRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/manager/requests"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.POST, "/manager/requests"),
+                        token
+                ),
+                form
+        );
     }
 
     @Override

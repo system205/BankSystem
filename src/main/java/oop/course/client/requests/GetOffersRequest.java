@@ -11,7 +11,10 @@ public class GetOffersRequest implements Request<GetOffersResponse> {
     private final Request<BasicResponse> base;
 
     public GetOffersRequest(String token) {
-        base = new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/admin/offers"), token);
+        base = new AuthorizedRequest(
+                new BasicHttpRequest(Method.GET, "/admin/offers"),
+                token
+        );
     }
 
     @Override

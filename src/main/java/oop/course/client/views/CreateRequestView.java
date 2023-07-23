@@ -35,8 +35,31 @@ public class CreateRequestView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
-                new TerminalInputPair(new TerminalText("Account " + "number"), new TerminalImmutableTextBox(account))), new TerminalFormKeyValuePair("type", new TerminalInputPair(new TerminalText("Type"), new DropDownTextBox(List.of("deposit", "withdraw")))), new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Amount"), new TerminalTextBox()))));
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "accountNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("Account number"),
+                                        new TerminalImmutableTextBox(account)
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "type",
+                                new TerminalInputPair(
+                                        new TerminalText("Type"),
+                                        new DropDownTextBox(List.of("deposit", "withdraw"))
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "amount",
+                                new TerminalInputPair(
+                                        new TerminalText("Amount"),
+                                        new TerminalTextBox()
+                                )
+                        )
+                )
+        );
         form.attachTo(contentPanel);
         new TerminalButton("Create", () -> onCreate(gui, form)).attachTo(contentPanel);
         new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);

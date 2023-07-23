@@ -11,7 +11,10 @@ public class GetRequestsRequest implements Request<GetRequestsResponse> {
     private final Request<BasicResponse> base;
 
     public GetRequestsRequest(String token) {
-        base = new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/requests"), token);
+        base = new AuthorizedRequest(
+                new BasicHttpRequest(Method.GET, "/requests"),
+                token
+        );
     }
 
     @Override

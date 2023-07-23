@@ -11,8 +11,13 @@ public class NewAutoPaymentRequest implements Request<NewAutoPaymentResponse> {
     private final Request<BasicResponse> base;
 
     public NewAutoPaymentRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/autopayments"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.POST, "/autopayments"),
+                        token
+                ),
+                form
+        );
     }
 
     @Override

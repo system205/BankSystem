@@ -11,7 +11,10 @@ public class ManagerRequestsRequest implements Request<ManagerRequestsResponse> 
     private final Request<BasicResponse> base;
 
     public ManagerRequestsRequest(String token) {
-        base = new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/manager/requests"), token);
+        base = new AuthorizedRequest(
+                new BasicHttpRequest(Method.GET, "/manager/requests"),
+                token
+        );
     }
 
     @Override

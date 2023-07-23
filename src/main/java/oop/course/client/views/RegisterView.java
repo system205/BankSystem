@@ -32,13 +32,38 @@ public class RegisterView implements IView {
     public void show(WindowBasedTextGUI gui) {
         new TerminalText("Please enter your data for registration.").attachTo(contentPanel);
 
-        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("email",
-                new TerminalInputPair(new TerminalText("Email"), new TerminalTextBox())),
-                new TerminalFormKeyValuePair("name", new TerminalInputPair(new TerminalText("Name"),
-                        new TerminalTextBox())), new TerminalFormKeyValuePair("surname",
-                        new TerminalInputPair(new TerminalText("Surname"), new TerminalTextBox())),
-                new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
-                        new TerminalPasswordBox()))));
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "email",
+                                new TerminalInputPair(
+                                        new TerminalText("Email"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "name",
+                                new TerminalInputPair(
+                                        new TerminalText("Name"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "surname",
+                                new TerminalInputPair(
+                                        new TerminalText("Surname"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "password",
+                                new TerminalInputPair(
+                                        new TerminalText("Password"),
+                                        new TerminalPasswordBox()
+                                )
+                        )
+                )
+        );
 
         form.attachTo(contentPanel);
         new TerminalButton("Register", () -> onRegister(gui, form)).attachTo(contentPanel);

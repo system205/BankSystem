@@ -11,8 +11,12 @@ public class DeleteAutoPaymentRequest implements Request<DeleteAutoPaymentRespon
     private final Request<BasicResponse> base;
 
     public DeleteAutoPaymentRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.DELETE, "/autopayments"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.DELETE, "/autopayments"),
+                        token),
+                form
+        );
     }
 
     @Override

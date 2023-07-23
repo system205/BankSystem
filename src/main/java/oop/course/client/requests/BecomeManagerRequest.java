@@ -11,7 +11,10 @@ public class BecomeManagerRequest implements Request<BecomeManagerResponse> {
     private final Request<BasicResponse> base;
 
     public BecomeManagerRequest(String token) {
-        base = new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/job"), token);
+        base = new AuthorizedRequest(
+                new BasicHttpRequest(Method.PUT, "/job"),
+                token
+        );
     }
 
     @Override

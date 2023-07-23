@@ -37,12 +37,22 @@ public class ListAutoPaymentsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
-                new TerminalInputPair(new TerminalText("Account number"), new TerminalImmutableTextBox(account)))));
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "accountNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("Account number"),
+                                        new TerminalImmutableTextBox(account)
+                                )
+                        )
+                )
+        );
         var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form.json()));
         if (response.isSuccess()) {
-            response.fillAutopayments((List<List<String>> rows) -> new TerminalAutoPaymentsTable(rows,
-                    (List<String> row) -> onRowSelected(row, gui))).attachTo(panel);
+            response.fillAutopayments(
+                    (List<List<String>> rows) -> new TerminalAutoPaymentsTable(rows, (List<String> row) -> onRowSelected(row, gui))
+            ).attachTo(panel);
         } else {
             new TerminalText(response.message()).attachTo(panel);
         }
@@ -57,11 +67,21 @@ public class ListAutoPaymentsView implements IView {
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {
-        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to cancel the auto-payment?",
+        var res = MessageDialog.showMessageDialog(gui,
+                "Select an action", "Do you want to cancel the auto-payment?",
                 MessageDialogButton.Yes, MessageDialogButton.No);
         if (res == MessageDialogButton.Yes) {
-            var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("paymentId",
-                    new TerminalInputPair(new TerminalText("Payment Id"), new TerminalImmutableTextBox(row.get(0))))));
+            var form = new TerminalForm(
+                    List.of(
+                            new TerminalFormKeyValuePair(
+                                    "paymentId",
+                                    new TerminalInputPair(
+                                            new TerminalText("Payment Id"),
+                                            new TerminalImmutableTextBox(row.get(0))
+                                    )
+                            )
+                    )
+            );
             var deleteResponse = serverBridge.execute(new DeleteAutoPaymentRequest(token, form.json()));
             if (deleteResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", deleteResponse.message(), MessageDialogButton.OK);

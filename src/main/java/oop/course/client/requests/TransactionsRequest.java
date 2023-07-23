@@ -11,8 +11,13 @@ public class TransactionsRequest implements Request<TransactionsResponse> {
     private final Request<BasicResponse> base;
 
     public TransactionsRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/transactions"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.GET, "/transactions"),
+                        token
+                ),
+                form
+        );
     }
 
     @Override

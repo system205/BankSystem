@@ -36,9 +36,9 @@ public class CheckRequestsView implements IView {
     public void show(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new GetRequestsRequest(token));
         if (response.isSuccess()) {
-            response.fillRequestsTable((List<List<String>> rows) -> new TerminalBankRequestTable(rows,
-                    (List<String> row) -> {
-            })).attachTo(contentPanel);
+            response.fillRequestsTable(
+                    (List<List<String>> rows) -> new TerminalBankRequestTable(rows, (List<String> row) -> {})
+            ).attachTo(contentPanel);
         } else {
             new TerminalText(response.message()).attachTo(contentPanel);
         }

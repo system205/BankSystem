@@ -11,7 +11,10 @@ public class RegisterRequest implements Request<RegisterResponse> {
     private final Request<BasicResponse> base;
 
     public RegisterRequest(String form) {
-        base = new JsonRequest(new BasicHttpRequest(Method.POST, "/register"), form);
+        base = new JsonRequest(
+                new BasicHttpRequest(Method.POST, "/register"),
+                form
+        );
     }
 
     @Override

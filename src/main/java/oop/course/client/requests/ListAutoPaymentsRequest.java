@@ -11,8 +11,12 @@ public class ListAutoPaymentsRequest implements Request<ListAutoPaymentsResponse
     private final Request<BasicResponse> base;
 
     public ListAutoPaymentsRequest(String token, String form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.GET, "/autopayments"), token),
-                form);
+        base = new JsonRequest(
+                new AuthorizedRequest(
+                        new BasicHttpRequest(Method.GET, "/autopayments"),
+                        token),
+                form
+        );
     }
 
     @Override

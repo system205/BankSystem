@@ -36,8 +36,9 @@ public class OfferManagementView implements IView {
     public void show(WindowBasedTextGUI gui) {
         var response = serverBridge.execute(new GetOffersRequest(token));
         if (response.isSuccess()) {
-            response.fillOffersTable((List<List<String>> rows) -> new TerminalOffersTable(rows,
-                    (List<String> row) -> onRowSelected(row, gui))).attachTo(contentPanel);
+            response.fillOffersTable(
+                    (List<List<String>> rows) -> new TerminalOffersTable(rows, (List<String> row) -> onRowSelected(row, gui))
+            ).attachTo(contentPanel);
         } else {
             new TerminalText(response.message()).attachTo(contentPanel);
         }
@@ -52,14 +53,30 @@ public class OfferManagementView implements IView {
     }
 
     private void onRowSelected(List<String> offer, WindowBasedTextGUI gui) {
-        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to approve an offer?",
+        var res = MessageDialog.showMessageDialog(gui,
+                "Select an action", "Do you want to approve an offer?",
                 MessageDialogButton.Yes, MessageDialogButton.No, MessageDialogButton.Cancel);
         TerminalForm form;
         if (res == MessageDialogButton.Yes) {
-            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("customerEmail",
-                    new TerminalInputPair(new TerminalText("Customer email"),
-                            new TerminalImmutableTextBox(offer.get(1)))), new TerminalFormKeyValuePair("status",
-                    new TerminalInputPair(new TerminalText("Status"), new TerminalImmutableTextBox("accepted")))));
+            form = new TerminalForm(
+                    List.of(
+                            new TerminalFormKeyValuePair(
+                                    "customerEmail",
+                                    new TerminalInputPair(
+                                            new TerminalText("Customer email"),
+                                            new TerminalImmutableTextBox(offer.get(1)
+                                            )
+                                    )
+                            ),
+                            new TerminalFormKeyValuePair(
+                                    "status",
+                                    new TerminalInputPair(
+                                            new TerminalText("Status"),
+                                            new TerminalImmutableTextBox("accepted")
+                                    )
+                            )
+                    )
+            );
         } else if (res == MessageDialogButton.No) {
             form = new TerminalForm(List.of(new TerminalFormKeyValuePair("customerEmail",
                     new TerminalInputPair(new TerminalText("Customer email"),

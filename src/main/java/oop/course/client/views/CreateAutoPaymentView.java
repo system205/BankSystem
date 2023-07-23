@@ -35,14 +35,44 @@ public class CreateAutoPaymentView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("senderNumber",
-                new TerminalInputPair(new TerminalText("From"), new TerminalImmutableTextBox(account))),
-                new TerminalFormKeyValuePair("receiverNumber", new TerminalInputPair(new TerminalText("To"),
-                        new TerminalTextBox())), new TerminalFormKeyValuePair("amount",
-                        new TerminalInputPair(new TerminalText("Amount"), new TerminalTextBox())),
-                new TerminalFormKeyValuePair("period", new TerminalInputPair(new TerminalText("Period"),
-                        new TerminalTextBox())), new TerminalFormKeyValuePair("startDate",
-                        new TerminalInputPair(new TerminalText("Starting date"), new TerminalTextBox()))));
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "senderNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("From"),
+                                        new TerminalImmutableTextBox(account)
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "receiverNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("To"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "amount",
+                                new TerminalInputPair(
+                                        new TerminalText("Amount"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "period",
+                                new TerminalInputPair(
+                                        new TerminalText("Period"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "startDate",
+                                new TerminalInputPair(
+                                        new TerminalText("Starting date"),
+                                        new TerminalTextBox())
+                        )
+                )
+        );
         form.attachTo(contentPanel);
 
         new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)).attachTo(contentPanel);
