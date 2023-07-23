@@ -150,7 +150,7 @@ public class CheckingAccount implements Account {
                         "SELECT id FROM customer WHERE email=?"
                 );
                 PreparedStatement customerAccountsAmountStatement = this.connection.prepareStatement(
-                        "SELECT COUNT(*) FROM checking_account WHERE customer_id = ? AND active = TRUE"
+                        "SELECT COUNT(*) FROM checking_account WHERE account_number = ?"
                 )
         ) {
             // Identify customer in DB
