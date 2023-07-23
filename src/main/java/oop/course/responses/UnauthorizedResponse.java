@@ -6,8 +6,6 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.Map;
 
-import static java.util.Map.entry;
-
 public class UnauthorizedResponse implements Response {
     /**
      * Should have the following structure:
@@ -37,8 +35,8 @@ public class UnauthorizedResponse implements Response {
                 401,
                 "Unauthorized",
                 Map.ofEntries(
-                        entry("WWW-Authenticate", authHeader),
-                        entry("Content-Type", "application/json")
+                        Map.entry("WWW-Authenticate", authHeader),
+                        Map.entry("Content-Type", "application/json")
                 ),
                 new ResponseMessage(errorMessage).json()
         );

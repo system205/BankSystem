@@ -23,7 +23,7 @@ public class PutAccount implements ProcessMethod {
                 new HeaderToken(request.headers()).id()
         );
 
-        return new CheckingResponse(
+        return new SuccessResponse(
                 account.json()
         );
     }

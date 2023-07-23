@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import static java.util.Map.entry;
-
 public class InternalErrorResponse implements Response {
     private final Logger log = LoggerFactory.getLogger(InternalErrorResponse.class);
     private final String message;
@@ -22,10 +20,9 @@ public class InternalErrorResponse implements Response {
     public void print(PrintWriter out) throws IOException {
         log.error("Internal Error Response:\n");
         new BaseResponse(
-                500,
-                "Internal Server Error",
+                500, "Internal Server Error",
                 Map.ofEntries(
-                    entry("Content-Type", "application/json")
+                        Map.entry("Content-Type", "application/json")
                 ),
                 new ResponseMessage(message).json()
         ).print(out);
