@@ -1,6 +1,5 @@
 package oop.course.entity;
 
-import oop.course.exceptions.InternalErrorException;
 import oop.course.implementations.*;
 import oop.course.tools.*;
 
@@ -18,11 +17,13 @@ public class AutoPayment implements JSON {
     public AutoPayment(long id, Connection connection) {
         this.id = id;
         this.connection = connection;
-        this.timer = Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread thread = Executors.defaultThreadFactory().newThread(r);
-            thread.setDaemon(true); // to shut down when app is closed
-            return thread;
-        });
+        this.timer = Executors.newSingleThreadScheduledExecutor(
+                r -> {
+                    Thread thread = Executors.defaultThreadFactory().newThread(r);
+                    thread.setDaemon(true); // to shut down when app is closed
+                    return thread;
+                }
+        );
     }
 
     public void pay() {
@@ -38,13 +39,22 @@ public class AutoPayment implements JSON {
                     } catch (Exception e) {
                         task[0].cancel(true);
                     }
-                }, calculateInitDelay(details.startDate.toLocalDate().atStartOfDay(),
-                        details.period), details.period, TimeUnit.SECONDS
+                },
+                calculateInitDelay(
+                        details.startDate.toLocalDate().atStartOfDay(),
+                        details.period
+                ),
+                details.period,
+                TimeUnit.SECONDS
         );
     }
 
     private boolean active() {
-        try (PreparedStatement statement = this.connection.prepareStatement("SELECT 1 FROM autopayments WHERE id = ?;")) {
+        try (
+                PreparedStatement statement = this.connection.prepareStatement(
+                        "SELECT 1 FROM autopayments WHERE id = ?;"
+                )
+        ) {
             statement.setLong(1, this.id);
             ResultSet result = statement.executeQuery();
             return result.next();
@@ -54,9 +64,13 @@ public class AutoPayment implements JSON {
     }
 
     private PaymentDetails details() {
-        String sql = "SELECT ca.account_number, c.account_number, amount, start_date, period_in_seconds FROM autopayments  " +
-                "INNER JOIN checking_account ca on ca.account_id = autopayments.from_account_id " +
-                "INNER JOIN checking_account c ON c.account_id = autopayments.to_account_id WHERE autopayments.id = ?";
+        String sql = """
+                SELECT ca.account_number, c.account_number, amount, start_date, period_in_seconds
+                FROM autopayments
+                INNER JOIN checking_account ca on ca.account_id = autopayments.from_account_id
+                INNER JOIN checking_account c ON c.account_id = autopayments.to_account_id
+                WHERE autopayments.id = ?
+                """;
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setLong(1, this.id);
             ResultSet result = statement.executeQuery();
