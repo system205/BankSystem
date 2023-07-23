@@ -22,6 +22,7 @@ public class DeleteAutoPayment implements ProcessMethod {
         Form form = new JsonForm(request.body());
         new Customer(this.connection, new HeaderToken(request.headers()).id())
                 .deleteAutopayment(form.longField("paymentId"));
+        // TODO
         return new SuccessResponse("No content 203");
     }
 
