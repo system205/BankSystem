@@ -234,7 +234,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = malformed;
+            final String request = transfer;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

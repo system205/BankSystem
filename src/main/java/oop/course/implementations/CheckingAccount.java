@@ -150,7 +150,7 @@ public class CheckingAccount implements Account {
                         "SELECT id FROM customer WHERE email=?"
                 );
                 PreparedStatement customerAccountsAmountStatement = this.connection.prepareStatement(
-                        "SELECT COUNT(*) FROM checking_account WHERE account_number = ?"
+                        "SELECT COUNT(*) FROM checking_account WHERE customer_id = ? AND active = TRUE"
                 )
         ) {
             // Identify customer in DB
@@ -165,14 +165,16 @@ public class CheckingAccount implements Account {
                 log.debug("Account with number: " + this.number + " is already saved in DB");
                 return;
             }
-            customerAccountsAmountStatement.setString(1, this.number);
+
+            final long id = result.getLong(1);
+            customerAccountsAmountStatement.setLong(1, id);
             ResultSet customerAccountsAmountResult = customerAccountsAmountStatement.executeQuery();
             customerAccountsAmountResult.next();
             final int numberOfAccounts = customerAccountsAmountResult.getInt(1);
-            if (numberOfAccounts == 5) {
+            log.debug("Number of accounts: " + numberOfAccounts);
+            if (numberOfAccounts >= 5) {
                 throw new ConflictException("Customer can't have more than 5 accounts");
             }
-            final long id = result.getLong(1);
             // Save new checking account
             accountStatement.setLong(1, id);
             accountStatement.setString(2, "AKG");
