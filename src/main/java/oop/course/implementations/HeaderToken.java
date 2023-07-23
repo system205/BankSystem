@@ -19,7 +19,8 @@ public class HeaderToken implements Id<String> {
         this.token = headers.stream()
                 .filter(header -> header.startsWith("Authorization"))
                 .map(s -> s.substring("Authorization: Bearer ".length()))
-                .findFirst().orElseThrow(() -> new AuthorizationException("There is not authorization when performing a transaction"));
+                .findFirst()
+                .orElseThrow(() -> new AuthorizationException("There is not authorization when performing a transaction"));
     }
 
     @Override
