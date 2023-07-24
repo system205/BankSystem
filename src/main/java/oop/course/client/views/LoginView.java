@@ -5,14 +5,16 @@ import oop.course.client.gui.TerminalGUIElement;
 import oop.course.client.gui.TerminalWindow;
 
 import java.util.List;
+import java.util.Map;
 
 public class LoginView implements IView {
     private final TerminalWindow window;
     private final List<TerminalGUIElement> elements;
 
-    public LoginView(TerminalWindow window, List<TerminalGUIElement> elements) {
+    public LoginView(WindowBasedTextGUI gui, TerminalWindow window, List<TerminalGUIElement> elements, Map<String, String> state) {
         this.window = window;
         this.elements = elements;
+
     }
 
     @Override
@@ -24,22 +26,4 @@ public class LoginView implements IView {
         window.open();
         window.waitUntilClosed();
     }
-
-    /*private void onLogin(WindowBasedTextGUI gui, TerminalForm form) {
-        var resp = this.serverBridge.execute(new LoginRequest(form.json()));
-
-        if (resp.isSuccess()) {
-            this.onChangeView.accept(new AccountsView(this.onChangeView, this.onExit, this.serverBridge, resp.token()));
-        } else {
-            MessageDialog.showMessageDialog(gui, "Authentication error", resp.message(), MessageDialogButton.Close);
-        }
-    }
-
-    private void onRegister() {
-        this.onChangeView.accept(new RegisterView(this.onChangeView, this.onExit, this.serverBridge));
-    }
-
-    private void onExit() {
-        this.onExit.run();
-    }*/
 }
