@@ -32,8 +32,17 @@ public class AccountActionsView implements IView {
         this.onExit = onExit;
         this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
         this.window = new TerminalWindow("Action selector", contentPanel);
-        this.accountDeactivationForm = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
-                new TerminalInputPair(new TerminalText("Account Number"), new TerminalImmutableTextBox(account)))));
+        this.accountDeactivationForm = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "accountNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("Account Number"),
+                                        new TerminalImmutableTextBox(account)
+                                )
+                        )
+                )
+        );
     }
 
     @Override
