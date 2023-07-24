@@ -4,9 +4,8 @@ import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
 import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.*;
-import oop.course.errors.exceptions.AuthorizationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.errors.exceptions.*;
+import org.slf4j.*;
 
 import java.util.*;
 
@@ -25,12 +24,11 @@ public class HeaderToken implements Id<String> {
     @Override
     public String id() throws Exception {
         try {
-            DecodedJWT decodedJWT = JWT.require(
-                            Algorithm.HMAC256("mySecretKey"))
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256("mySecretKey"))
                     .build().verify(this.token);
             return decodedJWT.getSubject();
         } catch (JWTVerificationException e) {
-            log.error("Issue when verifying token in header. " + e.getMessage());
+            log.error("Issue when verifying token in header");
             throw new AuthorizationException("Verification of token in header failed: " + e.getMessage());
         }
     }

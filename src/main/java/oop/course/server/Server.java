@@ -40,9 +40,7 @@ public class Server implements Runnable, Closeable {
     public void run() {
         try {
             log.debug("Start client processing");
-            this.process.act(
-                    new HttpRequest(in)
-            ).print(out);
+            this.process.act(new HttpRequest(in)).print(out);
         } catch (Exception e) {
             log.error("Unhandled error when processing a client", e);
         } finally {

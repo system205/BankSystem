@@ -1,6 +1,6 @@
 package oop.course.entity;
 
-import oop.course.tools.*;
+import oop.course.miscellaneous.*;
 
 public class Token implements JSON {
     private final String value;

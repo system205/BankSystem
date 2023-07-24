@@ -1,15 +1,13 @@
 package oop.course.entity.url;
 
-import oop.course.auth.RolesConfiguration;
-import oop.course.entity.Customer;
-import oop.course.errors.exceptions.ForbiddenException;
-import oop.course.entity.HeaderToken;
-import oop.course.requests.Request;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.auth.*;
+import oop.course.entity.*;
+import oop.course.errors.exceptions.*;
+import oop.course.requests.*;
+import org.slf4j.*;
 
-import java.sql.Connection;
-import java.util.Collection;
+import java.sql.*;
+import java.util.*;
 
 public class GuardedUrl implements URL {
     private static final Logger logger = LoggerFactory.getLogger(GuardedUrl.class);

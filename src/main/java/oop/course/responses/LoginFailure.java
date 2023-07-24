@@ -9,7 +9,6 @@ public class LoginFailure implements Response {
         this.message = message;
     }
 
-
     @Override
     public void print(PrintWriter out) {
         out.println(this.message);

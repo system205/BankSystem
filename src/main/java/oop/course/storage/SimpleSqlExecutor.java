@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 
 public class SimpleSqlExecutor implements SqlExecutor {
-
-    private final Logger log = LoggerFactory.getLogger(SimpleSqlExecutor.class);
+    private static final Logger log = LoggerFactory.getLogger(SimpleSqlExecutor.class);
 
     private final Connection connection;
 
@@ -19,16 +18,16 @@ public class SimpleSqlExecutor implements SqlExecutor {
     @Override
     public void perform(String sql) {
         try (Statement statement = this.connection.createStatement()) {
-            log.debug("Start executing: " + sql);
+            log.debug("Start executing: {}", sql);
             statement.execute(sql);
             this.connection.commit();
             log.debug("Committed");
         } catch (SQLException e) {
-            log.error("SQL exception when executing: " + sql + ". Error: " + e, e);
+            log.error("SQL exception when executing: {}", sql);
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                log.error("Failed to rollback after commit. " + ex, ex);
+                log.error("Failed to rollback after commit.");
                 throw new RuntimeException(ex);
             }
             throw new RuntimeException(e);

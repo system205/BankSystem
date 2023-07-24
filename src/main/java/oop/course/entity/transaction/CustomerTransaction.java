@@ -1,7 +1,5 @@
 package oop.course.entity.transaction;
 
-import oop.course.entity.transaction.Transaction;
-
 import java.math.*;
 import java.time.*;
 

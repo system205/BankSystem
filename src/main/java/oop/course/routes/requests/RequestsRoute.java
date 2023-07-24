@@ -1,10 +1,9 @@
 package oop.course.routes.requests;
 
-import oop.course.errors.exceptions.MethodNotAllowedException;
-import oop.course.requests.Request;
-import oop.course.responses.Response;
-import oop.course.routes.ProcessMethod;
-import oop.course.routes.Route;
+import oop.course.errors.exceptions.*;
+import oop.course.requests.*;
+import oop.course.responses.*;
+import oop.course.routes.*;
 import org.slf4j.*;
 
 public class RequestsRoute implements Route {

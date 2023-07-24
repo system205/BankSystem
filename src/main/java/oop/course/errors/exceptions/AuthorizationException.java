@@ -3,7 +3,6 @@ package oop.course.errors.exceptions;
 public class AuthorizationException extends Exception {
     final String realm;
 
-
     public AuthorizationException(String realm, String message) {
         super(message);
         this.realm = realm;

@@ -1,12 +1,10 @@
 package oop.course.routes.admin;
 
 
-import oop.course.requests.Request;
-import oop.course.responses.NotFoundResponse;
-import oop.course.responses.Response;
-import oop.course.routes.Route;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.requests.*;
+import oop.course.responses.*;
+import oop.course.routes.*;
+import org.slf4j.*;
 
 public class AdminFork implements Route {
     private static final Logger log = LoggerFactory.getLogger(AdminFork.class);

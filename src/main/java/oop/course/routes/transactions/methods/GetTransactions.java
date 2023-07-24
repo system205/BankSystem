@@ -1,11 +1,11 @@
 package oop.course.routes.transactions.methods;
 
 import oop.course.entity.*;
-import oop.course.requests.Request;
+import oop.course.requests.*;
 import oop.course.responses.*;
-import oop.course.routes.ProcessMethod;
-import oop.course.tools.implementations.*;
-import oop.course.tools.interfaces.*;
+import oop.course.routes.*;
+import oop.course.miscellaneous.implementations.*;
+import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 

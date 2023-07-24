@@ -1,10 +1,10 @@
 package oop.course.routes.requests.methods;
 
 import oop.course.entity.*;
-import oop.course.entity.account.Account;
-import oop.course.requests.Request;
+import oop.course.entity.account.*;
+import oop.course.requests.*;
 import oop.course.responses.*;
-import oop.course.routes.ProcessMethod;
+import oop.course.routes.*;
 
 import java.sql.*;
 import java.util.*;
@@ -30,7 +30,7 @@ public class GetRequests implements ProcessMethod {
                 ).accounts()
                         .stream()
                         .map(account -> {
-                            try {
+                            try { // return requests of each account
                                 return account.requests();
                             } catch (Exception e) {
                                 return Collections.<Account>emptyList();

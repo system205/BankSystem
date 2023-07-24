@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
-
     private final String ip;
     private final int port;
 

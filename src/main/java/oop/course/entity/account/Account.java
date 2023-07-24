@@ -1,9 +1,9 @@
 package oop.course.entity.account;
 
 import oop.course.entity.*;
-import oop.course.entity.transaction.Transaction;
-import oop.course.tools.*;
-import oop.course.tools.interfaces.*;
+import oop.course.entity.transaction.*;
+import oop.course.miscellaneous.*;
+import oop.course.miscellaneous.interfaces.*;
 
 import java.math.*;
 import java.time.*;

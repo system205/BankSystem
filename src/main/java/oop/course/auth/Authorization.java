@@ -1,13 +1,10 @@
 package oop.course.auth;
 
-import oop.course.entity.url.GuardedUrl;
+import oop.course.entity.url.*;
+import oop.course.requests.*;
+import oop.course.responses.*;
 import oop.course.routes.Process;
-import oop.course.requests.Request;
-import oop.course.responses.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
+import org.slf4j.*;
 
 /**
  * This class is responsible for checking whether a user with the given role can access the given url

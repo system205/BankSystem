@@ -1,14 +1,14 @@
 package oop.course.requests;
 
-import oop.course.errors.exceptions.MalformedDataException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.errors.exceptions.*;
+import org.slf4j.*;
+
 import java.io.*;
 import java.util.*;
 
 // TODO - should I throw an exception if accessing well formatted headers, but at the same time the request line is malformed?
 public class HttpRequest implements Request {
-    private final Logger log = LoggerFactory.getLogger(HttpRequest.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private final LinkedList<String> data;
 
     public HttpRequest(BufferedReader in) throws IOException {
@@ -20,7 +20,7 @@ public class HttpRequest implements Request {
         log.info("HttpRequest data:\n{}", this.data);
     }
 
-    private String[] requestLine() throws Exception{
+    private String[] requestLine() throws Exception {
         if (data.isEmpty()) {
             throw new MalformedDataException("HttpRequest is empty");
         }

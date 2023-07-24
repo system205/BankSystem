@@ -1,8 +1,8 @@
 package oop.course.entity;
 
 
+import oop.course.errors.exceptions.*;
 import oop.course.storage.migrations.*;
-import oop.course.errors.exceptions.InternalErrorException;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -25,34 +25,36 @@ public class Admin implements Initializer {
                 )
         ) {
             ResultSet result = statement.executeQuery();
+
             List<Offer> offers = new LinkedList<>();
-            while (result.next()) {
+            while (result.next())
                 offers.add(new Offer(result.getLong(1), this.connection));
-            }
             log.info("Found {} offers", offers.size());
+
             return offers;
         } catch (SQLException e) {
-            log.error("Error when retrieving offers from a database", e);
+            log.error("Error when retrieving offers from a database");
             throw new InternalErrorException(e);
         }
     }
 
-    private List<AutoPayment> payments() {
+    private List<AutoPayment> payments() throws InternalErrorException {
         try (
                 PreparedStatement statement = this.connection.prepareStatement(
                         "SELECT id FROM autopayments;"
                 )
         ) {
             ResultSet result = statement.executeQuery();
+
             List<AutoPayment> payments = new LinkedList<>();
-            while (result.next()) {
+            while (result.next())
                 payments.add(new AutoPayment(result.getLong(1), this.connection));
-            }
             log.debug("Found {} autopayments", payments.size());
+
             return payments;
         } catch (SQLException e) {
-            log.error("Error when retrieving offers from a database", e);
-            throw new RuntimeException(e);
+            log.error("Error when retrieving offers from a database");
+            throw new InternalErrorException(e);
         }
     }
 
@@ -88,17 +90,24 @@ public class Admin implements Initializer {
             } else
                 log.info("Admin is already initialized");
         } catch (SQLException e) {
+            log.error("Admin was not initialized");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                log.error("Failed to rollback db changes. Closing..");
+                throw new Error(ex);
             }
-            log.error("Admin was not initialized");
-            throw new RuntimeException(e);
+            throw new Error(e);
         }
 
         // Resume autopayments
-        List<AutoPayment> list = payments();
+        List<AutoPayment> list;
+        try {
+            list = payments();
+        } catch (InternalErrorException e) {
+            throw new Error("Autopayments can't be resumed");
+        }
+
         list.forEach(AutoPayment::pay);
         log.info("{} autopayments are resumed", list.size());
     }

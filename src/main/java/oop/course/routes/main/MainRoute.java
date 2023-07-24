@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class MainRoute implements Route {
     private final Logger log = LoggerFactory.getLogger(MainRoute.class);
+
     @Override
     public Response act(Request request) throws Exception {
         log.info("Start main route");

@@ -3,7 +3,7 @@ package oop.course.responses;
 import org.slf4j.*;
 
 import java.io.*;
-import java.util.Map;
+import java.util.*;
 
 public class UnauthorizedResponse implements Response {
     /**
@@ -18,7 +18,7 @@ public class UnauthorizedResponse implements Response {
         this.errorMessage = errorMessage;
     }
 
-    private final Logger log = LoggerFactory.getLogger(UnauthorizedResponse.class);
+    private static final Logger log = LoggerFactory.getLogger(UnauthorizedResponse.class);
     private final String realm;
     private final String authScheme;
     private final String errorMessage;

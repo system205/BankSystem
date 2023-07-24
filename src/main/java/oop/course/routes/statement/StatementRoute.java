@@ -1,11 +1,11 @@
 package oop.course.routes.statement;
 
 import oop.course.entity.*;
-import oop.course.requests.Request;
+import oop.course.requests.*;
 import oop.course.responses.*;
-import oop.course.routes.Route;
-import oop.course.tools.implementations.*;
-import oop.course.tools.interfaces.*;
+import oop.course.routes.*;
+import oop.course.miscellaneous.implementations.*;
+import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 import java.time.*;
@@ -29,8 +29,8 @@ public class StatementRoute implements Route {
                 ).account(form.stringField("accountNumber"))
                         .compose(
                                 LocalDate.parse(form.stringField("startDate"), formatter),
-                                LocalDate.parse(form.stringField("endDate"), formatter))
-                        .json()
+                                LocalDate.parse(form.stringField("endDate"), formatter)
+                        ).json()
         );
     }
 

@@ -1,17 +1,14 @@
 package oop.course.routes.job;
 
-import oop.course.errors.exceptions.MethodNotAllowedException;
-import oop.course.requests.Request;
-import oop.course.responses.Response;
-import oop.course.routes.ProcessMethod;
-import oop.course.routes.Route;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.errors.exceptions.*;
+import oop.course.requests.*;
+import oop.course.responses.*;
+import oop.course.routes.*;
+import org.slf4j.*;
 
 public class JobRoute implements Route {
     private final ProcessMethod[] processes;
     private static final Logger log = LoggerFactory.getLogger(JobRoute.class);
-
 
     public JobRoute(ProcessMethod... methods) {
         this.processes = methods;
@@ -25,7 +22,7 @@ public class JobRoute implements Route {
                 return m.act(request);
             }
         }
-        log.error("Method " + method + " is not allowed in JobRoute");
+        log.error("Method {} is not allowed in JobRoute", method);
         throw new MethodNotAllowedException("Method not supported in /job");
     }
 

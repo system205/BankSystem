@@ -2,10 +2,9 @@ package oop.course.entity;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
-import oop.course.entity.account.Account;
-import oop.course.entity.account.CheckingAccount;
+import oop.course.entity.account.*;
 import oop.course.errors.exceptions.*;
-import oop.course.tools.interfaces.*;
+import oop.course.miscellaneous.interfaces.*;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -50,12 +49,15 @@ public class Customer {
             statement.setString(2, details.stringField("name"));
             statement.setString(3, details.stringField("surname"));
             statement.setString(4, details.stringField("password"));
-            statement.execute();
-            log.info("Add role user to a new customer");
             roleStatement.setString(1, this.email);
+
+            log.info("Add role user to a new customer");
+            statement.execute();
             roleStatement.execute();
+
             this.connection.commit();
         } catch (SQLException e) {
+            log.error("Exception when saving a customer");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -79,12 +81,13 @@ public class Customer {
         ) {
             statement.setString(1, this.email);
             statement.setString(2, id);
+
             ResultSet result = statement.executeQuery();
-            if (!result.next()) {
+            if (!result.next())
                 throw new IllegalStateException(
                         String.format("The account with number %s is not owned by customer %s", id, this.email)
                 );
-            }
+
             return new CheckingAccount(id, this.connection);
         } catch (SQLException e) {
             throw new InternalErrorException(e);
@@ -92,6 +95,8 @@ public class Customer {
     }
 
     public Collection<String> roles() throws Exception {
+        log.trace("Retrieving roles from the database");
+
         try (
                 PreparedStatement statement = this.connection.prepareStatement(
                         "SELECT role FROM roles INNER JOIN customer ON id=customer_id WHERE email=?"
@@ -99,10 +104,11 @@ public class Customer {
         ) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
+
             Collection<String> roles = new LinkedList<>();
-            while (result.next()) {
+            while (result.next())
                 roles.add(result.getString(1));
-            }
+
             return roles;
         } catch (SQLException e) {
             throw new InternalErrorException(e);
@@ -110,7 +116,8 @@ public class Customer {
     }
 
     public List<Account> accounts() throws Exception {
-        log.debug("Retrieving account from the database");
+        log.trace("Retrieving account from the database");
+
         final String sql = """
                 SELECT account_number FROM customer
                 INNER JOIN checking_account on customer_id = id
@@ -119,12 +126,13 @@ public class Customer {
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.email);
             ResultSet resultSet = statement.executeQuery();
-            log.debug("Executing: {}. Parameter: {}", sql, this.email);
+
             List<Account> accounts = new LinkedList<>();
             while (resultSet.next())
                 accounts.add(
                         new CheckingAccount(resultSet.getString(1), this.connection)
                 );
+
             log.info("Found {} accounts.", accounts.size());
             return accounts;
         } catch (SQLException e) {
@@ -136,6 +144,7 @@ public class Customer {
     public Token token(String signingKey, String password, long duration) throws Exception {
         if (!password().equals(password))
             throw new IllegalAccessException("Illegal access");
+
         return new Token(
                 JWT.create()
                         .withSubject(this.email)
@@ -153,13 +162,14 @@ public class Customer {
         ) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
-            if (result.next()) {
+
+            if (result.next())
                 return result.getString(1);
-            } else {
+            else
                 throw new IllegalStateException("Password of customer must be found");
-            }
+
         } catch (SQLException e) {
-            log.error("Exception when retrieving customer's password", e);
+            log.error("Exception when retrieving customer's password");
             throw new InternalErrorException(e);
         }
     }
@@ -178,13 +188,17 @@ public class Customer {
             ResultSet check = checkStatement.executeQuery();
             if (check.next())
                 throw new IllegalStateException("Bad request. Customer has already applied for a job");
+
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
             result.next();
+
             Offer offer = new Offer(result.getLong(1), this.connection);
+
             this.connection.commit();
             return offer;
         } catch (SQLException e) {
+            log.error("Exception when applying for a manager job");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -203,8 +217,8 @@ public class Customer {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
             if (!result.next())
-                // TODO - is it correct exception type?
-                throw new IllegalStateException("Offer of a customer is not found");
+                throw new IllegalStateException("Offer of a customer is not found. Customer must exist");
+
             return new Offer(result.getLong(1), this.connection);
         } catch (SQLException e) {
             log.error("Error when extracting offer from the customer");
@@ -221,6 +235,7 @@ public class Customer {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
             result.next();
+
             return result.getInt(1) > 0;
         } catch (SQLException e) {
             log.error("Error when checking whether a customer exists");
@@ -228,8 +243,18 @@ public class Customer {
         }
     }
 
-    public boolean correctCredentials(String password) throws Exception {
-        return this.exists() && password.equals(this.password());
+    public boolean correctCredentials(Form form) throws Exception {
+        String password = form.stringField("password");
+        boolean correct = this.exists() && password.equals(this.password());
+        if (correct)
+            log.debug(
+                    "Invalid credentials:\nEmail: {}\nPassword: {}",
+                    this.email,
+                    password
+            );
+        else log.debug("Customer credentials are wrong");
+
+        return correct;
     }
 
     public void deleteAutopayment(long paymentId) throws Exception {
@@ -250,6 +275,7 @@ public class Customer {
             statement.execute();
             this.connection.commit();
         } catch (SQLException e) {
+            log.error("Exception when deleting an auto-payment");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {

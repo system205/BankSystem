@@ -5,13 +5,12 @@ import oop.course.entity.transaction.Transaction;
 import oop.course.requests.Request;
 import oop.course.responses.*;
 import oop.course.routes.ProcessMethod;
-import oop.course.tools.implementations.*;
-import oop.course.tools.interfaces.*;
+import oop.course.miscellaneous.implementations.*;
+import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
 public class MakeTransaction implements ProcessMethod {
-
     private final Connection connection;
 
     public MakeTransaction(Connection connection) {

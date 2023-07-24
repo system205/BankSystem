@@ -2,38 +2,34 @@ package oop.course;
 
 import oop.course.auth.*;
 import oop.course.entity.*;
-import oop.course.entity.url.GuardedUrl;
-import oop.course.errors.ErrorResponsesProcess;
-import oop.course.routes.admin.AdminFork;
-import oop.course.routes.admin.routes.applicantsRoute.ApplicantsRoute;
-import oop.course.routes.admin.routes.applicantsRoute.methods.ListApplicants;
-import oop.course.routes.admin.routes.applicantsRoute.methods.PostOffer;
-import oop.course.routes.allAccounts.AllAccounts;
-import oop.course.routes.autoPayment.AutoPaymentRoute;
-import oop.course.routes.checkAccount.CheckAccountRoute;
-import oop.course.routes.checkAccount.methods.DeleteAccount;
-import oop.course.routes.checkAccount.methods.GetAccount;
-import oop.course.routes.checkAccount.methods.PutAccount;
-import oop.course.routes.job.JobRoute;
-import oop.course.routes.job.methods.PutOffer;
-import oop.course.routes.login.LoginRoute;
-import oop.course.routes.login.TokenReturn;
-import oop.course.routes.main.MainRoute;
-import oop.course.routes.autoPayment.methods.*;
-import oop.course.routes.manager.ManagerFork;
-import oop.course.routes.manager.routes.customerRequests.CustomerRequestsRoute;
-import oop.course.routes.manager.routes.customerRequests.methods.ListRequests;
-import oop.course.routes.manager.routes.customerRequests.methods.PostRequests;
-import oop.course.routes.notFound.NotFoundRoute;
-import oop.course.routes.register.RegisterRoute;
-import oop.course.routes.requests.RequestsRoute;
-import oop.course.routes.requests.methods.GetRequests;
-import oop.course.routes.requests.methods.PutRequests;
-import oop.course.routes.statement.StatementRoute;
-import oop.course.routes.transactions.TransactionsRoute;
-import oop.course.routes.transactions.methods.GetTransactions;
-import oop.course.routes.transfer.methods.MakeTransaction;
-import oop.course.routes.transfer.TransferRoute;
+import oop.course.entity.url.*;
+import oop.course.errors.*;
+import oop.course.routes.*;
+import oop.course.routes.accounts.methods.*;
+import oop.course.routes.admin.*;
+import oop.course.routes.admin.applicants.*;
+import oop.course.routes.admin.applicants.methods.*;
+import oop.course.routes.admin.routes.applicants.*;
+import oop.course.routes.accounts.*;
+import oop.course.routes.autopayments.*;
+import oop.course.routes.autopayments.methods.*;
+import oop.course.routes.job.*;
+import oop.course.routes.job.methods.*;
+import oop.course.routes.login.*;
+import oop.course.routes.main.*;
+import oop.course.routes.manager.*;
+import oop.course.routes.manager.requests.*;
+import oop.course.routes.manager.requests.methods.*;
+import oop.course.routes.manager.routes.customerRequests.*;
+import oop.course.routes.notFound.*;
+import oop.course.routes.register.*;
+import oop.course.routes.requests.*;
+import oop.course.routes.requests.methods.*;
+import oop.course.routes.statement.*;
+import oop.course.routes.transactions.*;
+import oop.course.routes.transactions.methods.*;
+import oop.course.routes.transfer.*;
+import oop.course.routes.transfer.methods.*;
 import oop.course.server.*;
 import oop.course.storage.*;
 import oop.course.storage.migrations.*;
@@ -50,20 +46,23 @@ public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
+        // Statistics
         final long startTime = System.currentTimeMillis();
-
         Runtime.getRuntime().addShutdownHook(
                 new Thread(
                         () -> logger.info("App existed {} ms", System.currentTimeMillis() - startTime)
                 )
         );
 
+        // Database
         Connection connection = new Postgres(
                 new SimpleNetAddress("127.0.0.1", 5432),
                 new SimpleCredentials("postgres", "postgres"),
                 "bank"
         ).connect();
 
+        // Initialization before startup
+        Admin admin = new Admin(connection);
         new Background(
                 new DatabaseStartUp(
                         new SimpleSqlExecutor(connection),
@@ -71,22 +70,16 @@ public class Main {
                                 "migrations"
                         ).scan()
                 ),
-                new Admin(connection)
+                admin
         ).init();
 
         // Processes
         logger.debug("Start creating processes");
-        final RolesConfiguration rolesConfiguration = new RolesConfiguration(
-                Map.ofEntries(
-                        entry("/manager", List.of("manager", "admin")),
-                        entry("/admin", List.of("admin"))
-                )
-        );
+
         final ErrorResponsesProcess errorResponsesProcess =
                 new ErrorResponsesProcess(
                         new Authorization(
                                 new Fork(
-                                        new GuardedUrl(connection, rolesConfiguration),
                                         new MainRoute(),
                                         new LoginRoute( // /login
                                                 connection,
@@ -144,28 +137,40 @@ public class Main {
                                         ),
                                         new AdminFork( // /admin
                                                 new ApplicantsRoute( // / offers
-                                                        new ListApplicants(connection),
+                                                        new ListApplicants(admin),
                                                         new PostOffer(connection)
                                                 )
                                         ),
                                         new NotFoundRoute()
                                 ),
-                                new GuardedUrl(connection, rolesConfiguration)
+                                new GuardedUrl(
+                                        connection,
+                                        new RolesConfiguration(
+                                                Map.ofEntries(
+                                                        entry("/manager", List.of("manager", "admin")),
+                                                        entry("/admin", List.of("admin"))
+                                                )
+                                        )
+                                )
                         )
                 );
-
         logger.debug("All processes are created");
+
+        // Start server
         final int port = 6666;
-        try (ServerSocket socket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             logger.info("Server started on port {} in {} ms", port, System.currentTimeMillis() - startTime);
+
+            // Accept clients
             while (true) {
                 logger.debug("Waiting for new client");
                 new Thread(
                         new Server(
-                                socket,
-                                errorResponsesProcess))
-                        .start();
+                                serverSocket,
+                                errorResponsesProcess)
+                ).start();
             }
+
         } catch (IOException e) {
             logger.error("Failed to create a server socket", e);
             System.exit(2);

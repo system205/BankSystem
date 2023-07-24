@@ -1,7 +1,7 @@
 package oop.course.responses;
 
 import java.io.*;
-import java.util.Map;
+import java.util.*;
 
 public class MethodNotAllowedResponse implements Response {
     private final String[] allowedHeaders;

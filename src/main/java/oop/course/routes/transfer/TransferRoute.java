@@ -15,9 +15,7 @@ public class TransferRoute implements Route {
 
     @Override
     public Response act(Request request) throws Exception {
-        // fork depending on the http method
         String method = request.method();
-
         for (ProcessMethod process : next) {
             if (process.accept(method)) {
                 return process.act(request);

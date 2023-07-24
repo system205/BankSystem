@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 public class DatabaseStartUp implements Initializer {
 
-    private final Logger log = LoggerFactory.getLogger(DatabaseStartUp.class);
+    private static final Logger log = LoggerFactory.getLogger(DatabaseStartUp.class);
     private final Sql[] sqls;
     private final SqlExecutor executor;
 

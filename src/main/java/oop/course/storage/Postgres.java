@@ -53,13 +53,11 @@ public class Postgres implements Connector {
             );
             connection.setAutoCommit(false);
             log.debug("Turn off auto commit");
+            log.info("The connection to database is set up");
             return connection;
         } catch (SQLException e) {
-            final String error = "Failed to connect to PostgresDB" + e;
-            log.error(error);
+            log.error("Failed to connect to PostgresDB");
             throw new RuntimeException("Database can't set up");
-        } finally {
-            log.info("The connection to database is set up");
         }
     }
 }

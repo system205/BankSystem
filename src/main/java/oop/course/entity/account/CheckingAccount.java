@@ -1,17 +1,14 @@
 package oop.course.entity.account;
 
 import oop.course.entity.*;
-import oop.course.entity.transaction.Transaction;
+import oop.course.entity.transaction.*;
 import oop.course.errors.exceptions.*;
-import oop.course.entity.transaction.ApprovedRequest;
-import oop.course.entity.transaction.CustomerTransaction;
-import oop.course.entity.transaction.SimpleTransaction;
+import oop.course.miscellaneous.interfaces.*;
 import org.slf4j.*;
-import oop.course.tools.interfaces.*;
 
 import java.math.*;
-import java.sql.*;
 import java.sql.Date;
+import java.sql.*;
 import java.time.*;
 import java.util.*;
 
@@ -144,7 +141,6 @@ public class CheckingAccount implements Account {
 
     @Override
     public void save(String customerEmail) throws Exception {
-        // TODO - could be simplified
         try (
                 PreparedStatement accountStatement = this.connection.prepareStatement(
                         "INSERT INTO checking_account (customer_id, bank_name, account_number) VALUES (?, ?, ?)"

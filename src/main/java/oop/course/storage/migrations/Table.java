@@ -1,6 +1,6 @@
 package oop.course.storage.migrations;
 
-import oop.course.tools.interfaces.*;
+import oop.course.miscellaneous.interfaces.*;
 
 public class Table implements Sql {
     private final Source source;

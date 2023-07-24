@@ -1,7 +1,6 @@
 package oop.course.auth;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class that for each url says whether the user is allowed to access it

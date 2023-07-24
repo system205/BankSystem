@@ -1,6 +1,6 @@
 package oop.course.responses;
 
-import oop.course.tools.*;
+import oop.course.miscellaneous.*;
 
 import java.io.*;
 import java.util.*;

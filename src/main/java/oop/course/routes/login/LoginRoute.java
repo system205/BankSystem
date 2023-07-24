@@ -1,17 +1,16 @@
 package oop.course.routes.login;
 
-import oop.course.entity.Customer;
-import oop.course.errors.exceptions.AuthorizationException;
+import oop.course.entity.*;
+import oop.course.errors.exceptions.*;
+import oop.course.requests.*;
+import oop.course.responses.*;
 import oop.course.routes.Process;
-import oop.course.requests.Request;
-import oop.course.responses.Response;
-import oop.course.routes.Route;
-import oop.course.tools.implementations.JsonForm;
-import oop.course.tools.interfaces.Form;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.routes.*;
+import oop.course.miscellaneous.implementations.*;
+import oop.course.miscellaneous.interfaces.*;
+import org.slf4j.*;
 
-import java.sql.Connection;
+import java.sql.*;
 
 public class LoginRoute implements Route {
     private final Process next;
@@ -27,16 +26,12 @@ public class LoginRoute implements Route {
     public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         Customer customer = new Customer(connection, form);
+
         if (!customer.exists()) {
             log.error("Customer not found");
             throw new AuthorizationException("/login", "No such customer");
         }
-        if (!customer.correctCredentials(form.stringField("password"))) {
-            log.info(
-                    "Invalid credentials:\nEmail: {}\nPassword: {}",
-                    form.stringField("email"),
-                    form.stringField("password")
-            );
+        if (!customer.correctCredentials(form)) {
             throw new AuthorizationException("/login", "Wrong password");
         }
         return next.act(request);

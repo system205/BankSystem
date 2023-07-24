@@ -1,13 +1,11 @@
 package oop.course.routes.transactions;
 
-import oop.course.errors.exceptions.MethodNotAllowedException;
-import oop.course.requests.Request;
-import oop.course.responses.Response;
-import oop.course.routes.ProcessMethod;
-import oop.course.routes.Route;
+import oop.course.errors.exceptions.*;
+import oop.course.requests.*;
+import oop.course.responses.*;
+import oop.course.routes.*;
 
 public class TransactionsRoute implements Route {
-
     private final ProcessMethod[] processes;
 
     public TransactionsRoute(ProcessMethod... methods) {
