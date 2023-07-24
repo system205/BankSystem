@@ -1,13 +1,13 @@
 package oop.course.routes;
 
+import oop.course.exceptions.NotFoundException;
 import oop.course.interfaces.*;
-import oop.course.responses.*;
 
 public class NotFoundRoute implements Route {
 
     @Override
     public Response act(Request request) throws Exception {
-        return new NotFoundResponse();
+        throw new NotFoundException();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MethodNotAllowedException;
 import oop.course.interfaces.*;
-import oop.course.responses.MethodNotAllowedResponse;
 
 public class TransferRoute implements Route {
     private final ProcessMethod[] next;
@@ -20,8 +20,7 @@ public class TransferRoute implements Route {
                 return process.act(request);
             }
         }
-
-        return new MethodNotAllowedResponse();
+        throw new MethodNotAllowedException("Method not supported in /transfer");
     }
 
 

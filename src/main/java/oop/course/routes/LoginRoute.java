@@ -1,11 +1,9 @@
 package oop.course.routes;
 
 import oop.course.entity.Customer;
-
 import oop.course.exceptions.AuthorizationException;
 import oop.course.interfaces.Process;
 import oop.course.interfaces.*;
-import oop.course.responses.UnauthorizedResponse;
 import oop.course.tools.implementations.JsonForm;
 import oop.course.tools.interfaces.Form;
 import org.slf4j.Logger;
@@ -30,16 +28,14 @@ public class LoginRoute implements Route {
         if (!customer.exists()) {
             log.error("Customer not found");
             throw new AuthorizationException("/login", "No such customer");
-//            return new UnauthorizedResponse("Bearer", "/login", "No such customer");
         }
         if (!customer.correctCredentials(form.stringField("password"))) {
-            log.info("Invalid credentials:\nEmail: " +
-                    form.stringField("email") +
-                    "\nPassword: " +
+            log.info(
+                    "Invalid credentials:\nEmail: {}\nPassword: {}",
+                    form.stringField("email"),
                     form.stringField("password")
             );
             throw new AuthorizationException("/login", "Wrong password");
-//            return new UnauthorizedResponse("Bearer", "/login", "Wrong password");
         }
         return next.act(request);
     }

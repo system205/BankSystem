@@ -30,7 +30,7 @@ public class PostRequests implements ProcessMethod {
                 id,
                 this.connection
         ).update(status);
-        return new SuccessResponse("Updated successfully");
+        return new SuccessResponse(new ResponseMessage("Updated successfully").json());
     }
 
     @Override

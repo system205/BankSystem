@@ -20,6 +20,9 @@ public class ErrorResponsesProcess implements Process {
     public Response act(Request request) throws Exception {
         try {
             return next.act(request);
+        } catch (NotFoundException e) {
+            logger.error(e.getMessage(), e);
+            return new NotFoundResponse();
         } catch (MalformedDataException | AccountException | IllegalStateException e) {
             logger.error(e.getMessage(), e);
             return new BadRequestResponse(e.getMessage());

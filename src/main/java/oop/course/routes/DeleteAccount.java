@@ -20,7 +20,7 @@ public class DeleteAccount implements ProcessMethod {
         new Customer(this.connection, new HeaderToken(request.headers()).id())
                 .account(new JsonForm(request.body()).stringField("accountNumber"))
                 .deactivate();
-        return new SuccessResponse("OK");
+        return new SuccessResponse(new ResponseMessage("Account deleted successfully").json());
     }
 
     @Override

@@ -24,7 +24,7 @@ public class PostOffer implements ProcessMethod {
         ).offer().update(
                 form.stringField("status")
         );
-        return new SuccessResponse("Offer is review successfully");
+        return new SuccessResponse(new ResponseMessage("Offer is review successfully").json());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MethodNotAllowedException;
 import oop.course.interfaces.*;
-import oop.course.responses.MethodNotAllowedResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class JobRoute implements Route {
             }
         }
         log.error("Method " + method + " is not allowed in JobRoute");
-        return new MethodNotAllowedResponse();
+        throw new MethodNotAllowedException("Method not supported in /job");
     }
 
     @Override

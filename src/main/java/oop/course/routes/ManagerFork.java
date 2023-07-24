@@ -1,8 +1,8 @@
 package oop.course.routes;
 
 
+import oop.course.exceptions.NotFoundException;
 import oop.course.interfaces.*;
-import oop.course.responses.*;
 import org.slf4j.*;
 
 public class ManagerFork implements Route {
@@ -23,7 +23,7 @@ public class ManagerFork implements Route {
                 return r.act(request);
             }
         }
-        return new NotFoundResponse();
+        throw new NotFoundException("No such route in /manager");
     }
 
     @Override

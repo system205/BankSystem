@@ -23,7 +23,8 @@ public class StatementRoute implements Route {
         Form form = new JsonForm(request.body());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return new SuccessResponse(
-                new Customer(connection,
+                new Customer(
+                        connection,
                         new HeaderToken(request.headers()).id()
                 ).account(form.stringField("accountNumber"))
                         .compose(

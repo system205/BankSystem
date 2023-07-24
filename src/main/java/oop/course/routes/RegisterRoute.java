@@ -13,7 +13,6 @@ import java.sql.*;
 public class RegisterRoute implements Route {
     private final Logger log = LoggerFactory.getLogger(RegisterRoute.class);
 
-
     private final Connection connection;
 
     public RegisterRoute(Connection connection) {

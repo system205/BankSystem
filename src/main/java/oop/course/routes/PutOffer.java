@@ -16,10 +16,12 @@ public class PutOffer implements ProcessMethod {
 
     @Override
     public Response act(Request request) throws Exception {
-        return new SuccessResponse(new Customer(
-                this.connection,
-                new HeaderToken(request.headers()).id()
-        ).applyForJob().json());
+        return new SuccessResponse(
+                new Customer(
+                        this.connection,
+                        new HeaderToken(request.headers()).id()
+                ).applyForJob().json()
+        );
     }
 
     @Override

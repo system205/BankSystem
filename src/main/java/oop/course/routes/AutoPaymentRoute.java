@@ -1,5 +1,6 @@
 package oop.course.routes;
 
+import oop.course.exceptions.MethodNotAllowedException;
 import oop.course.interfaces.*;
 
 public class AutoPaymentRoute implements Route {
@@ -17,7 +18,7 @@ public class AutoPaymentRoute implements Route {
                 return process.act(request);
             }
         }
-        throw new RuntimeException("Unsupported exception");
+        throw new MethodNotAllowedException("Method not supported in /autopayments");
     }
 
     @Override

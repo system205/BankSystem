@@ -22,7 +22,6 @@ public class PutAccount implements ProcessMethod {
         account.save(
                 new HeaderToken(request.headers()).id()
         );
-
         return new SuccessResponse(
                 account.json()
         );

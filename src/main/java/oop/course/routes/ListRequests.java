@@ -1,7 +1,6 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
-
 import oop.course.implementations.*;
 import oop.course.interfaces.*;
 import oop.course.responses.*;
