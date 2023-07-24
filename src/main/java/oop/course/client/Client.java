@@ -21,7 +21,7 @@ public class Client {
         ).run();
     }
 
-    public void run() throws IOException {
+    public void run() {
         clientGui.startLooping(serverBridge);
     }
 }
