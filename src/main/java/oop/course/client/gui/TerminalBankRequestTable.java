@@ -5,7 +5,7 @@ import com.googlecode.lanterna.gui2.Panel;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TerminalBankRequestTable implements TerminalGUIElement {
+public final class TerminalBankRequestTable implements TerminalGUIElement {
     private final TerminalTable table;
 
     public TerminalBankRequestTable(List<List<String>> requests, Consumer<List<String>> onRowSelected) {

@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class LoginRequest implements Request<LoginResponse> {
+public final class LoginRequest implements Request<LoginResponse> {
     private final Request<BasicResponse> base;
 
     public LoginRequest(String form) {

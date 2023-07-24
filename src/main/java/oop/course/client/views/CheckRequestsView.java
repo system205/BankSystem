@@ -14,7 +14,7 @@ import oop.course.client.requests.GetRequestsRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class CheckRequestsView implements IView {
+public final class CheckRequestsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class TransactionsRequest implements Request<TransactionsResponse> {
+public final class TransactionsRequest implements Request<TransactionsResponse> {
     private final Request<BasicResponse> base;
 
     public TransactionsRequest(String token, String form) {

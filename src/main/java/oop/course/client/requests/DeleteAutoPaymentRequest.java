@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class DeleteAutoPaymentRequest implements Request<DeleteAutoPaymentResponse> {
+public final class DeleteAutoPaymentRequest implements Request<DeleteAutoPaymentResponse> {
     private final Request<BasicResponse> base;
 
     public DeleteAutoPaymentRequest(String token, String form) {

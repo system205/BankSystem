@@ -2,7 +2,7 @@ package oop.course.client.gui;
 
 import com.googlecode.lanterna.gui2.Panel;
 
-public class TerminalInputPair implements TerminalGUIElement {
+public final class TerminalInputPair implements TerminalGUIElement {
     private final TerminalText text;
     private final TerminalInputBox inputBox;
 

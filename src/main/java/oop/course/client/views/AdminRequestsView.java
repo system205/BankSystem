@@ -14,7 +14,7 @@ import oop.course.client.requests.ManagerRequestsRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AdminRequestsView implements IView {
+public final class AdminRequestsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

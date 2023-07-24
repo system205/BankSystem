@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class TransferResponse implements Response {
+public final class TransferResponse implements Response {
     private final Response response;
 
     public TransferResponse(Response response) {

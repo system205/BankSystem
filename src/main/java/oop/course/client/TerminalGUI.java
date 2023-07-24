@@ -11,7 +11,7 @@ import oop.course.client.views.LoginView;
 
 import java.io.IOException;
 
-public class TerminalGUI implements GUI {
+public final class TerminalGUI implements GUI {
     private final Screen screen;
     private final WindowBasedTextGUI gui;
 

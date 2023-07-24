@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class LoginResponse implements Response {
+public final class LoginResponse implements Response {
     private final Response response;
 
     public LoginResponse(Response response) {

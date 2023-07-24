@@ -2,7 +2,7 @@ package oop.course.client;
 
 import java.io.*;
 
-public class Client {
+public final class Client {
     private final GUI clientGui;
     private final ServerBridge serverBridge;
 

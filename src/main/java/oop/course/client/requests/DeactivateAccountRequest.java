@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class DeactivateAccountRequest implements Request<DeactivateAccountResponse> {
+public final class DeactivateAccountRequest implements Request<DeactivateAccountResponse> {
     private final Request<BasicResponse> base;
 
     public DeactivateAccountRequest(String token, String form) {

@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class NewAutoPaymentResponse implements Response {
+public final class NewAutoPaymentResponse implements Response {
     private final Response response;
 
     public NewAutoPaymentResponse(Response response) {

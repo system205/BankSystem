@@ -13,7 +13,7 @@ import oop.course.client.requests.NewAutoPaymentRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class CreateAutoPaymentView implements IView {
+public final class CreateAutoPaymentView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

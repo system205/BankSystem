@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class AccountsRequest implements Request<AccountsResponse> {
+public final class AccountsRequest implements Request<AccountsResponse> {
     private final Request<BasicResponse> base;
 
     public AccountsRequest(String token) {

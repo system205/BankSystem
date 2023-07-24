@@ -5,7 +5,7 @@ import com.googlecode.lanterna.gui2.Panel;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TerminalAutoPaymentsTable implements TerminalGUIElement {
+public final class TerminalAutoPaymentsTable implements TerminalGUIElement {
     private final TerminalTable table;
 
     public TerminalAutoPaymentsTable(List<List<String>> autopayments, Consumer<List<String>> onRowSelected) {

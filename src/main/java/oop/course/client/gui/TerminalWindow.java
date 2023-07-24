@@ -7,7 +7,7 @@ import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 
 import java.util.List;
 
-public class TerminalWindow {
+public final class TerminalWindow {
     private final BasicWindow window;
 
     public TerminalWindow(String title, Panel panel) {

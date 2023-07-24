@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class DeleteAutoPaymentResponse implements Response {
+public final class DeleteAutoPaymentResponse implements Response {
     private final Response response;
 
     public DeleteAutoPaymentResponse(Response response) {

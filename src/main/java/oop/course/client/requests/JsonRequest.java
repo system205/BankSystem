@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class JsonRequest implements Request<BasicResponse> {
+public final class JsonRequest implements Request<BasicResponse> {
     private final Request<BasicResponse> request;
     private final String json;
 

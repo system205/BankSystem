@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class ManagerRequestsRequest implements Request<ManagerRequestsResponse> {
+public final class ManagerRequestsRequest implements Request<ManagerRequestsResponse> {
     private final Request<BasicResponse> base;
 
     public ManagerRequestsRequest(String token) {

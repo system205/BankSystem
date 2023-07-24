@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class CreateRequestRequest implements Request<CreateRequestResponse> {
+public final class CreateRequestRequest implements Request<CreateRequestResponse> {
     private final Request<BasicResponse> base;
 
     public CreateRequestRequest(String token, String form) {

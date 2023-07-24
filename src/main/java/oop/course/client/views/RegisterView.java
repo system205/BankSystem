@@ -13,7 +13,7 @@ import oop.course.client.requests.RegisterRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class RegisterView implements IView {
+public final class RegisterView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

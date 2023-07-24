@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class HandleRequestRequest implements Request<HandleRequestResponse> {
+public final class HandleRequestRequest implements Request<HandleRequestResponse> {
     private final Request<BasicResponse> base;
 
     public HandleRequestRequest(String token, String form) {

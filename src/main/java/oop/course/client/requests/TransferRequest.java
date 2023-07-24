@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class TransferRequest implements Request<TransferResponse> {
+public final class TransferRequest implements Request<TransferResponse> {
     private final Request<BasicResponse> base;
 
     public TransferRequest(String token, String form) {

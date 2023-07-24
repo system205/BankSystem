@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class RegisterResponse implements Response {
+public final class RegisterResponse implements Response {
 
     private final Response response;
 

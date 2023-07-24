@@ -10,7 +10,7 @@ import oop.course.client.gui.TerminalWindow;
 
 import java.util.function.Consumer;
 
-public class AdminActionsView implements IView {
+public final class AdminActionsView implements IView {
 
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;

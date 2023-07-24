@@ -4,7 +4,7 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.TextBox;
 
-public class TerminalTextBox implements TerminalInputBox {
+public final class TerminalTextBox implements TerminalInputBox {
     private final TextBox textBox;
 
     public TerminalTextBox() {

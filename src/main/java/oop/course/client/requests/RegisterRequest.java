@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class RegisterRequest implements Request<RegisterResponse> {
+public final class RegisterRequest implements Request<RegisterResponse> {
     private final Request<BasicResponse> base;
 
     public RegisterRequest(String form) {

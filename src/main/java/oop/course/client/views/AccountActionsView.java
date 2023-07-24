@@ -13,7 +13,7 @@ import oop.course.client.requests.DeactivateAccountRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AccountActionsView implements IView {
+public final class AccountActionsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

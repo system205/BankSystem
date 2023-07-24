@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class ListAutoPaymentsRequest implements Request<ListAutoPaymentsResponse> {
+public final class ListAutoPaymentsRequest implements Request<ListAutoPaymentsResponse> {
     private final Request<BasicResponse> base;
 
     public ListAutoPaymentsRequest(String token, String form) {

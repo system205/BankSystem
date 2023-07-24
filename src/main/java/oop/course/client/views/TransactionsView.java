@@ -11,7 +11,7 @@ import oop.course.client.requests.TransactionsRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TransactionsView implements IView {
+public final class TransactionsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

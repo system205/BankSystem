@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class NewAutoPaymentRequest implements Request<NewAutoPaymentResponse> {
+public final class NewAutoPaymentRequest implements Request<NewAutoPaymentResponse> {
     private final Request<BasicResponse> base;
 
     public NewAutoPaymentRequest(String token, String form) {

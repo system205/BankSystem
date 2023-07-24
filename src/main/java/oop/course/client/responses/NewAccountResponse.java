@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class NewAccountResponse implements Response {
+public final class NewAccountResponse implements Response {
     private final Response response;
 
     public NewAccountResponse(Response response) {

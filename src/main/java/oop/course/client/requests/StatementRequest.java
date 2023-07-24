@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class StatementRequest implements Request<StatementResponse> {
+public final class StatementRequest implements Request<StatementResponse> {
 
     private final Request<BasicResponse> base;
 

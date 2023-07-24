@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TransactionsResponse implements Response {
+public final class TransactionsResponse implements Response {
     private final Response response;
 
     public TransactionsResponse(Response response) {

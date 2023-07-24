@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StatementResponse implements Response {
+public final class StatementResponse implements Response {
     private final Response response;
 
     public StatementResponse(Response response) {

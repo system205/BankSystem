@@ -13,7 +13,7 @@ import oop.course.client.requests.TransferRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TransferView implements IView {
+public final class TransferView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

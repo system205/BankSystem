@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class SocketServerBridge implements ServerBridge {
+public final class SocketServerBridge implements ServerBridge {
     private final String ip;
     private final int port;
 

@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class BecomeManagerResponse implements Response {
+public final class BecomeManagerResponse implements Response {
     private final Response response;
 
     public BecomeManagerResponse(Response response) {

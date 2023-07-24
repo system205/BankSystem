@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class GetOffersRequest implements Request<GetOffersResponse> {
+public final class GetOffersRequest implements Request<GetOffersResponse> {
     private final Request<BasicResponse> base;
 
     public GetOffersRequest(String token) {

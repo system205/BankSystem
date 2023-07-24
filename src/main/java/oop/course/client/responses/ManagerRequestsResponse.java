@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class ManagerRequestsResponse implements Response {
+public final class ManagerRequestsResponse implements Response {
     private final Response response;
 
     public ManagerRequestsResponse(Response response) {

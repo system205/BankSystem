@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class DeactivateAccountResponse implements Response {
+public final class DeactivateAccountResponse implements Response {
     private final Response response;
 
     public DeactivateAccountResponse(Response response) {

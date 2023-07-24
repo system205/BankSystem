@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class HandleOfferRequest implements Request<HandleOfferResponse> {
+public final class HandleOfferRequest implements Request<HandleOfferResponse> {
     private final Request<BasicResponse> base;
 
     public HandleOfferRequest(String token, String form) {

@@ -14,7 +14,7 @@ import oop.course.client.requests.ListAutoPaymentsRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ListAutoPaymentsView implements IView {
+public final class ListAutoPaymentsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

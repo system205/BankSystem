@@ -13,7 +13,7 @@ import oop.course.client.requests.LoginRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class LoginView implements IView {
+public final class LoginView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

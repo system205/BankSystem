@@ -14,7 +14,7 @@ import oop.course.client.requests.HandleOfferRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class OfferManagementView implements IView {
+public final class OfferManagementView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

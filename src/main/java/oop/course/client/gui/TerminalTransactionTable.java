@@ -4,7 +4,7 @@ import com.googlecode.lanterna.gui2.Panel;
 
 import java.util.List;
 
-public class TerminalTransactionTable implements TerminalGUIElement {
+public final class TerminalTransactionTable implements TerminalGUIElement {
     private final TerminalTable table;
 
     public TerminalTransactionTable(List<List<String>> transactions) {

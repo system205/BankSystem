@@ -1,6 +1,6 @@
 package oop.course.client.responses;
 
-public class HandleRequestResponse implements Response {
+public final class HandleRequestResponse implements Response {
     private final Response response;
 
     public HandleRequestResponse(Response response) {

@@ -3,7 +3,7 @@ package oop.course.client.gui;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.Panel;
 
-public class TerminalText implements TerminalGUIElement {
+public final class TerminalText implements TerminalGUIElement {
     private final Label textLabel;
 
     public TerminalText(String text) {

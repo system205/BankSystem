@@ -5,7 +5,7 @@ import com.googlecode.lanterna.gui2.Panel;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TerminalOffersTable implements TerminalGUIElement {
+public final class TerminalOffersTable implements TerminalGUIElement {
     private final TerminalTable table;
 
     public TerminalOffersTable(List<List<String>> offers, Consumer<List<String>> onRowSelected) {

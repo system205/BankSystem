@@ -18,7 +18,7 @@ import oop.course.client.requests.NewAccountRequest;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class AccountsView implements IView {
+public final class AccountsView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

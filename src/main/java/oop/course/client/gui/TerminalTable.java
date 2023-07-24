@@ -6,7 +6,7 @@ import com.googlecode.lanterna.gui2.table.Table;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class TerminalTable implements TerminalGUIElement {
+public final class TerminalTable implements TerminalGUIElement {
     private final Table<String> table;
 
     public TerminalTable(String[] columns, String[][] rows, Consumer<List<String>> onRowSelected) {

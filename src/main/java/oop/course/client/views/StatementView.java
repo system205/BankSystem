@@ -10,7 +10,7 @@ import oop.course.client.requests.StatementRequest;
 
 import java.util.function.Consumer;
 
-public class StatementView implements IView {
+public final class StatementView implements IView {
     private final Consumer<IView> onChangeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;

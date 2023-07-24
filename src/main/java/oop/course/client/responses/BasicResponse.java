@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BasicResponse implements Response {
+public final class BasicResponse implements Response {
     private final String response;
 
     public BasicResponse(String response) {
