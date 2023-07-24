@@ -150,8 +150,7 @@ public class Main {
                                         ),
                                         new NotFoundRoute()
                                 ),
-                                connection,
-                                rolesConfiguration
+                                new GuardedUrl(connection, rolesConfiguration)
                         )
                 );
 

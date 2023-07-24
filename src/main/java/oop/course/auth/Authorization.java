@@ -15,20 +15,17 @@ import java.sql.Connection;
 public class Authorization implements Process {
     private static final Logger logger = LoggerFactory.getLogger(Authorization.class);
     private final Process next;
-    private final RolesConfiguration rolesConfiguration;
-    private final Connection connection;
+    private final GuardedUrl guardedUrl;
 
-    public Authorization(Process next, Connection connection, RolesConfiguration rolesConfiguration) {
+    public Authorization(Process next, GuardedUrl guardedUrl) {
         this.next = next;
-        this.connection = connection;
-        this.rolesConfiguration = rolesConfiguration;
+        this.guardedUrl = guardedUrl;
     }
 
     @Override
     public Response act(Request request) throws Exception {
         // throws exception if user does not have a necessary role
-        // TODO - creating object inside another object - bad
-        new GuardedUrl(connection, rolesConfiguration).path(request);
+        this.guardedUrl.path(request);
         // Process next if OK so far
         logger.info("Authorization stage has passed successfully");
         return this.next.act(request);
