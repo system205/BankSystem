@@ -29,7 +29,13 @@ public class GetRequests implements ProcessMethod {
                         ).id()
                 ).accounts()
                         .stream()
-                        .map(Account::requests)
+                        .map(account -> {
+                            try {
+                                return account.requests();
+                            } catch (Exception e) {
+                                return Collections.<Account>emptyList();
+                            }
+                        })
                         .flatMap(Collection::stream)
                         .toList()
         );
