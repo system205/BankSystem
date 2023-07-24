@@ -9,12 +9,14 @@ import java.util.List;
 
 public class TerminalWindow {
     private final BasicWindow window;
+    private final Panel panel;
 
     public TerminalWindow(String title, Panel panel) {
-        window = new BasicWindow(title);
-        window.setHints(List.of(Window.Hint.CENTERED));
+        this.window = new BasicWindow(title);
+        window.setHints(List.of(Window.Hint.CENTERED, Window.Hint.FIT_TERMINAL_WINDOW));
         window.setVisible(false);
         window.setComponent(panel);
+        this.panel = panel;
     }
 
     public void close() {
@@ -31,5 +33,9 @@ public class TerminalWindow {
 
     public void waitUntilClosed() {
         window.waitUntilClosed();
+    }
+
+    public Panel panel() {
+        return panel;
     }
 }

@@ -79,14 +79,14 @@ public class RegisterView implements IView {
     }
 
     private void onReturn() {
-        onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+        //onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
     }
 
     private void onRegister(WindowBasedTextGUI gui, TerminalForm form) {
         var resp = serverBridge.execute(new RegisterRequest(form.json()));
         MessageDialog.showMessageDialog(gui, "Result", resp.message(), MessageDialogButton.OK);
         if (resp.isSuccess()) {
-            onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+            //onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
         }
     }
 }

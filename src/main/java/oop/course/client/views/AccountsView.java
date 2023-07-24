@@ -86,7 +86,7 @@ public class AccountsView implements IView {
     }
 
     private void onLogout() {
-        onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+        //onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
     }
 
     private void onExit() {
