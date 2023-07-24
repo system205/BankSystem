@@ -16,7 +16,7 @@ public interface Account extends JSON {
 
     CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception;
 
-    Collection<CustomerRequest> requests();
+    Collection<CustomerRequest> requests() throws Exception;
 
     void deposit(BigDecimal amount) throws Exception;
 
@@ -26,7 +26,7 @@ public interface Account extends JSON {
 
     TransactionStatement compose(LocalDate start, LocalDate end) throws Exception;
 
-    void deactivate();
+    void deactivate() throws Exception;
 
     AutoPayment createPayment(Form form) throws Exception;
 

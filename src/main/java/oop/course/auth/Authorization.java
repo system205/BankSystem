@@ -14,12 +14,9 @@ import java.sql.Connection;
  */
 public class Authorization implements Process {
     private static final Logger logger = LoggerFactory.getLogger(Authorization.class);
-
     private final Process next;
-
     private final RolesConfiguration rolesConfiguration;
     private final Connection connection;
-
 
     public Authorization(Process next, Connection connection, RolesConfiguration rolesConfiguration) {
         this.next = next;

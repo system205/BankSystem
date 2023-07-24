@@ -20,9 +20,7 @@ import java.util.*;
  */
 public class CheckingAccount implements Account {
     private static final Logger log = LoggerFactory.getLogger(CheckingAccount.class);
-
     private final String number;
-
     private final Connection connection;
 
     /**
@@ -53,12 +51,13 @@ public class CheckingAccount implements Account {
         ) {
             statement.setString(1, this.number);
             ResultSet results = statement.executeQuery();
-            if (!results.next()) {
-                throw new AccountException("The account with number: " + this.number + " was not found");
-            }
+
+            if (!results.next())
+                throw new AccountException(String.format("The account with number: %s was not found", this.number));
+
             return results.getLong(1);
         } catch (SQLException e) {
-            System.out.println("Exception when retrieving balance of checking account");
+            log.error("Exception when retrieving balance of checking account");
             throw new InternalErrorException(e);
         }
     }
@@ -96,18 +95,19 @@ public class CheckingAccount implements Account {
         ) {
             enoughMoneyStatement.setString(1, this.number);
             ResultSet result = enoughMoneyStatement.executeQuery();
-            if (!result.next()) {
+            if (!result.next())
                 throw new AccountException("The account with number: " + this.number + " was not found");
-            }
+
+            final BigDecimal balance = result.getBigDecimal(1);
+            if (balance.compareTo(amount) < 0)
+                throw new AccountException("Not enough money to perform a transaction");
+
             receiverExists.setString(1, accountNumber);
             ResultSet receiverExistsResult = receiverExists.executeQuery();
-            if (!receiverExistsResult.next()) {
+            if (!receiverExistsResult.next())
                 throw new AccountException("The account with number: " + accountNumber + " was not found");
-            }
-            final BigDecimal balance = result.getBigDecimal(1);
-            if (balance.compareTo(amount) < 0) {
-                throw new AccountException("Not enough money to perform a transaction");
-            }
+
+            // Transaction details
             transactionStatement.setString(1, this.number);
             transactionStatement.setString(2, accountNumber);
             transactionStatement.setBigDecimal(3, amount);
@@ -117,9 +117,12 @@ public class CheckingAccount implements Account {
             payStatement.setString(3, accountNumber);
             spendStatement.setBigDecimal(2, amount);
             payStatement.setBigDecimal(2, amount);
+
+            // Perform a transaction in database
             transactionStatement.execute();
             spendStatement.execute();
             payStatement.execute();
+
             this.connection.commit();
         } catch (SQLException e) {
             try {
@@ -127,7 +130,7 @@ public class CheckingAccount implements Account {
             } catch (SQLException ex) {
                 throw new InternalErrorException(ex);
             }
-            log.error("SQL error when transferring money. Internal error: " + e);
+            log.error("SQL error when transferring money.");
             throw new InternalErrorException(e);
         }
         return new SimpleTransaction(this.number, accountNumber, amount);
@@ -152,39 +155,43 @@ public class CheckingAccount implements Account {
                 PreparedStatement customerStatement = this.connection.prepareStatement(
                         "SELECT id FROM customer WHERE email=?"
                 );
-                PreparedStatement customerAccountsAmountStatement = this.connection.prepareStatement(
+                PreparedStatement accountsNumberStatement = this.connection.prepareStatement(
                         "SELECT COUNT(*) FROM checking_account WHERE account_number = ?"
                 )
         ) {
             // Identify customer in DB
             customerStatement.setString(1, customerEmail);
             ResultSet result = customerStatement.executeQuery();
-            if (!result.next()) {
-                throw new AccountException("Customer with the email: " + customerEmail + " was not found");
-            }
+            if (!result.next())
+                throw new AccountException(String.format("Customer with the email: %s was not found", customerEmail));
+
             accountExistsStatement.setString(1, this.number);
             ResultSet accountExistsResult = accountExistsStatement.executeQuery();
             if (accountExistsResult.next()) {
-                log.debug("Account with number: " + this.number + " is already saved in DB");
+                log.debug("Account with number: {} is already saved in DB", this.number);
                 return;
             }
 
             final long id = result.getLong(1);
-            customerAccountsAmountStatement.setLong(1, id);
-            ResultSet customerAccountsAmountResult = customerAccountsAmountStatement.executeQuery();
-            customerAccountsAmountResult.next();
-            final int numberOfAccounts = customerAccountsAmountResult.getInt(1);
-            log.debug("Number of accounts: " + numberOfAccounts);
+            accountsNumberStatement.setLong(1, id);
+            ResultSet accountsNumberResult = accountsNumberStatement.executeQuery();
+            accountsNumberResult.next();
+
+            final int numberOfAccounts = accountsNumberResult.getInt(1);
+            log.debug("Number of accounts: {}", numberOfAccounts);
             if (numberOfAccounts >= 5) {
                 throw new ConflictException("Customer can't have more than 5 accounts");
             }
+
             // Save new checking account
             accountStatement.setLong(1, id);
             accountStatement.setString(2, "AKG");
             accountStatement.setString(3, this.number);
             accountStatement.execute();
+
             this.connection.commit();
         } catch (SQLException e) {
+            log.error("Error when saving checking account");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -197,6 +204,9 @@ public class CheckingAccount implements Account {
     @Override
     public CustomerRequest attachRequest(String type, BigDecimal amount) throws Exception {
         if (!isActive()) throw new IllegalStateException("Can't put requests to inactive account");
+        if (!(type.equals("withdraw") || type.equals("deposit")))
+            throw new AccountException("Bad request. Type should be withdraw or deposit");
+
         String sql = """
                 INSERT INTO requests (account_number, amount, type, status)
                 VALUES (?, ?, ?, 'pending') RETURNING id
@@ -204,19 +214,19 @@ public class CheckingAccount implements Account {
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             statement.setBigDecimal(2, amount);
-            if (!(type.equals("withdraw") || type.equals("deposit"))) {
-                throw new AccountException("Bad request. Type should be withdraw or deposit");
-            }
             statement.setString(3, type);
+
             ResultSet result = statement.executeQuery();
             result.next();
             long id = result.getLong(1);
             this.connection.commit();
+
             return new CustomerRequest(
                     id,
                     this.connection
             );
         } catch (SQLException e) {
+            log.error("Error when attaching a request of a checking account");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -227,12 +237,14 @@ public class CheckingAccount implements Account {
     }
 
     @Override
-    public Collection<CustomerRequest> requests() {
+    public Collection<CustomerRequest> requests() throws InternalErrorException {
         if (!isActive()) throw new IllegalStateException("Can't see requests of inactive account");
+
         String sql = "SELECT id FROM requests WHERE account_number = ?";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             ResultSet result = statement.executeQuery();
+
             List<CustomerRequest> requests = new LinkedList<>();
             while (result.next()) {
                 requests.add(
@@ -242,9 +254,11 @@ public class CheckingAccount implements Account {
                         )
                 );
             }
+
             return requests;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.error("Error when retrieving request of a checking account");
+            throw new InternalErrorException(e);
         }
     }
 
@@ -272,6 +286,7 @@ public class CheckingAccount implements Account {
             statement.execute();
             this.connection.commit();
         } catch (SQLException e) {
+            log.error("Error when withdrawing/depositing money from a checking account");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -327,7 +342,7 @@ public class CheckingAccount implements Account {
             ResultSet approvedRequests = requestsStatement.executeQuery();
 
             List<Transaction> transactions = new ArrayList<>();
-            while (income.next()) {
+            while (income.next())
                 transactions.add(
                         new CustomerTransaction(
                                 income.getTimestamp(2).toLocalDateTime(),
@@ -336,8 +351,8 @@ public class CheckingAccount implements Account {
                                 "income"
                         )
                 );
-            }
-            while (outcome.next()) {
+
+            while (outcome.next())
                 transactions.add(
                         new CustomerTransaction(
                                 outcome.getTimestamp(2).toLocalDateTime(),
@@ -346,8 +361,8 @@ public class CheckingAccount implements Account {
                                 "outcome"
                         )
                 );
-            }
-            while (approvedRequests.next()) {
+
+            while (approvedRequests.next())
                 transactions.add(
                         new ApprovedRequest(
                                 approvedRequests.getString(1),
@@ -355,7 +370,7 @@ public class CheckingAccount implements Account {
                                 approvedRequests.getTimestamp(3).toLocalDateTime()
                         )
                 );
-            }
+
             return transactions;
         } catch (SQLException e) {
             throw new InternalErrorException(e);
@@ -365,6 +380,7 @@ public class CheckingAccount implements Account {
     @Override
     public TransactionStatement compose(LocalDate start, LocalDate end) throws Exception {
         if (!isActive()) throw new IllegalStateException("Can't see the inactive account");
+
         final Timestamp startTimestamp = Timestamp.valueOf(start.atStartOfDay());
         final Timestamp endTimestamp = Timestamp.valueOf(end.atStartOfDay());
 
@@ -387,12 +403,11 @@ public class CheckingAccount implements Account {
                         .orElseGet(() -> new BigDecimal(0))
                         .add(startingBalance);
 
-        // return new TransactionStatement(this.number, start, end, previousTransactions, transactions); // TODO
         return new TransactionStatement(this.number, start, end, transactions, startingBalance, endingBalance);
     }
 
     @Override
-    public void deactivate() {
+    public void deactivate() throws InternalErrorException {
         try (
                 PreparedStatement statement = connection.prepareStatement(
                         "UPDATE checking_account SET active = false WHERE account_number = ?"
@@ -402,18 +417,20 @@ public class CheckingAccount implements Account {
             statement.execute();
             this.connection.commit();
         } catch (SQLException e) {
+            log.error("Exception when deactivating a checking account");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                throw new InternalErrorException(ex);
             }
-            throw new RuntimeException(e);
+            throw new InternalErrorException(e);
         }
     }
 
     @Override
     public AutoPayment createPayment(Form form) throws Exception {
         if (!isActive()) throw new IllegalStateException("Can't pay from inactive account");
+
         String sql = """
                 INSERT INTO autopayments (from_account_id, to_account_id, amount, start_date, period_in_seconds)
                 VALUES (
@@ -429,13 +446,15 @@ public class CheckingAccount implements Account {
             statement.setBigDecimal(3, form.bigDecimalField("amount"));
             statement.setDate(4, Date.valueOf(form.stringField("startDate")));
             statement.setLong(5, form.longField("period"));
+
             ResultSet id = statement.executeQuery();
-            if (!id.next()) {
+            if (!id.next())
                 throw new IllegalStateException("Exception when inserting into autopayments");
-            }
+
             this.connection.commit();
             return new AutoPayment(id.getLong(1), this.connection);
         } catch (SQLException e) {
+            log.error("Exception when creating an auto-payment for a checking account");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -448,6 +467,7 @@ public class CheckingAccount implements Account {
     @Override
     public List<AutoPayment> autopayments() throws Exception {
         if (!isActive()) throw new InternalErrorException("Can't see autopayments of inactive account");
+
         String sql = """
                 SELECT id FROM autopayments
                 WHERE from_account_id = (SELECT account_id FROM checking_account WHERE account_number = ?)
@@ -455,36 +475,40 @@ public class CheckingAccount implements Account {
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             ResultSet result = statement.executeQuery();
+
             List<AutoPayment> payments = new LinkedList<>();
-            while (result.next()) {
+            while (result.next())
                 payments.add(
                         new AutoPayment(
                                 result.getLong(1),
                                 this.connection
                         )
                 );
-            }
+
             return payments;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.error("Exception when retrieving autopayments from database");
+            throw new InternalErrorException(e);
         }
     }
 
-    private boolean isActive() {
+    private boolean isActive() throws InternalErrorException {
         try (
                 PreparedStatement statement = this.connection.prepareStatement(
                         "SELECT active FROM checking_account WHERE account_number = ?"
                 )
         ) {
             statement.setString(1, this.number);
+
             ResultSet result = statement.executeQuery();
-            if (result.next()) {
+            if (result.next())
                 return result.getBoolean(1);
-            } else {
-                throw new IllegalStateException("The account with number " + this.number + " does not exist");
-            }
+            else
+                throw new IllegalStateException(String.format("The account with number %s does not exist", this.number));
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.error("Exceptiong when checking active flag of a checking account");
+            throw new InternalErrorException(e);
         }
     }
 }
