@@ -1,6 +1,6 @@
-package oop.course.implementations;
+package oop.course.entity.transaction;
 
-import oop.course.interfaces.*;
+import oop.course.entity.transaction.Transaction;
 
 import java.math.*;
 

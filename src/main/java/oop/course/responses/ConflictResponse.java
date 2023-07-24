@@ -1,6 +1,5 @@
 package oop.course.responses;
 
-import oop.course.interfaces.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

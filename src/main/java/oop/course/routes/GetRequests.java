@@ -1,8 +1,8 @@
 package oop.course.routes;
 
 import oop.course.entity.*;
-import oop.course.implementations.*;
-import oop.course.interfaces.*;
+import oop.course.entity.account.Account;
+import oop.course.requests.Request;
 import oop.course.responses.*;
 
 import java.sql.*;

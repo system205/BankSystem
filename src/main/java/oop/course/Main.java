@@ -2,6 +2,8 @@ package oop.course;
 
 import oop.course.auth.*;
 import oop.course.entity.*;
+import oop.course.entity.url.GuardedUrl;
+import oop.course.errors.ErrorResponsesProcess;
 import oop.course.implementations.*;
 import oop.course.routes.*;
 import oop.course.routes.methods.*;

@@ -1,10 +1,10 @@
-package oop.course.implementations;
+package oop.course.entity.url;
 
 import oop.course.auth.RolesConfiguration;
 import oop.course.entity.Customer;
-import oop.course.exceptions.ForbiddenException;
-import oop.course.interfaces.Request;
-import oop.course.interfaces.URL;
+import oop.course.errors.exceptions.ForbiddenException;
+import oop.course.entity.HeaderToken;
+import oop.course.requests.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

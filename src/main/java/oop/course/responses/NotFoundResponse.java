@@ -1,7 +1,5 @@
 package oop.course.responses;
 
-import oop.course.interfaces.*;
-
 import java.io.*;
 
 public class NotFoundResponse implements Response {

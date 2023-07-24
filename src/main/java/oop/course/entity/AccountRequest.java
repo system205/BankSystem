@@ -1,8 +1,9 @@
-package oop.course.requests;
+package oop.course.entity;
 
 import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
 
+// TODO - rename
 public class AccountRequest implements Id<String> {
     private final Form form;
 

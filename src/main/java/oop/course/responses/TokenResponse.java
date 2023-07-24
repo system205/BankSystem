@@ -1,8 +1,7 @@
-package oop.course.implementations;
+package oop.course.responses;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
-import oop.course.interfaces.*;
 
 import java.io.*;
 import java.util.*;

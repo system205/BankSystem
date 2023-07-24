@@ -1,8 +1,9 @@
 package oop.course.auth;
 
-import oop.course.implementations.*;
-import oop.course.interfaces.*;
+import oop.course.entity.url.GuardedUrl;
 import oop.course.interfaces.Process;
+import oop.course.requests.Request;
+import oop.course.responses.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

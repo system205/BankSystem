@@ -1,7 +1,5 @@
 package oop.course.responses;
 
-import oop.course.interfaces.Response;
-
 import java.io.*;
 import java.util.Map;
 

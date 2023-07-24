@@ -1,7 +1,8 @@
 package oop.course.routes;
 
-import oop.course.exceptions.MethodNotAllowedException;
-import oop.course.interfaces.*;
+import oop.course.errors.exceptions.MethodNotAllowedException;
+import oop.course.requests.Request;
+import oop.course.responses.Response;
 
 public class AutoPaymentRoute implements Route {
     private final ProcessMethod[] processes;

@@ -2,7 +2,7 @@ package oop.course.entity;
 
 
 import oop.course.storage.migrations.*;
-import oop.course.exceptions.InternalErrorException;
+import oop.course.errors.exceptions.InternalErrorException;
 import org.slf4j.*;
 
 import java.sql.*;

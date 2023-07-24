@@ -2,9 +2,9 @@ package oop.course.entity;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
-import oop.course.exceptions.*;
-import oop.course.implementations.*;
-import oop.course.interfaces.*;
+import oop.course.entity.account.Account;
+import oop.course.entity.account.CheckingAccount;
+import oop.course.errors.exceptions.*;
 import oop.course.tools.interfaces.*;
 import org.slf4j.*;
 

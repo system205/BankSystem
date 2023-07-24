@@ -1,8 +1,9 @@
 package oop.course.routes;
 
 
-import oop.course.exceptions.NotFoundException;
-import oop.course.interfaces.*;
+import oop.course.errors.exceptions.NotFoundException;
+import oop.course.requests.Request;
+import oop.course.responses.Response;
 import org.slf4j.*;
 
 public class ManagerFork implements Route {

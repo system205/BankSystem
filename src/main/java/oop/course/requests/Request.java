@@ -1,4 +1,4 @@
-package oop.course.interfaces;
+package oop.course.requests;
 
 
 import java.util.*;

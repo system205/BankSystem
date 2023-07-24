@@ -1,8 +1,7 @@
 package oop.course.implementations;
 
 import oop.course.entity.*;
-import oop.course.interfaces.*;
-import oop.course.requests.*;
+import oop.course.requests.Request;
 import oop.course.responses.*;
 import oop.course.routes.*;
 import oop.course.tools.implementations.*;

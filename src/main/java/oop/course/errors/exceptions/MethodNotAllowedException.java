@@ -1,4 +1,4 @@
-package oop.course.exceptions;
+package oop.course.errors.exceptions;
 
 public class MethodNotAllowedException extends Exception {
     public MethodNotAllowedException() {

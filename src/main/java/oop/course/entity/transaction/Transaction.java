@@ -1,4 +1,4 @@
-package oop.course.interfaces;
+package oop.course.entity.transaction;
 
 import oop.course.tools.*;
 

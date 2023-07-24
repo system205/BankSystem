@@ -1,6 +1,7 @@
-package oop.course.interfaces;
+package oop.course.entity.account;
 
 import oop.course.entity.*;
+import oop.course.entity.transaction.Transaction;
 import oop.course.tools.*;
 import oop.course.tools.interfaces.*;
 

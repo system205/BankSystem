@@ -1,8 +1,11 @@
-package oop.course.implementations;
+package oop.course.entity.account;
 
 import oop.course.entity.*;
-import oop.course.exceptions.*;
-import oop.course.interfaces.*;
+import oop.course.entity.transaction.Transaction;
+import oop.course.errors.exceptions.*;
+import oop.course.entity.transaction.ApprovedRequest;
+import oop.course.entity.transaction.CustomerTransaction;
+import oop.course.entity.transaction.SimpleTransaction;
 import org.slf4j.*;
 import oop.course.tools.interfaces.*;
 

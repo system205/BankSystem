@@ -1,9 +1,10 @@
 package oop.course.routes;
 
 import oop.course.entity.Customer;
-import oop.course.exceptions.AuthorizationException;
+import oop.course.errors.exceptions.AuthorizationException;
 import oop.course.interfaces.Process;
-import oop.course.interfaces.*;
+import oop.course.requests.Request;
+import oop.course.responses.Response;
 import oop.course.tools.implementations.JsonForm;
 import oop.course.tools.interfaces.Form;
 import org.slf4j.Logger;

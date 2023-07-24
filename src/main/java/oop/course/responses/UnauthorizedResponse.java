@@ -1,6 +1,5 @@
 package oop.course.responses;
 
-import oop.course.interfaces.*;
 import org.slf4j.*;
 
 import java.io.*;

@@ -1,9 +1,5 @@
-package oop.course.implementations;
+package oop.course.responses;
 
-import oop.course.interfaces.Response;
-import oop.course.responses.BaseResponse;
-import oop.course.responses.InternalErrorResponse;
-import oop.course.responses.ResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

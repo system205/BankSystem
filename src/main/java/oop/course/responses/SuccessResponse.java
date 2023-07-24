@@ -1,6 +1,5 @@
 package oop.course.responses;
 
-import oop.course.interfaces.*;
 import oop.course.tools.*;
 
 import java.io.*;

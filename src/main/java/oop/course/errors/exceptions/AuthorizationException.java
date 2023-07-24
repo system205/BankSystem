@@ -1,4 +1,4 @@
-package oop.course.exceptions;
+package oop.course.errors.exceptions;
 
 public class AuthorizationException extends Exception {
     final String realm;

@@ -1,4 +1,4 @@
-package oop.course.exceptions;
+package oop.course.errors.exceptions;
 
 /**
  * Exception that is thrown when the request is malformed: wrong format, missing parameters, etc.

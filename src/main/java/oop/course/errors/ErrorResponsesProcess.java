@@ -1,9 +1,10 @@
-package oop.course.implementations;
+package oop.course.errors;
 
-import oop.course.exceptions.*;
+import oop.course.errors.exceptions.*;
+import oop.course.responses.ForbiddenResponse;
 import oop.course.interfaces.Process;
-import oop.course.interfaces.Request;
-import oop.course.interfaces.Response;
+import oop.course.requests.Request;
+import oop.course.responses.Response;
 import oop.course.responses.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

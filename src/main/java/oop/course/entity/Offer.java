@@ -1,6 +1,6 @@
 package oop.course.entity;
 
-import oop.course.exceptions.InternalErrorException;
+import oop.course.errors.exceptions.InternalErrorException;
 import oop.course.tools.*;
 import org.slf4j.*;
 

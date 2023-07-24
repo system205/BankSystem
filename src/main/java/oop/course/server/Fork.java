@@ -1,8 +1,10 @@
 package oop.course.server;
 
-import oop.course.exceptions.NotFoundException;
+import oop.course.entity.url.URL;
+import oop.course.errors.exceptions.NotFoundException;
 import oop.course.interfaces.Process;
-import oop.course.interfaces.*;
+import oop.course.requests.Request;
+import oop.course.responses.Response;
 import oop.course.routes.*;
 
 public class Fork implements Process {

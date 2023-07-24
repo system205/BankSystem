@@ -1,10 +1,10 @@
-package oop.course.implementations;
+package oop.course.entity;
 
 import com.auth0.jwt.*;
 import com.auth0.jwt.algorithms.*;
 import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.*;
-import oop.course.exceptions.AuthorizationException;
+import oop.course.errors.exceptions.AuthorizationException;
 import oop.course.interfaces.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

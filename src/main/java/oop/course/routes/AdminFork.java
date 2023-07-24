@@ -1,8 +1,9 @@
 package oop.course.routes;
 
 
-import oop.course.interfaces.*;
+import oop.course.requests.Request;
 import oop.course.responses.NotFoundResponse;
+import oop.course.responses.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,6 +3,9 @@ package oop.course.implementations;
 
 import oop.course.interfaces.*;
 import oop.course.interfaces.Process;
+import oop.course.requests.Request;
+import oop.course.responses.LoginFailure;
+import oop.course.responses.Response;
 import oop.course.storage.*;
 import oop.course.tools.implementations.*;
 

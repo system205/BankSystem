@@ -1,6 +1,6 @@
 package oop.course.entity;
 
-import oop.course.interfaces.*;
+import oop.course.entity.transaction.Transaction;
 import oop.course.tools.*;
 import org.slf4j.*;
 

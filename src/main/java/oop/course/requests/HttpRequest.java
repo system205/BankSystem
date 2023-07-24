@@ -1,7 +1,6 @@
-package oop.course.implementations;
+package oop.course.requests;
 
-import oop.course.exceptions.MalformedDataException;
-import oop.course.interfaces.*;
+import oop.course.errors.exceptions.MalformedDataException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.*;

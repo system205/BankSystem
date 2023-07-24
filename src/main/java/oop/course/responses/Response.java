@@ -1,4 +1,4 @@
-package oop.course.interfaces;
+package oop.course.responses;
 
 import java.io.*;
 

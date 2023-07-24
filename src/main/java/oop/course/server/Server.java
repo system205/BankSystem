@@ -1,7 +1,7 @@
 package oop.course.server;
 
-import oop.course.implementations.*;
 import oop.course.interfaces.Process;
+import oop.course.requests.HttpRequest;
 import org.slf4j.*;
 
 import java.io.*;

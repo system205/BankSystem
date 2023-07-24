@@ -1,6 +1,6 @@
 package oop.course.entity;
 
-import oop.course.implementations.*;
+import oop.course.entity.account.CheckingAccount;
 import oop.course.tools.*;
 
 import java.math.*;

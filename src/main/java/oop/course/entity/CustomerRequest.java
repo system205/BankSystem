@@ -1,8 +1,8 @@
 package oop.course.entity;
 
-import oop.course.exceptions.InternalErrorException;
-import oop.course.implementations.*;
-import oop.course.interfaces.*;
+import oop.course.entity.account.Account;
+import oop.course.entity.account.CheckingAccount;
+import oop.course.errors.exceptions.InternalErrorException;
 import oop.course.tools.*;
 import org.slf4j.*;
 
