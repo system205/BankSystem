@@ -20,9 +20,7 @@ public class TerminalWindow {
     }
 
     public void close() {
-        window.getTextGUI().removeWindow(window);
-        panel.removeAllComponents();
-        window.setVisible(false);
+        window.close();
     }
 
     public void open() {
