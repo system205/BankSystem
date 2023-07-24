@@ -2,7 +2,7 @@ package oop.course.errors;
 
 import oop.course.errors.exceptions.*;
 import oop.course.responses.ForbiddenResponse;
-import oop.course.interfaces.Process;
+import oop.course.routes.Process;
 import oop.course.requests.Request;
 import oop.course.responses.Response;
 import oop.course.responses.*;

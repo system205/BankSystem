@@ -1,6 +1,5 @@
 package oop.course.entity;
 
-import oop.course.interfaces.*;
 import oop.course.tools.interfaces.*;
 
 // TODO - rename
