@@ -1,10 +1,14 @@
 package oop.course.storage;
 
 import oop.course.storage.migrations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class SimpleSqlExecutor implements SqlExecutor {
+
+    private final Logger log = LoggerFactory.getLogger(SimpleSqlExecutor.class);
 
     private final Connection connection;
 
@@ -15,16 +19,16 @@ public class SimpleSqlExecutor implements SqlExecutor {
     @Override
     public void perform(String sql) {
         try (Statement statement = this.connection.createStatement()) {
-            System.out.println("Start executing: " + sql);
+            log.debug("Start executing: " + sql);
             statement.execute(sql);
             this.connection.commit();
-            System.out.println("Committed");
+            log.debug("Committed");
         } catch (SQLException e) {
-            System.err.println("SQL exception when executing: " + sql + ". Error: " + e);
+            log.error("SQL exception when executing: " + sql + ". Error: " + e, e);
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
-                System.out.println("Failed to rollback after commit. " + ex);
+                log.error("Failed to rollback after commit. " + ex, ex);
                 throw new RuntimeException(ex);
             }
             throw new RuntimeException(e);

@@ -15,11 +15,9 @@ public class TextFromFile implements Source {
     @Override
     public String text() {
         try (InputStream stream = getClass().getClassLoader().getResourceAsStream(filepath)) {
-            if (stream == null)
-            {
+            if (stream == null) {
                 throw new RuntimeException("File: " + filepath + " was not found or without access");
             }
-
             return new BufferedReader(
                     new InputStreamReader(stream)
             ).lines().collect(Collectors.joining("\n"));

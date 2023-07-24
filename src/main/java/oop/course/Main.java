@@ -53,78 +53,80 @@ public class Main {
                         entry("/admin", List.of("admin"))
                 )
         );
-        final Authorization authorization = new Authorization(
-                new Fork(
-                        new GuardedUrl(connection, rolesConfiguration),
-                        new MainRoute(),
-                        new LoginRoute( // /login
+        final ErrorResponsesProcess errorResponsesProcess =
+                new ErrorResponsesProcess(
+                        new Authorization(
+                                new Fork(
+                                        new GuardedUrl(connection, rolesConfiguration),
+                                        new MainRoute(),
+                                        new LoginRoute( // /login
+                                                connection,
+                                                new TokenReturn(
+                                                        "mySecretKey",
+                                                        24L * 60 * 60 * 1000,
+                                                        connection
+                                                )
+                                        ),
+                                        new RegisterRoute( // /register
+                                                connection
+                                        ),
+                                        new TransferRoute( // /transfer
+                                                new MakeTransaction(
+                                                        connection
+                                                )
+                                        ),
+                                        new CheckAccountRoute( // /account
+                                                new GetAccount(
+                                                        connection
+                                                ),
+                                                new PutAccount(
+                                                        connection
+                                                ),
+                                                new DeleteAccount(
+                                                        connection
+                                                )
+                                        ),
+                                        new TransactionsRoute( // /transactions
+                                                new GetTransactions(
+                                                        connection
+                                                )
+                                        ),
+                                        new StatementRoute( // /stats
+                                                connection
+                                        ),
+                                        new AutoPaymentRoute( // /autopayments
+                                                new ListAutoPayments(connection),
+                                                new PostAutoPayment(connection),
+                                                new DeleteAutoPayment(connection)
+                                        ),
+                                        new AllAccounts(connection),
+                                        new ManagerFork( // /manager
+                                                new CustomerRequestsRoute(
+                                                        new ListRequests(connection),
+                                                        new PostRequests(connection)
+                                                )
+                                        ),
+                                        new RequestsRoute( // /requests
+                                                new GetRequests(connection),
+                                                new PutRequests(connection)
+                                        ),
+                                        new JobRoute( // /job
+                                                new PutOffer(connection)
+                                        ),
+                                        new AdminFork( // /admin
+                                                new ApplicantsRoute( // / offers
+                                                        new ListApplicants(connection),
+                                                        new PostOffer(connection)
+                                                )
+                                        ),
+                                        new NotFoundRoute()
+                                ),
                                 connection,
-                                new TokenReturn(
-                                        "mySecretKey",
-                                        24L * 60 * 60 * 1000,
-                                        connection
-                                )
-                        ),
-                        new RegisterRoute( // /register
-                                connection
-                        ),
-                        new TransferRoute( // /transfer
-                                new MakeTransaction(
-                                        connection
-                                )
-                        ),
-                        new CheckAccountRoute( // /account
-                                new GetAccount(
-                                        connection
-                                ),
-                                new PutAccount(
-                                        connection
-                                ),
-                                new DeleteAccount(
-                                        connection
-                                )
-                        ),
-                        new TransactionsRoute( // /transactions
-                                new GetTransactions(
-                                        connection
-                                )
-                        ),
-                        new StatementRoute( // /stats
-                                connection
-                        ),
-                        new AutoPaymentRoute( // /autopayments
-                                new ListAutoPayments(connection),
-                                new PostAutoPayment(connection),
-                                new DeleteAutoPayment(connection)
-                        ),
-                        new AllAccounts(connection),
-                        new ManagerFork( // /manager
-                                new CustomerRequestsRoute(
-                                        new ListRequests(connection),
-                                        new PostRequests(connection)
-                                )
-                        ),
-                        new RequestsRoute( // /requests
-                                new GetRequests(connection),
-                                new PutRequests(connection)
-                        ),
-                        new JobRoute( // /job
-                                new PutOffer(connection)
-                        ),
-                        new AdminFork( // /admin
-                                new ApplicantsRoute( // / offers
-                                        new ListApplicants(connection),
-                                        new PostOffer(connection)
-                                )
-                        ),
-                        new NotFoundRoute()
-                ),
-                connection,
-                rolesConfiguration
-        );
-        final ErrorResponsesProcess errorResponsesProcess = new ErrorResponsesProcess(authorization);
-        logger.debug("All processes are created");
+                                rolesConfiguration
+                        )
+                );
 
+        logger.debug("All processes are created");
         final int port = 6666;
         try (ServerSocket socket = new ServerSocket(port)) {
             logger.info("Server started on port {} in {} ms", port, System.currentTimeMillis() - startTime);
