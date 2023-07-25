@@ -7,13 +7,17 @@ import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 
 import java.util.List;
 
-public class TerminalWindow {
+public final class TerminalWindow {
     private final BasicWindow window;
 
-    public TerminalWindow(String title) {
-        window = new BasicWindow(title);
-        window.setHints(List.of(Window.Hint.CENTERED));
-        window.setVisible(false);
+    public TerminalWindow(String title, Panel panel, TerminalGUIElement... elements) {
+        this.window = new BasicWindow(title);
+        this.window.setHints(List.of(Window.Hint.CENTERED));
+        this.window.setVisible(false);
+        for (var element : elements) {
+            element.attachTo(panel);
+        }
+        this.window.setComponent(panel);
     }
 
     public void close() {
@@ -24,11 +28,11 @@ public class TerminalWindow {
         window.setVisible(true);
     }
 
-    public void setContent(Panel panel) {
-        window.setComponent(panel);
-    }
-
     public void addToGui(WindowBasedTextGUI gui) {
         gui.addWindow(window);
+    }
+
+    public void waitUntilClosed() {
+        window.waitUntilClosed();
     }
 }

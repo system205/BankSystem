@@ -2,7 +2,7 @@ package oop.course.client.gui;
 
 import com.googlecode.lanterna.gui2.Panel;
 
-public class TerminalFormKeyValuePair implements TerminalGUIElement {
+public final class TerminalFormKeyValuePair implements TerminalGUIElement {
     private final String key;
     private final TerminalInputPair pair;
 

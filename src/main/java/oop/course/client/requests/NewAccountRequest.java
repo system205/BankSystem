@@ -1,25 +1,29 @@
 package oop.course.client.requests;
 
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.NewAccountResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class NewAccountRequest implements Request {
-    private final Request base;
+public final class NewAccountRequest implements Request<NewAccountResponse> {
+    private final String token;
 
     public NewAccountRequest(String token) {
-        base = new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/account"), token);
+        this.token = token;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new AuthorizedRequest(
+            new BasicHttpRequest(Method.PUT, "/account"),
+            token
+        ).send(printWriter);
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public NewAccountResponse response(BufferedReader bufferedReader) {
+        return new NewAccountResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

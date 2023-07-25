@@ -1,27 +1,34 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.HandleRequestResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class HandleRequestRequest implements Request {
-    private final Request base;
+public final class HandleRequestRequest implements Request<HandleRequestResponse> {
+    private final String token;
+    private final String form;
 
-    public HandleRequestRequest(String token, TerminalForm form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.POST, "/manager/requests"), token),
-                form.json());
+    public HandleRequestRequest(String token, String form) {
+        this.token = token;
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new AuthorizedRequest(
+                new BasicHttpRequest(Method.POST, "/manager/requests"),
+                token
+            ),
+            form
+        ).send(printWriter);
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public HandleRequestResponse response(BufferedReader bufferedReader) {
+        return new HandleRequestResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

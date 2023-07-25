@@ -1,58 +1,83 @@
 package oop.course.client.responses;
 
-import oop.course.client.Transaction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TransactionsResponse implements Response {
-    private final BasicResponse response;
+public final class TransactionsResponse implements Response {
+    private final Response response;
 
-    public TransactionsResponse(BasicResponse response) {
+    public TransactionsResponse(Response response) {
         this.response = response;
     }
 
-    public boolean isSuccess() {
-        return !Objects.equals(response.raw(), "");
-    }
+    public List<List<String>> transactions() {
+        List<List<String>> transactions = new ArrayList<>();
 
-    public List<Transaction> transactions() {
-        List<Transaction> transactions = new ArrayList<>();
-        var basicPattern = "\" *: *\"(.*?)\"";
-        Pattern patternType = Pattern.compile("\"" + "type" + basicPattern);
-        Pattern patternFrom = Pattern.compile("\"" + "from" + basicPattern);
-        Pattern patternAmount = Pattern.compile("\"" + "amount" + basicPattern);
-        Pattern patternDate = Pattern.compile("\"" + "date" + basicPattern);
+        Pattern patternType = Pattern.compile("\"" + "type" + "\" *: *\"(.*?)\"");
+        Pattern patternFrom = Pattern.compile("\"" + "from" + "\" *: *\"(.*?)\"");
+        Pattern patternAmount = Pattern.compile("\"" + "amount" + "\" *: *\"(.*?)\"");
+        Pattern patternDate = Pattern.compile("\"" + "date" + "\" *: *\"(.*?)\"");
         Pattern main = Pattern.compile("\\{(.|\\n)*?\\}");
 
-        Matcher matcher = main.matcher(response.raw());
+        Matcher matcher = main.matcher(response.body());
         while (matcher.find()) {
-            var curTrans = new Transaction("", "request", "", "");
+            var curTrans = new String[]{"", "request", "", ""};
             var trans = matcher.group(0);
             if (!trans.contains("type")) {
                 continue;
             }
             var matcher2 = patternType.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(matcher2.group(1), curTrans.from(), curTrans.amount(), curTrans.date());
+                curTrans[0] = matcher2.group(1);
             }
             matcher2 = patternFrom.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(curTrans.type(), matcher2.group(1), curTrans.amount(), curTrans.date());
+                curTrans[1] = matcher2.group(1);
             }
             matcher2 = patternAmount.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(curTrans.type(), curTrans.from(), matcher2.group(1), curTrans.date());
+                curTrans[2] = matcher2.group(1);
             }
             matcher2 = patternDate.matcher(trans);
             if (matcher2.find()) {
-                curTrans = new Transaction(curTrans.type(), curTrans.from(), curTrans.amount(), matcher2.group(1));
+                curTrans[3] = matcher2.group(1);
             }
-            transactions.add(curTrans);
+            transactions.add(Arrays.stream(curTrans).toList());
         }
         return transactions;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return response.isSuccess();
+    }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }

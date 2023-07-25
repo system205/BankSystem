@@ -5,7 +5,7 @@ import com.googlecode.lanterna.gui2.Panel;
 
 import java.util.List;
 
-public class DropDownTextBox implements TerminalInputBox {
+public final class DropDownTextBox implements TerminalInputBox {
     private final ComboBox<String> comboBox;
 
     public DropDownTextBox(List<String> options) {

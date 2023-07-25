@@ -6,80 +6,90 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.DeleteAutoPaymentRequest;
 import oop.course.client.requests.ListAutoPaymentsRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.DeleteAutoPaymentResponse;
-import oop.course.client.responses.ListAutoPaymentsResponse;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class ListAutoPaymentsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+public final class ListAutoPaymentsView implements IView {
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
+    private final ServerBridge serverBridge;
     private final String token;
     private final String account;
-    private final TerminalWindow window;
 
-    public ListAutoPaymentsView(Consumer<IView> changeViewHandler, Runnable onExit,
-                                Function<Request, BasicResponse> requestHandler, String token, String account) {
-        onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+    public ListAutoPaymentsView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
+                                String token, String account) {
+        this.changeView = changeView;
+        this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.account = account;
-        this.window = new TerminalWindow("Account Statement request");
     }
 
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
-        var panel = new Panel(new LinearLayout(Direction.VERTICAL));
-
-        var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
-                new TerminalInputPair(new TerminalText("Account number"), new TerminalImmutableTextBox(account)))));
-
-        var request = new ListAutoPaymentsRequest(token, form);
-        var response = new ListAutoPaymentsResponse(requestHandler.apply(request));
-
+    public void show(WindowBasedTextGUI gui) {
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "accountNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("Account number"),
+                                        new TerminalFixedTextBox(account)
+                                )
+                        )
+                )
+        );
+        var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form.json()));
+        TerminalGUIElement element;
         if (response.isSuccess()) {
-            new TerminalAutoPaymentsTable(response.autoPayments(), (List<String> row) -> onRowSelected(row, gui)).attachTo(panel);
+            element = new TerminalAutoPaymentsTable(response.autopayments(), row -> onRowSelected(row, gui));
         } else {
-            new TerminalText("Could not fetch data from the server").attachTo(panel);
+            element = new TerminalText(response.message());
         }
 
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(panel);
+        var window = new TerminalWindow(
+            "Autopayments",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            element,
+            new TerminalButton("Return", this::onReturn)
+        );
 
-        window.setContent(panel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
+    }
+
+    private void onReturn() {
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {
-        var res = MessageDialog.showMessageDialog(gui, "Select an action", "Do you want to cancel the auto-payment?",
+        var res = MessageDialog.showMessageDialog(gui,
+                "Select an action", "Do you want to cancel the auto-payment?",
                 MessageDialogButton.Yes, MessageDialogButton.No);
         if (res == MessageDialogButton.Yes) {
-            var form = new TerminalForm(List.of(new TerminalFormKeyValuePair("paymentId",
-                    new TerminalInputPair(new TerminalText("Payment Id"), new TerminalImmutableTextBox(row.get(0))))));
-            var deleteRequest = new DeleteAutoPaymentRequest(token, form);
-            var deleteResponse = new DeleteAutoPaymentResponse(requestHandler.apply(deleteRequest));
+            var form = new TerminalForm(
+                    List.of(
+                            new TerminalFormKeyValuePair(
+                                    "paymentId",
+                                    new TerminalInputPair(
+                                            new TerminalText("Payment Id"),
+                                            new TerminalFixedTextBox(row.get(0))
+                                    )
+                            )
+                    )
+            );
+            var deleteResponse = serverBridge.execute(new DeleteAutoPaymentRequest(token, form.json()));
             if (deleteResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully canceled an auto-payment",
-                        MessageDialogButton.OK);
-                window.close();
-                onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, requestHandler, token, account));
+                MessageDialog.showMessageDialog(gui, "Success", deleteResponse.message(), MessageDialogButton.OK);
+                changeView.accept(new ListAutoPaymentsView(changeView, exitAction, serverBridge, token, account));
             } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "Failed to cancel an auto-payment",
-                        MessageDialogButton.Close);
+                MessageDialog.showMessageDialog(gui, "Failure", deleteResponse.message(), MessageDialogButton.Close);
             }
         }
     }

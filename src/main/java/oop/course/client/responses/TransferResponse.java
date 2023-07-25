@@ -1,13 +1,39 @@
 package oop.course.client.responses;
 
-public class TransferResponse implements Response {
-    private final BasicResponse response;
+public final class TransferResponse implements Response {
+    private final Response response;
 
-    public TransferResponse(BasicResponse response) {
+    public TransferResponse(Response response) {
         this.response = response;
     }
 
+    @Override
     public boolean isSuccess() {
-        return response.raw().contains("from") && response.raw().contains("to") && response.raw().contains("amount");
+        return response.isSuccess();
+    }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }

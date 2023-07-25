@@ -4,56 +4,49 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import oop.course.client.gui.TerminalBankRequestTable;
-import oop.course.client.gui.TerminalButton;
-import oop.course.client.gui.TerminalText;
-import oop.course.client.gui.TerminalWindow;
+import oop.course.client.ServerBridge;
+import oop.course.client.gui.*;
 import oop.course.client.requests.GetRequestsRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.GetRequestsResponse;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class CheckRequestsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+public final class CheckRequestsView implements IView {
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
+    private final ServerBridge serverBridge;
     private final String token;
 
-    public CheckRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
+    public CheckRequestsView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                              String token) {
-        this.onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
-        this.onExit = onExit;
+        this.changeView = changeView;
+        this.serverBridge = serverBridge;
+        this.exitAction = exitAction;
         this.token = token;
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
-        TerminalWindow window = new TerminalWindow("Action selector");
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-
-        var request = new GetRequestsRequest(token);
-        var response = new GetRequestsResponse(requestHandler.apply(request));
-
+    public void show(WindowBasedTextGUI gui) {
+        var response = serverBridge.execute(new GetRequestsRequest(token));
+        TerminalGUIElement requests;
         if (response.isSuccess()) {
-            new TerminalBankRequestTable(response.requests(), (List<String> row) -> {
-            }).attachTo(contentPanel);
+            requests = new TerminalBankRequestTable(response.requests(), row -> {});
         } else {
-            new TerminalText("Could not fetch data from the server").attachTo(contentPanel);
+            requests = new TerminalText(response.message());
         }
 
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(contentPanel);
+        var window = new TerminalWindow(
+            "Requests list",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            requests,
+            new TerminalButton("Return", this::onReturn)
+        );
 
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
+    }
+
+    private void onReturn() {
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 }

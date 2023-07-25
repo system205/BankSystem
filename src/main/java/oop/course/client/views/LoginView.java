@@ -6,71 +6,75 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.LoginRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.LoginResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class LoginView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+public final class LoginView implements IView {
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
+    private final ServerBridge serverBridge;
 
-    public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler) {
-        onChangeView = changeViewHandler;
-        this.onExit = onExit;
-        this.requestHandler = requestHandler;
+    public LoginView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge) {
+        this.changeView = changeView;
+        this.exitAction = exitAction;
+        this.serverBridge = serverBridge;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("BankSystem authentication");
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        TerminalForm form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "email",
+                                new TerminalInputPair(
+                                        new TerminalText("Email"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "password",
+                                new TerminalInputPair(
+                                        new TerminalText("Password"),
+                                        new TerminalPasswordBox()
+                                )
+                        )
+                )
+        );
 
-        new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your existing" +
-                " account.").attachTo(contentPanel);
+        var window = new TerminalWindow(
+            "BankSystem authentication",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your existing account."),
+            form,
+            new TerminalButton("Login", () -> onLogin(gui, form)),
+            new TerminalButton("Register page", this::onRegister),
+            new TerminalButton("Exit", this::onExit)
+        );
 
-        var email = new TerminalTextBox();
-        var username = new TerminalFormKeyValuePair("email", new TerminalInputPair(new TerminalText("Email"), email));
-        var password = new TerminalFormKeyValuePair("password", new TerminalInputPair(new TerminalText("Password"),
-                new TerminalPasswordBox()));
-
-        var form = new TerminalForm(List.of(username, password));
-
-        username.attachTo(contentPanel);
-        password.attachTo(contentPanel);
-
-        new TerminalButton("Login", () -> {
-            Request req = new LoginRequest(form);
-            var resp = new LoginResponse(requestHandler.apply(req));
-            if (resp.isWrongCredentials()) {
-                MessageDialog.showMessageDialog(gui, "Authentication error", "Wrong credentials",
-                        MessageDialogButton.Close);
-            } else if (resp.isSuccess()) {
-                window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, resp.token()));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Error", "Unexpected error", MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Register page", () -> {
-            window.close();
-            onChangeView.accept(new RegisterView(onChangeView, onExit, requestHandler));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Exit", () -> {
-            window.close();
-            onExit.run();
-        }).attachTo(contentPanel);
-
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
+    }
+
+    private void onLogin(WindowBasedTextGUI gui, TerminalForm form) {
+        var resp = this.serverBridge.execute(new LoginRequest(form.json()));
+
+        if (resp.isSuccess()) {
+            this.changeView.accept(new AccountsView(this.changeView, this.exitAction, this.serverBridge, resp.token()));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Authentication error", resp.message(), MessageDialogButton.Close);
+        }
+    }
+
+    private void onRegister() {
+        this.changeView.accept(new RegisterView(this.changeView, this.exitAction, this.serverBridge));
+    }
+
+    private void onExit() {
+        this.exitAction.run();
     }
 }

@@ -1,16 +1,40 @@
 package oop.course.client.responses;
 
-import java.util.Objects;
+public final class RegisterResponse implements Response {
 
-public class RegisterResponse implements Response {
+    private final Response response;
 
-    private final BasicResponse response;
-
-    public RegisterResponse(BasicResponse response) {
+    public RegisterResponse(Response response) {
         this.response = response;
     }
 
+    @Override
     public boolean isSuccess() {
-        return Objects.equals(response.raw(), "Created");
+        return response.isSuccess();
+    }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }

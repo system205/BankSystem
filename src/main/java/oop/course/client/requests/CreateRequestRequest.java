@@ -1,27 +1,33 @@
 package oop.course.client.requests;
 
-import oop.course.client.gui.TerminalForm;
 import oop.course.client.responses.BasicResponse;
+import oop.course.client.responses.CreateRequestResponse;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class CreateRequestRequest implements Request {
-    private final Request base;
+public final class CreateRequestRequest implements Request<CreateRequestResponse> {
+    private final String token;
+    private final String form;
 
-    public CreateRequestRequest(String token, TerminalForm form) {
-        base = new JsonRequest(new AuthorizedRequest(new BasicHttpRequest(Method.PUT, "/requests"), token),
-                form.json());
+    public CreateRequestRequest(String token, String form) {
+        this.token = token;
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new AuthorizedRequest(
+                new BasicHttpRequest(Method.PUT, "/requests"),
+                token),
+            form
+        ).send(printWriter);
     }
 
     @Override
-    public BasicResponse response(BufferedReader bufferedReader) {
-        return new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n")));
+    public CreateRequestResponse response(BufferedReader bufferedReader) {
+        return new CreateRequestResponse(new BasicResponse(bufferedReader.lines().collect(Collectors.joining("\n"))));
     }
 }

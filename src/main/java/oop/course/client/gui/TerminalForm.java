@@ -4,7 +4,7 @@ import com.googlecode.lanterna.gui2.Panel;
 
 import java.util.List;
 
-public class TerminalForm implements TerminalGUIElement {
+public final class TerminalForm implements TerminalGUIElement {
     private final List<TerminalFormKeyValuePair> values;
 
     public TerminalForm(List<TerminalFormKeyValuePair> values) {

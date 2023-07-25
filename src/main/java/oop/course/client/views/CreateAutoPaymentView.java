@@ -6,93 +6,93 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
 import oop.course.client.requests.NewAutoPaymentRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.NewAutoPaymentResponse;
-import oop.course.client.responses.BasicResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class CreateAutoPaymentView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+public final class CreateAutoPaymentView implements IView {
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
+    private final ServerBridge serverBridge;
     private final String token;
     private final String account;
 
-    public CreateAutoPaymentView(Consumer<IView> changeViewHandler, Runnable onExit,
-                                 Function<Request, BasicResponse> requestHandler, String token, String accountNumber) {
-        this.onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+    public CreateAutoPaymentView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
+                                 String token, String accountNumber) {
+        this.changeView = changeView;
+        this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.account = accountNumber;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Auto payment");
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-
-        var form = new TerminalForm(List.of(
-                new TerminalFormKeyValuePair("senderNumber",
-                        new TerminalInputPair(
-                                new TerminalText("From"),
-                                new TerminalImmutableTextBox(account)
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "senderNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("From"),
+                                        new TerminalFixedTextBox(account)
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "receiverNumber",
+                                new TerminalInputPair(
+                                        new TerminalText("To"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "amount",
+                                new TerminalInputPair(
+                                        new TerminalText("Amount"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "period",
+                                new TerminalInputPair(
+                                        new TerminalText("Period"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "startDate",
+                                new TerminalInputPair(
+                                        new TerminalText("Starting date"),
+                                        new TerminalTextBox())
                         )
-                ),
-                new TerminalFormKeyValuePair("receiverNumber",
-                        new TerminalInputPair(
-                                new TerminalText("To"),
-                                new TerminalTextBox()
-                        )
-                ),
-                new TerminalFormKeyValuePair("amount",
-                        new TerminalInputPair(
-                                new TerminalText("Amount"),
-                                new TerminalTextBox()
-                        )
-                ),
-                new TerminalFormKeyValuePair("period",
-                        new TerminalInputPair(
-                                new TerminalText("Period"),
-                                new TerminalTextBox()
-                        )
-                ),
-                new TerminalFormKeyValuePair("startDate",
-                        new TerminalInputPair(
-                                new TerminalText("Starting date"),
-                                new TerminalTextBox()
-                        )
-                ))
+                )
         );
-        form.attachTo(contentPanel);
 
+        var window = new TerminalWindow(
+            "Auto payment",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)),
+            new TerminalButton("Return", this::onReturn)
+        );
 
-        new TerminalButton("Set up", () -> {
-            var request = new NewAutoPaymentRequest(token, form);
-            var response = new NewAutoPaymentResponse(requestHandler.apply(request));
-            if (response.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "The auto-payment was successfully set up",
-                        MessageDialogButton.OK);
-                window.close();
-                onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token, account));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "The auto-payment could not be set up",
-                        MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token, account));
-        }).attachTo(contentPanel);
-
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
+    }
+
+    private void onReturn() {
+        changeView.accept(new AccountActionsView(changeView, exitAction, serverBridge, token, account));
+    }
+
+    private void onAutoPaymentSetup(WindowBasedTextGUI gui, TerminalForm form) {
+        var response = serverBridge.execute(new NewAutoPaymentRequest(token, form.json()));
+        if (response.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
+            changeView.accept(new AccountActionsView(changeView, exitAction, serverBridge, token, account));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
+        }
     }
 }

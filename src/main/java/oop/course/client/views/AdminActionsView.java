@@ -4,52 +4,50 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.TerminalButton;
 import oop.course.client.gui.TerminalWindow;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.BasicResponse;
 
-import java.io.IOException;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class AdminActionsView implements IView {
+public final class AdminActionsView implements IView {
 
-    private final Consumer<IView> onChangeView;
+    private final Consumer<IView> changeView;
     private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+    private final ServerBridge serverBridge;
     private final String token;
 
-    public AdminActionsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
+    public AdminActionsView(Consumer<IView> changeView, Runnable onExit, ServerBridge serverBridge,
                             String token) {
-        this.onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+        this.changeView = changeView;
+        this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
     }
 
     @Override
-    public void show(WindowBasedTextGUI gui) throws IOException {
-        TerminalWindow window = new TerminalWindow("Account selection");
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-
-        new TerminalButton("Manage offers", () -> {
-            window.close();
-            onChangeView.accept(new OfferManagementView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("View requests", () -> {
-            window.close();
-            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Return", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(contentPanel);
-
-        window.setContent(contentPanel);
+    public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow(
+            "Admin panel",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalButton("Manage offers", this::onManageOffers),
+            new TerminalButton("View requests", this::onViewRequests),
+            new TerminalButton("Return", this::onReturn)
+        );
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
+    }
+
+    private void onManageOffers() {
+        changeView.accept(new OfferManagementView(changeView, onExit, serverBridge, token));
+    }
+
+    private void onViewRequests() {
+        changeView.accept(new AdminRequestsView(changeView, onExit, serverBridge, token));
+    }
+
+    private void onReturn() {
+        changeView.accept(new AccountsView(changeView, onExit, serverBridge, token));
     }
 }

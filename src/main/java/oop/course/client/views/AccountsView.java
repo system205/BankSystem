@@ -6,102 +6,90 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.gui.TerminalButton;
-import oop.course.client.gui.TerminalModernButton;
-import oop.course.client.gui.TerminalWindow;
+import oop.course.client.ServerBridge;
+import oop.course.client.gui.*;
 import oop.course.client.requests.AccountsRequest;
 import oop.course.client.requests.BecomeManagerRequest;
 import oop.course.client.requests.NewAccountRequest;
-import oop.course.client.requests.Request;
-import oop.course.client.responses.AccountsResponse;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.BecomeManagerResponse;
-import oop.course.client.responses.NewAccountResponse;
 
+import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class AccountsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+public final class AccountsView implements IView {
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
+    private final ServerBridge serverBridge;
     private final String token;
 
-    public AccountsView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
-                        String token) {
-        onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+    public AccountsView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge, String token) {
+        this.changeView = changeView;
+        this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Account selection");
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-
-        Request req = new AccountsRequest(token);
-        var resp = new AccountsResponse(requestHandler.apply(req));
-        var accounts = resp.accounts();
-
-        for (var account : accounts) {
-            var t = "Account number: " + account.accountNumber() + " " + "Balance: " + account.balance();
-            new TerminalModernButton(t, () -> {
-                window.close();
-                onChangeView.accept(new AccountActionsView(onChangeView, onExit, requestHandler, token,
-                        account.accountNumber()));
-            }).attachTo(contentPanel);
+        var resp = serverBridge.execute(new AccountsRequest(token));
+        TerminalGUIElement accounts;
+        if (resp.isSuccess()) {
+            accounts = new TerminalAccountsTable(resp.accounts(), this::onAccountSelected);
+        } else {
+            accounts = new TerminalText(resp.message());
         }
+        var window = new TerminalWindow(
+            "Account selection",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            accounts,
+            new TerminalButton("Create an account", () -> onCreateAccount(gui)),
+            new TerminalButton("Check my requests", this::onCheckRequests),
+            new TerminalButton("Request a manager status", () -> onRequestManager(gui)),
+            new TerminalButton("Admin actions", this::onAdminActions),
+            new TerminalButton("Logout", this::onLogout),
+            new TerminalButton("Logout & exit", this::onExit)
+        );
 
-        new TerminalButton("Create an account", () -> {
-            Request newAccountRequest = new NewAccountRequest(token);
-            var newAccountResponse = new NewAccountResponse(requestHandler.apply(newAccountRequest));
-            if (newAccountResponse.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success",
-                        "Successfully created an account with number " + newAccountResponse.accountNumber() + " with " +
-                                "the starting balance " + newAccountResponse.accountBalance());
-                window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Error", "Unexpected error has occurred",
-                        MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Check my requests", () -> {
-            window.close();
-            onChangeView.accept(new CheckRequestsView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Request a manager status", () -> {
-            var request = new BecomeManagerRequest(token);
-            var response = new BecomeManagerResponse(requestHandler.apply(request));
-            if (response.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "The request has been sent successfully. Assigned id:" +
-                        " " + response.id(), MessageDialogButton.Continue);
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "The request could not be sent or you already applied" +
-                        " to the job", MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Admin actions", () -> {
-            window.close();
-            onChangeView.accept(new AdminActionsView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Logout", () -> {
-            window.close();
-            onChangeView.accept(new LoginView(onChangeView, onExit, requestHandler));
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Logout & exit", () -> {
-            window.close();
-            onExit.run();
-        }).attachTo(contentPanel);
-
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
+    }
+
+    private void onAccountSelected(List<String> row) {
+        changeView.accept(new AccountActionsView(changeView, exitAction, serverBridge, token, row.get(0)));
+    }
+
+    private void onCreateAccount(WindowBasedTextGUI gui) {
+        var newAccountResponse = serverBridge.execute(new NewAccountRequest(token));
+        if (newAccountResponse.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", newAccountResponse.message(), MessageDialogButton.OK);
+            changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Error", newAccountResponse.message(), MessageDialogButton.Close);
+        }
+    }
+
+    private void onCheckRequests() {
+        changeView.accept(new CheckRequestsView(changeView, exitAction, serverBridge, token));
+    }
+
+    private void onRequestManager(WindowBasedTextGUI gui) {
+        var response = serverBridge.execute(new BecomeManagerRequest(token));
+        if (response.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", "Successfully posted a job offer", MessageDialogButton.OK);
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
+        }
+    }
+
+    private void onAdminActions() {
+        changeView.accept(new AdminActionsView(changeView, exitAction, serverBridge, token));
+    }
+
+    private void onLogout() {
+        changeView.accept(new LoginView(changeView, exitAction, serverBridge));
+    }
+
+    private void onExit() {
+        exitAction.run();
     }
 }

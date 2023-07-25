@@ -1,26 +1,20 @@
 package oop.course.client.responses;
 
-import oop.course.client.AutoPayment;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ListAutoPaymentsResponse implements Response {
-    private final BasicResponse response;
+public final class ListAutoPaymentsResponse implements Response {
+    private final Response response;
 
-    public ListAutoPaymentsResponse(BasicResponse response) {
+    public ListAutoPaymentsResponse(Response response) {
         this.response = response;
     }
 
-    public boolean isSuccess() {
-        return !Objects.equals(response.raw(), "");
-    }
-
-    public List<AutoPayment> autoPayments() {
-        List<AutoPayment> autoPayments = new ArrayList<>();
+    public List<List<String>> autopayments() {
+        List<List<String>> autoPayments = new ArrayList<>();
         var basicPattern = "\" *: *\"(.*?)\"";
         Pattern patternId = Pattern.compile("\"" + "id" + basicPattern);
         Pattern patternSender = Pattern.compile("\"" + "sender" + basicPattern);
@@ -30,42 +24,66 @@ public class ListAutoPaymentsResponse implements Response {
         Pattern patternPeriod = Pattern.compile("\"" + "period" + basicPattern);
         Pattern main = Pattern.compile("\\{(.|\\n)*?\\}");
 
-        Matcher matcher = main.matcher(response.raw());
+        Matcher matcher = main.matcher(response.body());
         while (matcher.find()) {
-            var autopayment = new AutoPayment("", "", "", "", "", "");
+            var autopayment = new String[6];
             var total = matcher.group(0);
             var matcher2 = patternId.matcher(total);
             if (matcher2.find()) {
-                autopayment = new AutoPayment(matcher2.group(1), autopayment.sender(), autopayment.receiver(),
-                        autopayment.amount(), autopayment.startDate(), autopayment.period());
+                autopayment[0] = matcher2.group(1);
             }
             matcher2 = patternSender.matcher(total);
             if (matcher2.find()) {
-                autopayment = new AutoPayment(autopayment.id(), matcher2.group(1), autopayment.receiver(),
-                        autopayment.amount(), autopayment.startDate(), autopayment.period());
+                autopayment[1] = matcher2.group(1);
             }
             matcher2 = patternReceiver.matcher(total);
             if (matcher2.find()) {
-                autopayment = new AutoPayment(autopayment.id(), autopayment.sender(), matcher2.group(1),
-                        autopayment.amount(), autopayment.startDate(), autopayment.period());
+                autopayment[2] = matcher2.group(1);
             }
             matcher2 = patternAmount.matcher(total);
             if (matcher2.find()) {
-                autopayment = new AutoPayment(autopayment.id(), autopayment.sender(), autopayment.receiver(),
-                        matcher2.group(1), autopayment.startDate(), autopayment.period());
+                autopayment[3] = matcher2.group(1);
             }
             matcher2 = patternDate.matcher(total);
             if (matcher2.find()) {
-                autopayment = new AutoPayment(autopayment.id(), autopayment.sender(), autopayment.receiver(),
-                        autopayment.amount(), matcher2.group(1), autopayment.period());
+                autopayment[4] = matcher2.group(1);
             }
             matcher2 = patternPeriod.matcher(total);
             if (matcher2.find()) {
-                autopayment = new AutoPayment(autopayment.id(), autopayment.sender(), autopayment.receiver(),
-                        autopayment.amount(), autopayment.startDate(), matcher2.group(1));
+                autopayment[5] = matcher2.group(1);
             }
-            autoPayments.add(autopayment);
+            autoPayments.add(Arrays.stream(autopayment).toList());
         }
         return autoPayments;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return response.isSuccess();
+    }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }

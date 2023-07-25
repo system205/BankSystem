@@ -1,23 +1,43 @@
 package oop.course.client.responses;
 
-import java.util.Objects;
+public final class LoginResponse implements Response {
+    private final Response response;
 
-public class LoginResponse implements Response {
-    private final BasicResponse response;
-
-    public LoginResponse(BasicResponse response) {
+    public LoginResponse(Response response) {
         this.response = response;
-    }
-
-    public boolean isSuccess() {
-        return response.raw().contains("token");
-    }
-
-    public boolean isWrongCredentials() {
-        return Objects.equals(response.raw(), "Wrong credentials");
     }
 
     public String token() {
         return response.value("token");
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return response.isSuccess();
+    }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }

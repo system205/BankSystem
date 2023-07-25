@@ -1,15 +1,39 @@
 package oop.course.client.responses;
 
-import java.util.Objects;
+public final class HandleOfferResponse implements Response {
+    private final Response response;
 
-public class HandleOfferResponse {
-    private final BasicResponse response;
-
-    public HandleOfferResponse(BasicResponse response) {
+    public HandleOfferResponse(Response response) {
         this.response = response;
     }
 
+    @Override
     public boolean isSuccess() {
-        return !Objects.equals(response.raw(), "");
+        return response.isSuccess();
+    }
+
+    @Override
+    public int statusCode() {
+        return response.statusCode();
+    }
+
+    @Override
+    public String message() {
+        return response.message();
+    }
+
+    @Override
+    public String value(String key) {
+        return response.value(key);
+    }
+
+    @Override
+    public String[] values(String key) {
+        return response.values(key);
+    }
+
+    @Override
+    public String body() {
+        return response.body();
     }
 }

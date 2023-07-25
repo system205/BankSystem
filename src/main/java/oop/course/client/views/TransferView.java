@@ -6,71 +6,81 @@ import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
+import oop.course.client.ServerBridge;
 import oop.course.client.gui.*;
-import oop.course.client.requests.Request;
 import oop.course.client.requests.TransferRequest;
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.TransferResponse;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class TransferView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
-    private final Function<Request, BasicResponse> requestHandler;
+public final class TransferView implements IView {
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
+    private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
 
-    public TransferView(Consumer<IView> changeViewHandler, Runnable onExit, Function<Request, BasicResponse> requestHandler,
-                        String token, String accountNumber) {
-        onChangeView = changeViewHandler;
-        this.requestHandler = requestHandler;
+    public TransferView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge, String token,
+                        String accountNumber) {
+        this.changeView = changeView;
+        this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.accountNumber = accountNumber;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        TerminalWindow window = new TerminalWindow("Money transfer");
-        Panel contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
+        var form = new TerminalForm(
+                List.of(
+                        new TerminalFormKeyValuePair(
+                                "senderAccount",
+                                new TerminalInputPair(
+                                        new TerminalText("Sender"),
+                                        new TerminalFixedTextBox(accountNumber)
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "receiverAccount",
+                                new TerminalInputPair(
+                                        new TerminalText("Receiver"),
+                                        new TerminalTextBox()
+                                )
+                        ),
+                        new TerminalFormKeyValuePair(
+                                "amount",
+                                new TerminalInputPair(
+                                        new TerminalText("Sum"),
+                                        new TerminalTextBox()
+                                )
+                        )
+                )
+        );
 
-        var sender = new TerminalFormKeyValuePair("senderAccount", new TerminalInputPair(new TerminalText("Sender"),
-                new TerminalImmutableTextBox(accountNumber)));
-        var receiver = new TerminalFormKeyValuePair("receiverAccount", new TerminalInputPair(new TerminalText(
-                "Receiver"), new TerminalTextBox()));
-        var sum = new TerminalFormKeyValuePair("amount", new TerminalInputPair(new TerminalText("Sum"),
-                new TerminalTextBox()));
+        var window = new TerminalWindow(
+            "Money transfer",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            form,
+            new TerminalButton("Transfer money", () -> onTransfer(gui, form)),
+            new TerminalButton("Cancel", this::onCancel)
+        );
 
-        sender.attachTo(contentPanel);
-        receiver.attachTo(contentPanel);
-        sum.attachTo(contentPanel);
-
-        var form = new TerminalForm(List.of(sender, receiver, sum));
-
-        new TerminalButton("Transfer money", () -> {
-            var req = new TransferRequest(token, form);
-            var resp = new TransferResponse(requestHandler.apply(req));
-            if (resp.isSuccess()) {
-                MessageDialog.showMessageDialog(gui, "Success", "Successfully transferred money.",
-                        MessageDialogButton.OK);
-                window.close();
-                onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
-            } else {
-                MessageDialog.showMessageDialog(gui, "Failure", "The transfer could not be completed.",
-                        MessageDialogButton.Close);
-            }
-        }).attachTo(contentPanel);
-
-        new TerminalButton("Cancel", () -> {
-            window.close();
-            onChangeView.accept(new AccountsView(onChangeView, onExit, requestHandler, token));
-        }).attachTo(contentPanel);
-
-        window.setContent(contentPanel);
         window.addToGui(gui);
         window.open();
+        window.waitUntilClosed();
+    }
+
+    private void onCancel() {
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
+    }
+
+    private void onTransfer(WindowBasedTextGUI gui, TerminalForm form) {
+        var resp = serverBridge.execute(new TransferRequest(token, form.json()));
+        if (resp.isSuccess()) {
+            MessageDialog.showMessageDialog(gui, "Success", resp.message(), MessageDialogButton.OK);
+            changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
+        } else {
+            MessageDialog.showMessageDialog(gui, "Failure", resp.message(), MessageDialogButton.Close);
+        }
     }
 }
