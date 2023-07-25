@@ -152,7 +152,7 @@ public final class CheckingAccount implements Account {
                         "SELECT id FROM customer WHERE email=?"
                 );
                 PreparedStatement accountsNumberStatement = this.connection.prepareStatement(
-                        "SELECT COUNT(*) FROM checking_account WHERE account_number = ?"
+                        "SELECT COUNT(*) FROM checking_account WHERE customer_id = ? AND active=true"
                 )
         ) {
             // Identify customer in DB
@@ -169,15 +169,15 @@ public final class CheckingAccount implements Account {
             }
 
             final long id = result.getLong(1);
-//            accountsNumberStatement.setLong(1, id);
-//            ResultSet accountsNumberResult = accountsNumberStatement.executeQuery();
-//            accountsNumberResult.next();
-//
-//            final int numberOfAccounts = accountsNumberResult.getInt(1);
-//            log.debug("Number of accounts: {}", numberOfAccounts);
-//            if (numberOfAccounts >= 5) {
-//                throw new ConflictException("Customer can't have more than 5 accounts");
-//            }
+            accountsNumberStatement.setLong(1, id);
+            ResultSet accountsNumberResult = accountsNumberStatement.executeQuery();
+            accountsNumberResult.next();
+
+            final int numberOfAccounts = accountsNumberResult.getInt(1);
+            log.debug("Number of accounts: {}", numberOfAccounts);
+            if (numberOfAccounts >= 5) {
+                throw new ConflictException("Customer can't have more than 5 accounts");
+            }
 
             // Save new checking account
             accountStatement.setLong(1, id);
