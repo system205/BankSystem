@@ -7,10 +7,7 @@ import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import oop.course.client.ServerBridge;
-import oop.course.client.gui.TerminalAccountsTable;
-import oop.course.client.gui.TerminalButton;
-import oop.course.client.gui.TerminalText;
-import oop.course.client.gui.TerminalWindow;
+import oop.course.client.gui.*;
 import oop.course.client.requests.AccountsRequest;
 import oop.course.client.requests.BecomeManagerRequest;
 import oop.course.client.requests.NewAccountRequest;
@@ -33,20 +30,25 @@ public final class AccountsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Account selection", new Panel(new LinearLayout(Direction.VERTICAL)));
-
         var resp = serverBridge.execute(new AccountsRequest(token));
+        TerminalGUIElement accounts;
         if (resp.isSuccess()) {
-            new TerminalAccountsTable(resp.accounts(), this::onAccountSelected).attachTo(window.panel());
+            accounts = new TerminalAccountsTable(resp.accounts(), this::onAccountSelected);
         } else {
-            new TerminalText(resp.message()).attachTo(window.panel());
+            accounts = new TerminalText(resp.message());
         }
-        new TerminalButton("Create an account", () -> onCreateAccount(gui)).attachTo(window.panel());
-        new TerminalButton("Check my requests", this::onCheckRequests).attachTo(window.panel());
-        new TerminalButton("Request a manager status", () -> onRequestManager(gui)).attachTo(window.panel());
-        new TerminalButton("Admin actions", this::onAdminActions).attachTo(window.panel());
-        new TerminalButton("Logout", this::onLogout).attachTo(window.panel());
-        new TerminalButton("Logout & exit", this::onExit).attachTo(window.panel());
+        var window = new TerminalWindow(
+            "Account selection",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            accounts,
+            new TerminalButton("Create an account", () -> onCreateAccount(gui)),
+            new TerminalButton("Check my requests", this::onCheckRequests),
+            new TerminalButton("Request a manager status", () -> onRequestManager(gui)),
+            new TerminalButton("Admin actions", this::onAdminActions),
+            new TerminalButton("Logout", this::onLogout),
+            new TerminalButton("Logout & exit", this::onExit)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

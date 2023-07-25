@@ -27,10 +27,13 @@ public final class AdminActionsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Admin panel", new Panel(new LinearLayout(Direction.VERTICAL)));
-        new TerminalButton("Manage offers", this::onManageOffers).attachTo(window.panel());
-        new TerminalButton("View requests", this::onViewRequests).attachTo(window.panel());
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+        var window = new TerminalWindow(
+            "Admin panel",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalButton("Manage offers", this::onManageOffers),
+            new TerminalButton("View requests", this::onViewRequests),
+            new TerminalButton("Return", this::onReturn)
+        );
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

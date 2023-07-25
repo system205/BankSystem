@@ -29,7 +29,6 @@ public final class TransactionsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Account transactions", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -42,12 +41,19 @@ public final class TransactionsView implements IView {
                 )
         );
         var response = serverBridge.execute(new TransactionsRequest(token, form.json()));
+        TerminalGUIElement element;
         if (!response.isSuccess()) {
-            new TerminalText(response.message()).attachTo(window.panel());
+            element = new TerminalText(response.message());
         } else {
-            new TerminalTransactionTable(response.transactions()).attachTo(window.panel());
+            element = new TerminalTransactionTable(response.transactions());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+        var window = new TerminalWindow(
+            "Account transactions",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            element,
+            new TerminalButton("Return", this::onReturn)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

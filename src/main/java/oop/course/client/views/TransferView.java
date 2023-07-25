@@ -31,7 +31,6 @@ public final class TransferView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Money transfer", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -57,9 +56,15 @@ public final class TransferView implements IView {
                         )
                 )
         );
-        form.attachTo(window.panel());
-        new TerminalButton("Transfer money", () -> onTransfer(gui, form)).attachTo(window.panel());
-        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
+
+        var window = new TerminalWindow(
+            "Money transfer",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            form,
+            new TerminalButton("Transfer money", () -> onTransfer(gui, form)),
+            new TerminalButton("Cancel", this::onCancel)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

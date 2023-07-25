@@ -31,31 +31,22 @@ public final class AccountActionsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Action selector", new Panel(new LinearLayout(Direction.VERTICAL)));
-        var accountDeactivationForm = new TerminalForm(
-            List.of(
-                new TerminalFormKeyValuePair(
-                    "accountNumber",
-                    new TerminalInputPair(
-                        new TerminalText("Account Number"),
-                        new TerminalFixedTextBox(account)
-                    )
-                )
-            )
+        var accountDeactivationForm = new TerminalForm(List.of(new TerminalFormKeyValuePair("accountNumber",
+            new TerminalInputPair(new TerminalText("Account Number"), new TerminalFixedTextBox(account)))));
+
+        var window = new TerminalWindow(
+            "Action selector",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalText("Please select an action."),
+            new TerminalButton("Money transfer", this::onMoneyTransfer),
+            new TerminalButton("Request a statement", this::onStatementRequest),
+            new TerminalButton("View transaction history", this::onTransactionHistory),
+            new TerminalButton("Create a request", this::onRequestCreate),
+            new TerminalButton("Set up an auto-payment", this::onAutoPaymentCreate),
+            new TerminalButton("List/cancel auto-payments", this::onAutoPaymentList),
+            new TerminalButton("Deactivate an account", () -> onDeactivate(gui, accountDeactivationForm)),
+            new TerminalButton("Cancel", this::onCancel)
         );
-
-        new TerminalText("Please select an action.").attachTo(window.panel());
-
-        new TerminalButton("Money transfer", this::onMoneyTransfer).attachTo(window.panel());
-
-        new TerminalButton("Request a statement", this::onStatementRequest).attachTo(window.panel());
-        new TerminalButton("View transaction history", this::onTransactionHistory).attachTo(window.panel());
-        new TerminalButton("Create a request", this::onRequestCreate).attachTo(window.panel());
-        new TerminalButton("Set up an auto-payment", this::onAutoPaymentCreate).attachTo(window.panel());
-        new TerminalButton("List/cancel auto-payments", this::onAutoPaymentList).attachTo(window.panel());
-        new TerminalButton("Deactivate an account", () -> onDeactivate(gui, accountDeactivationForm)).attachTo(window.panel());
-
-        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
 
         window.addToGui(gui);
         window.open();

@@ -33,7 +33,6 @@ public final class ListAutoPaymentsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Autopayments", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -46,14 +45,20 @@ public final class ListAutoPaymentsView implements IView {
                 )
         );
         var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form.json()));
+        TerminalGUIElement element;
         if (response.isSuccess()) {
-            response.fillAutopayments(
-                    (List<List<String>> rows) -> new TerminalAutoPaymentsTable(rows, (List<String> row) -> onRowSelected(row, gui))
-            ).attachTo(window.panel());
+            element = new TerminalAutoPaymentsTable(response.autopayments(), row -> onRowSelected(row, gui));
         } else {
-            new TerminalText(response.message()).attachTo(window.panel());
+            element = new TerminalText(response.message());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+
+        var window = new TerminalWindow(
+            "Autopayments",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            element,
+            new TerminalButton("Return", this::onReturn)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

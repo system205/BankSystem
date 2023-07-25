@@ -31,7 +31,6 @@ public final class CreateRequestView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Create request", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -57,9 +56,14 @@ public final class CreateRequestView implements IView {
                         )
                 )
         );
-        form.attachTo(window.panel());
-        new TerminalButton("Create", () -> onCreate(gui, form)).attachTo(window.panel());
-        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
+
+        var window = new TerminalWindow(
+            "Create request",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalButton("Create", () -> onCreate(gui, form)),
+            new TerminalButton("Cancel", this::onCancel)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

@@ -29,16 +29,26 @@ public final class StatementView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Account Statement",  new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new StatementRequest(token, form.json()));
+        TerminalWindow window;
         if (!response.isSuccess()) {
-            new TerminalText(response.message()).attachTo(window.panel());
+            window = new TerminalWindow(
+                "Account Statement",
+                new Panel(new LinearLayout(Direction.VERTICAL)),
+                new TerminalText(response.message()),
+                new TerminalButton("Return", this::onReturn)
+            );
         } else {
-            new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(window.panel());
-            new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(window.panel());
-            new TerminalTransactionTable(response.transactions()).attachTo(window.panel());
+            window = new TerminalWindow(
+                "Account Statement",
+                new Panel(new LinearLayout(Direction.VERTICAL)),
+                new TerminalText("Starting balance for the period: " + response.startingBalance()),
+                new TerminalText("Ending balance for the period: " + response.endingBalance()),
+                new TerminalTransactionTable(response.transactions()),
+                new TerminalButton("Return", this::onReturn)
+            );
         }
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

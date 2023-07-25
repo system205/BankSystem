@@ -26,11 +26,6 @@ public final class LoginView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("BankSystem authentication", new Panel(new LinearLayout(Direction.VERTICAL)));
-
-        new TerminalText("Welcome to the BankSystem client application!\n" + "Please, register or login into your " +
-                "existing account.").attachTo(window.panel());
-
         TerminalForm form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -50,11 +45,15 @@ public final class LoginView implements IView {
                 )
         );
 
-        form.attachTo(window.panel());
-
-        new TerminalButton("Login", () -> onLogin(gui, form)).attachTo(window.panel());
-        new TerminalButton("Register page", this::onRegister).attachTo(window.panel());
-        new TerminalButton("Exit", this::onExit).attachTo(window.panel());
+        var window = new TerminalWindow(
+            "BankSystem authentication",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalText("Welcome to the BankSystem client application!\nPlease, register or login into your existing account."),
+            form,
+            new TerminalButton("Login", () -> onLogin(gui, form)),
+            new TerminalButton("Register page", this::onRegister),
+            new TerminalButton("Exit", this::onExit)
+        );
 
         window.addToGui(gui);
         window.open();

@@ -28,7 +28,6 @@ public final class StatementInputView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Account Statement request", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -53,10 +52,15 @@ public final class StatementInputView implements IView {
                         )
                 )
         );
-        form.attachTo(window.panel());
 
-        new TerminalButton("Request", () -> onRequest(form)).attachTo(window.panel());
-        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
+        var window = new TerminalWindow(
+            "Account Statement request",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            form,
+            new TerminalButton("Request", () -> onRequest(form)),
+            new TerminalButton("Cancel", this::onCancel)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

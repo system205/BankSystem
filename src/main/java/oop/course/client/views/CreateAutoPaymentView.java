@@ -31,7 +31,6 @@ public final class CreateAutoPaymentView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Auto payment", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -70,10 +69,13 @@ public final class CreateAutoPaymentView implements IView {
                         )
                 )
         );
-        form.attachTo(window.panel());
 
-        new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)).attachTo(window.panel());
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+        var window = new TerminalWindow(
+            "Auto payment",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)),
+            new TerminalButton("Return", this::onReturn)
+        );
 
         window.addToGui(gui);
         window.open();

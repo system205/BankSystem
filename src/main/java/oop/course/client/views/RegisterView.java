@@ -26,8 +26,6 @@ public final class RegisterView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("BankSystem registration", new Panel(new LinearLayout(Direction.VERTICAL)));
-        new TerminalText("Please enter your data for registration.").attachTo(window.panel());
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -61,10 +59,16 @@ public final class RegisterView implements IView {
                 )
         );
 
-        form.attachTo(window.panel());
-        new TerminalButton("Register", () -> onRegister(gui, form)).attachTo(window.panel());
-        new TerminalButton("Back to login page", this::onReturn).attachTo(window.panel());
-        new TerminalButton("Exit", this::onExit);
+        var window = new TerminalWindow(
+            "BankSystem registration",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            new TerminalText("Please enter your data for registration."),
+            form,
+            new TerminalButton("Register", () -> onRegister(gui, form)),
+            new TerminalButton("Back to login page", this::onReturn),
+            new TerminalButton("Exit", this::onExit)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

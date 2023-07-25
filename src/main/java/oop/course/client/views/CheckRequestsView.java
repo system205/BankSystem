@@ -5,10 +5,7 @@ import com.googlecode.lanterna.gui2.LinearLayout;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import oop.course.client.ServerBridge;
-import oop.course.client.gui.TerminalBankRequestTable;
-import oop.course.client.gui.TerminalButton;
-import oop.course.client.gui.TerminalText;
-import oop.course.client.gui.TerminalWindow;
+import oop.course.client.gui.*;
 import oop.course.client.requests.GetRequestsRequest;
 
 import java.util.function.Consumer;
@@ -29,14 +26,21 @@ public final class CheckRequestsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Requests list", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new GetRequestsRequest(token));
+        TerminalGUIElement requests;
         if (response.isSuccess()) {
-            new TerminalBankRequestTable(response.requests(), row -> {}).attachTo(window.panel());
+            requests = new TerminalBankRequestTable(response.requests(), row -> {});
         } else {
-            new TerminalText(response.message()).attachTo(window.panel());
+            requests = new TerminalText(response.message());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+
+        var window = new TerminalWindow(
+            "Requests list",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            requests,
+            new TerminalButton("Return", this::onReturn)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

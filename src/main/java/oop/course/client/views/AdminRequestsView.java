@@ -30,14 +30,19 @@ public final class AdminRequestsView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Admin requests panel", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
+        TerminalGUIElement requests;
         if (response.isSuccess()) {
-            new TerminalBankRequestTable(response.requests(), row -> onRowSelected(row, gui)).attachTo(window.panel());
+            requests = new TerminalBankRequestTable(response.requests(), row -> onRowSelected(row, gui));
         } else {
-            new TerminalText(response.message()).attachTo(window.panel());
+            requests = new TerminalText(response.message());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+        var window = new TerminalWindow(
+            "Admin requests panel",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            requests,
+            new TerminalButton("Return", this::onReturn)
+        );
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();

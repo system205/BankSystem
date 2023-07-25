@@ -30,14 +30,21 @@ public final class OfferManagementView implements IView {
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        var window = new TerminalWindow("Account selection", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new GetOffersRequest(token));
+        TerminalGUIElement element;
         if (response.isSuccess()) {
-            new TerminalOffersTable(response.offers(), row -> onRowSelected(row, gui)).attachTo(window.panel());
+            element = new TerminalOffersTable(response.offers(), row -> onRowSelected(row, gui));
         } else {
-            new TerminalText(response.message()).attachTo(window.panel());
+            element = new TerminalText(response.message());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
+
+        var window = new TerminalWindow(
+            "Account selection",
+            new Panel(new LinearLayout(Direction.VERTICAL)),
+            element,
+            new TerminalButton("Return", this::onReturn)
+        );
+
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
