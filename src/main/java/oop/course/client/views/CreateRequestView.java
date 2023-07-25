@@ -14,34 +14,31 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class CreateRequestView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
     private final String account;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public CreateRequestView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public CreateRequestView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                              String token, String accountNumber) {
-        this.onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.account = accountNumber;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Create request", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Create request", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
                                 "accountNumber",
                                 new TerminalInputPair(
                                         new TerminalText("Account number"),
-                                        new TerminalImmutableTextBox(account)
+                                        new TerminalFixedTextBox(account)
                                 )
                         ),
                         new TerminalFormKeyValuePair(
@@ -60,9 +57,9 @@ public final class CreateRequestView implements IView {
                         )
                 )
         );
-        form.attachTo(contentPanel);
-        new TerminalButton("Create", () -> onCreate(gui, form)).attachTo(contentPanel);
-        new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
+        form.attachTo(window.panel());
+        new TerminalButton("Create", () -> onCreate(gui, form)).attachTo(window.panel());
+        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
@@ -72,13 +69,13 @@ public final class CreateRequestView implements IView {
         var response = serverBridge.execute(new CreateRequestRequest(token, form.json()));
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+            changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }
     }
 
     private void onCancel() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 }

@@ -11,43 +11,40 @@ import oop.course.client.requests.StatementRequest;
 import java.util.function.Consumer;
 
 public final class StatementView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
     private final TerminalForm form;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public StatementView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge, String token,
+    public StatementView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge, String token,
                          TerminalForm form) {
-        onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.form = form;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Account Statement", contentPanel);
     }
 
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Account Statement",  new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new StatementRequest(token, form.json()));
         if (!response.isSuccess()) {
-            new TerminalText(response.message()).attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(window.panel());
         } else {
-            new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(contentPanel);
-            new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(contentPanel);
-            response.fillTransactionsTable(TerminalTransactionTable::new).attachTo(contentPanel);
+            new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(window.panel());
+            new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(window.panel());
+            response.fillTransactionsTable(TerminalTransactionTable::new).attachTo(window.panel());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
+        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onReturn() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 }

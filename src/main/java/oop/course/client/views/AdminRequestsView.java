@@ -15,43 +15,38 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class AdminRequestsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public AdminRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public AdminRequestsView(Consumer<IView> changeViewHandler, Runnable exitAction, ServerBridge serverBridge,
                              String token) {
-        this.onChangeView = changeViewHandler;
+        this.changeView = changeViewHandler;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Admin requests panel", contentPanel);
+        this.exitAction = exitAction;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Admin requests panel", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
-
         if (response.isSuccess()) {
             response.fillRequestsTable(
                     (List<List<String>> rows) -> new TerminalBankRequestTable(rows, (List<String> row) -> onRowSelected(row, gui))
-            ).attachTo(contentPanel);
+            ).attachTo(window.panel());
         } else {
-            new TerminalText(response.message()).attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(window.panel());
         }
-
-        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
+        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onReturn() {
-        onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AdminActionsView(changeView, exitAction, serverBridge, token));
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {
@@ -66,13 +61,13 @@ public final class AdminRequestsView implements IView {
                                     "id",
                                     new TerminalInputPair(
                                             new TerminalText("Request id"),
-                                            new TerminalImmutableTextBox(row.get(0)))
+                                            new TerminalFixedTextBox(row.get(0)))
                             ),
                             new TerminalFormKeyValuePair(
                                     "status",
                                     new TerminalInputPair(
                                             new TerminalText("Status"),
-                                            new TerminalImmutableTextBox("approved"))
+                                            new TerminalFixedTextBox("approved"))
                             )
                     )
             );
@@ -83,13 +78,13 @@ public final class AdminRequestsView implements IView {
                                     "id",
                                     new TerminalInputPair(
                                             new TerminalText("Request id"),
-                                            new TerminalImmutableTextBox(row.get(0)))
+                                            new TerminalFixedTextBox(row.get(0)))
                             ),
                             new TerminalFormKeyValuePair(
                                     "status",
                                     new TerminalInputPair(
                                             new TerminalText("Status"),
-                                            new TerminalImmutableTextBox("denied"))
+                                            new TerminalFixedTextBox("denied"))
                             )
                     )
             );
@@ -99,7 +94,7 @@ public final class AdminRequestsView implements IView {
         var response = serverBridge.execute(new HandleRequestRequest(token, form.json()));
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
-            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
+            changeView.accept(new AdminRequestsView(changeView, exitAction, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }

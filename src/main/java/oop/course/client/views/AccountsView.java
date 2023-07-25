@@ -19,57 +19,55 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class AccountsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public AccountsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge, String token) {
-        onChangeView = changeViewHandler;
+    public AccountsView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge, String token) {
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Account selection", contentPanel);
+        this.exitAction = exitAction;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Account selection", new Panel(new LinearLayout(Direction.VERTICAL)));
+
         var resp = serverBridge.execute(new AccountsRequest(token));
         if (resp.isSuccess()) {
-            resp.fillAccountsTable((List<List<String>> rows) -> new TerminalAccountsTable(rows, this::onAccountSelected)).attachTo(contentPanel);
+            resp.fillAccountsTable((List<List<String>> rows) -> new TerminalAccountsTable(rows, this::onAccountSelected)).attachTo(window.panel());
         } else {
-            new TerminalText(resp.message()).attachTo(contentPanel);
+            new TerminalText(resp.message()).attachTo(window.panel());
         }
-        new TerminalButton("Create an account", () -> onCreateAccount(gui)).attachTo(contentPanel);
-        new TerminalButton("Check my requests", this::onCheckRequests).attachTo(contentPanel);
-        new TerminalButton("Request a manager status", () -> onRequestManager(gui)).attachTo(contentPanel);
-        new TerminalButton("Admin actions", this::onAdminActions).attachTo(contentPanel);
-        new TerminalButton("Logout", this::onLogout).attachTo(contentPanel);
-        new TerminalButton("Logout & exit", this::onExit).attachTo(contentPanel);
+        new TerminalButton("Create an account", () -> onCreateAccount(gui)).attachTo(window.panel());
+        new TerminalButton("Check my requests", this::onCheckRequests).attachTo(window.panel());
+        new TerminalButton("Request a manager status", () -> onRequestManager(gui)).attachTo(window.panel());
+        new TerminalButton("Admin actions", this::onAdminActions).attachTo(window.panel());
+        new TerminalButton("Logout", this::onLogout).attachTo(window.panel());
+        new TerminalButton("Logout & exit", this::onExit).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onAccountSelected(List<String> row) {
-        onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, row.get(0)));
+        changeView.accept(new AccountActionsView(changeView, exitAction, serverBridge, token, row.get(0)));
     }
 
     private void onCreateAccount(WindowBasedTextGUI gui) {
         var newAccountResponse = serverBridge.execute(new NewAccountRequest(token));
         if (newAccountResponse.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", newAccountResponse.message(), MessageDialogButton.OK);
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+            changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Error", newAccountResponse.message(), MessageDialogButton.Close);
         }
     }
 
     private void onCheckRequests() {
-        onChangeView.accept(new CheckRequestsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new CheckRequestsView(changeView, exitAction, serverBridge, token));
     }
 
     private void onRequestManager(WindowBasedTextGUI gui) {
@@ -82,14 +80,14 @@ public final class AccountsView implements IView {
     }
 
     private void onAdminActions() {
-        onChangeView.accept(new AdminActionsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AdminActionsView(changeView, exitAction, serverBridge, token));
     }
 
     private void onLogout() {
-        onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+        changeView.accept(new LoginView(changeView, exitAction, serverBridge));
     }
 
     private void onExit() {
-        onExit.run();
+        exitAction.run();
     }
 }

@@ -15,41 +15,38 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class OfferManagementView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public OfferManagementView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public OfferManagementView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                                String token) {
-        onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.token = token;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Account selection", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Account selection", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new GetOffersRequest(token));
         if (response.isSuccess()) {
             response.fillOffersTable(
                     (List<List<String>> rows) -> new TerminalOffersTable(rows, (List<String> row) -> onRowSelected(row, gui))
-            ).attachTo(contentPanel);
+            ).attachTo(window.panel());
         } else {
-            new TerminalText(response.message()).attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(window.panel());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
+        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onReturn() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 
     private void onRowSelected(List<String> offer, WindowBasedTextGUI gui) {
@@ -64,7 +61,7 @@ public final class OfferManagementView implements IView {
                                     "customerEmail",
                                     new TerminalInputPair(
                                             new TerminalText("Customer email"),
-                                            new TerminalImmutableTextBox(offer.get(1)
+                                            new TerminalFixedTextBox(offer.get(1)
                                             )
                                     )
                             ),
@@ -72,23 +69,38 @@ public final class OfferManagementView implements IView {
                                     "status",
                                     new TerminalInputPair(
                                             new TerminalText("Status"),
-                                            new TerminalImmutableTextBox("accepted")
+                                            new TerminalFixedTextBox("accepted")
                                     )
                             )
                     )
             );
         } else if (res == MessageDialogButton.No) {
-            form = new TerminalForm(List.of(new TerminalFormKeyValuePair("customerEmail",
-                    new TerminalInputPair(new TerminalText("Customer email"),
-                            new TerminalImmutableTextBox(offer.get(1)))), new TerminalFormKeyValuePair("status",
-                    new TerminalInputPair(new TerminalText("Status"), new TerminalImmutableTextBox("rejected")))));
+            form = new TerminalForm(
+                List.of(
+                    new TerminalFormKeyValuePair(
+                        "customerEmail",
+                        new TerminalInputPair(
+                            new TerminalText("Customer email"),
+                            new TerminalFixedTextBox(offer.get(1)
+                            )
+                        )
+                    ),
+                    new TerminalFormKeyValuePair(
+                        "status",
+                        new TerminalInputPair(
+                            new TerminalText("Status"),
+                            new TerminalFixedTextBox("rejected")
+                        )
+                    )
+                )
+            );
         } else {
             return;
         }
         var response = serverBridge.execute(new HandleOfferRequest(token, form.json()));
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
-            onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
+            changeView.accept(new AdminRequestsView(changeView, exitAction, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }

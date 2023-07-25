@@ -12,42 +12,39 @@ import java.util.function.Consumer;
 
 public final class AdminActionsView implements IView {
 
-    private final Consumer<IView> onChangeView;
+    private final Consumer<IView> changeView;
     private final Runnable onExit;
     private final ServerBridge serverBridge;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
     private final String token;
 
-    public AdminActionsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public AdminActionsView(Consumer<IView> changeView, Runnable onExit, ServerBridge serverBridge,
                             String token) {
-        this.onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
         this.onExit = onExit;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Admin panel", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        new TerminalButton("Manage offers", this::onManageOffers).attachTo(contentPanel);
-        new TerminalButton("View requests", this::onViewRequests).attachTo(contentPanel);
-        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
+        var window = new TerminalWindow("Admin panel", new Panel(new LinearLayout(Direction.VERTICAL)));
+        new TerminalButton("Manage offers", this::onManageOffers).attachTo(window.panel());
+        new TerminalButton("View requests", this::onViewRequests).attachTo(window.panel());
+        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onManageOffers() {
-        onChangeView.accept(new OfferManagementView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new OfferManagementView(changeView, onExit, serverBridge, token));
     }
 
     private void onViewRequests() {
-        onChangeView.accept(new AdminRequestsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AdminRequestsView(changeView, onExit, serverBridge, token));
     }
 
     private void onReturn() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, onExit, serverBridge, token));
     }
 }

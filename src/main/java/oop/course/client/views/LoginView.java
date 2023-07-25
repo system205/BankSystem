@@ -14,24 +14,22 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class LoginView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public LoginView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge) {
-        this.onChangeView = changeViewHandler;
-        this.onExit = onExit;
+    public LoginView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge) {
+        this.changeView = changeView;
+        this.exitAction = exitAction;
         this.serverBridge = serverBridge;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("BankSystem authentication", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("BankSystem authentication", new Panel(new LinearLayout(Direction.VERTICAL)));
+
         new TerminalText("Welcome to the BankSystem client application!\n" + "Please, register or login into your " +
-                "existing account.").attachTo(this.contentPanel);
+                "existing account.").attachTo(window.panel());
 
         TerminalForm form = new TerminalForm(
                 List.of(
@@ -52,32 +50,32 @@ public final class LoginView implements IView {
                 )
         );
 
-        form.attachTo(this.contentPanel);
+        form.attachTo(window.panel());
 
-        new TerminalButton("Login", () -> onLogin(gui, form)).attachTo(this.contentPanel);
-        new TerminalButton("Register page", this::onRegister).attachTo(this.contentPanel);
-        new TerminalButton("Exit", this::onExit).attachTo(this.contentPanel);
+        new TerminalButton("Login", () -> onLogin(gui, form)).attachTo(window.panel());
+        new TerminalButton("Register page", this::onRegister).attachTo(window.panel());
+        new TerminalButton("Exit", this::onExit).attachTo(window.panel());
 
-        this.window.addToGui(gui);
-        this.window.open();
-        this.window.waitUntilClosed();
+        window.addToGui(gui);
+        window.open();
+        window.waitUntilClosed();
     }
 
     private void onLogin(WindowBasedTextGUI gui, TerminalForm form) {
         var resp = this.serverBridge.execute(new LoginRequest(form.json()));
 
         if (resp.isSuccess()) {
-            this.onChangeView.accept(new AccountsView(this.onChangeView, this.onExit, this.serverBridge, resp.token()));
+            this.changeView.accept(new AccountsView(this.changeView, this.exitAction, this.serverBridge, resp.token()));
         } else {
             MessageDialog.showMessageDialog(gui, "Authentication error", resp.message(), MessageDialogButton.Close);
         }
     }
 
     private void onRegister() {
-        this.onChangeView.accept(new RegisterView(this.onChangeView, this.onExit, this.serverBridge));
+        this.changeView.accept(new RegisterView(this.changeView, this.exitAction, this.serverBridge));
     }
 
     private void onExit() {
-        this.onExit.run();
+        this.exitAction.run();
     }
 }

@@ -11,34 +11,31 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class StatementInputView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public StatementInputView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public StatementInputView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                               String token, String accountNumber) {
-        onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.accountNumber = accountNumber;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Account Statement request", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Account Statement request", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
                                 "accountNumber",
                                 new TerminalInputPair(
                                         new TerminalText("Account Number"),
-                                        new TerminalImmutableTextBox(accountNumber)
+                                        new TerminalFixedTextBox(accountNumber)
                                 )
                         ),
                         new TerminalFormKeyValuePair("startDate",
@@ -56,20 +53,20 @@ public final class StatementInputView implements IView {
                         )
                 )
         );
-        form.attachTo(contentPanel);
+        form.attachTo(window.panel());
 
-        new TerminalButton("Request", () -> onRequest(form)).attachTo(contentPanel);
-        new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
+        new TerminalButton("Request", () -> onRequest(form)).attachTo(window.panel());
+        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onRequest(TerminalForm form) {
-        onChangeView.accept(new StatementView(onChangeView, onExit, serverBridge, token, form));
+        changeView.accept(new StatementView(changeView, exitAction, serverBridge, token, form));
     }
 
     private void onCancel() {
-        onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, accountNumber));
+        changeView.accept(new AccountActionsView(changeView, exitAction, serverBridge, token, accountNumber));
     }
 }

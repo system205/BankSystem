@@ -14,24 +14,20 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class RegisterView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public RegisterView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge) {
-        onChangeView = changeViewHandler;
-        this.onExit = onExit;
+    public RegisterView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge) {
+        this.changeView = changeView;
+        this.exitAction = exitAction;
         this.serverBridge = serverBridge;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("BankSystem registration", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        new TerminalText("Please enter your data for registration.").attachTo(contentPanel);
-
+        var window = new TerminalWindow("BankSystem registration", new Panel(new LinearLayout(Direction.VERTICAL)));
+        new TerminalText("Please enter your data for registration.").attachTo(window.panel());
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
@@ -65,9 +61,9 @@ public final class RegisterView implements IView {
                 )
         );
 
-        form.attachTo(contentPanel);
-        new TerminalButton("Register", () -> onRegister(gui, form)).attachTo(contentPanel);
-        new TerminalButton("Back to login page", this::onReturn).attachTo(contentPanel);
+        form.attachTo(window.panel());
+        new TerminalButton("Register", () -> onRegister(gui, form)).attachTo(window.panel());
+        new TerminalButton("Back to login page", this::onReturn).attachTo(window.panel());
         new TerminalButton("Exit", this::onExit);
         window.addToGui(gui);
         window.open();
@@ -75,18 +71,18 @@ public final class RegisterView implements IView {
     }
 
     private void onExit() {
-        onExit.run();
+        exitAction.run();
     }
 
     private void onReturn() {
-        onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+        changeView.accept(new LoginView(changeView, exitAction, serverBridge));
     }
 
     private void onRegister(WindowBasedTextGUI gui, TerminalForm form) {
         var resp = serverBridge.execute(new RegisterRequest(form.json()));
         MessageDialog.showMessageDialog(gui, "Result", resp.message(), MessageDialogButton.OK);
         if (resp.isSuccess()) {
-            onChangeView.accept(new LoginView(onChangeView, onExit, serverBridge));
+            changeView.accept(new LoginView(changeView, exitAction, serverBridge));
         }
     }
 }

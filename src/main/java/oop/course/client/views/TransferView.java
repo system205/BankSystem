@@ -14,34 +14,31 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class TransferView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
     private final String accountNumber;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
 
-    public TransferView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge, String token,
+    public TransferView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge, String token,
                         String accountNumber) {
-        onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.accountNumber = accountNumber;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Money transfer", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Money transfer", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
                                 "senderAccount",
                                 new TerminalInputPair(
                                         new TerminalText("Sender"),
-                                        new TerminalImmutableTextBox(accountNumber)
+                                        new TerminalFixedTextBox(accountNumber)
                                 )
                         ),
                         new TerminalFormKeyValuePair(
@@ -60,23 +57,23 @@ public final class TransferView implements IView {
                         )
                 )
         );
-        form.attachTo(contentPanel);
-        new TerminalButton("Transfer money", () -> onTransfer(gui, form)).attachTo(contentPanel);
-        new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
+        form.attachTo(window.panel());
+        new TerminalButton("Transfer money", () -> onTransfer(gui, form)).attachTo(window.panel());
+        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onCancel() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 
     private void onTransfer(WindowBasedTextGUI gui, TerminalForm form) {
         var resp = serverBridge.execute(new TransferRequest(token, form.json()));
         if (resp.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", resp.message(), MessageDialogButton.OK);
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+            changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", resp.message(), MessageDialogButton.Close);
         }

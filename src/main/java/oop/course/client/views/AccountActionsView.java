@@ -14,51 +14,48 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class AccountActionsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
     private final String token;
     private final String account;
-    private final TerminalForm accountDeactivationForm;
 
-    public AccountActionsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public AccountActionsView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                               String token, String accountNumber) {
-        this.onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
         this.account = accountNumber;
-        this.onExit = onExit;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Action selector", contentPanel);
-        this.accountDeactivationForm = new TerminalForm(
-                List.of(
-                        new TerminalFormKeyValuePair(
-                                "accountNumber",
-                                new TerminalInputPair(
-                                        new TerminalText("Account Number"),
-                                        new TerminalImmutableTextBox(account)
-                                )
-                        )
-                )
-        );
+        this.exitAction = exitAction;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
-        new TerminalText("Please select an action.").attachTo(contentPanel);
+        var window = new TerminalWindow("Action selector", new Panel(new LinearLayout(Direction.VERTICAL)));
+        var accountDeactivationForm = new TerminalForm(
+            List.of(
+                new TerminalFormKeyValuePair(
+                    "accountNumber",
+                    new TerminalInputPair(
+                        new TerminalText("Account Number"),
+                        new TerminalFixedTextBox(account)
+                    )
+                )
+            )
+        );
 
-        new TerminalButton("Money transfer", this::onMoneyTransfer).attachTo(contentPanel);
+        new TerminalText("Please select an action.").attachTo(window.panel());
 
-        new TerminalButton("Request a statement", this::onStatementRequest).attachTo(contentPanel);
-        new TerminalButton("View transaction history", this::onTransactionHistory).attachTo(contentPanel);
-        new TerminalButton("Create a request", this::onRequestCreate).attachTo(contentPanel);
-        new TerminalButton("Set up an auto-payment", this::onAutoPaymentCreate).attachTo(contentPanel);
-        new TerminalButton("List/cancel auto-payments", this::onAutoPaymentList).attachTo(contentPanel);
-        new TerminalButton("Deactivate an account", () -> onDeactivate(gui)).attachTo(contentPanel);
+        new TerminalButton("Money transfer", this::onMoneyTransfer).attachTo(window.panel());
 
-        new TerminalButton("Cancel", this::onCancel).attachTo(contentPanel);
+        new TerminalButton("Request a statement", this::onStatementRequest).attachTo(window.panel());
+        new TerminalButton("View transaction history", this::onTransactionHistory).attachTo(window.panel());
+        new TerminalButton("Create a request", this::onRequestCreate).attachTo(window.panel());
+        new TerminalButton("Set up an auto-payment", this::onAutoPaymentCreate).attachTo(window.panel());
+        new TerminalButton("List/cancel auto-payments", this::onAutoPaymentList).attachTo(window.panel());
+        new TerminalButton("Deactivate an account", () -> onDeactivate(gui, accountDeactivationForm)).attachTo(window.panel());
+
+        new TerminalButton("Cancel", this::onCancel).attachTo(window.panel());
 
         window.addToGui(gui);
         window.open();
@@ -66,40 +63,40 @@ public final class AccountActionsView implements IView {
     }
 
     private void onMoneyTransfer() {
-        onChangeView.accept(new TransferView(onChangeView, onExit, serverBridge, token, account));
+        changeView.accept(new TransferView(changeView, exitAction, serverBridge, token, account));
     }
 
     private void onStatementRequest() {
-        onChangeView.accept(new StatementInputView(onChangeView, onExit, serverBridge, token, account));
+        changeView.accept(new StatementInputView(changeView, exitAction, serverBridge, token, account));
     }
 
     private void onTransactionHistory() {
-        onChangeView.accept(new TransactionsView(onChangeView, onExit, serverBridge, token, account));
+        changeView.accept(new TransactionsView(changeView, exitAction, serverBridge, token, account));
     }
 
     private void onRequestCreate() {
-        onChangeView.accept(new CreateRequestView(onChangeView, onExit, serverBridge, token, account));
+        changeView.accept(new CreateRequestView(changeView, exitAction, serverBridge, token, account));
     }
 
     private void onAutoPaymentCreate() {
-        onChangeView.accept(new CreateAutoPaymentView(onChangeView, onExit, serverBridge, token, account));
+        changeView.accept(new CreateAutoPaymentView(changeView, exitAction, serverBridge, token, account));
     }
 
     private void onAutoPaymentList() {
-        onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, serverBridge, token, account));
+        changeView.accept(new ListAutoPaymentsView(changeView, exitAction, serverBridge, token, account));
     }
 
-    private void onDeactivate(WindowBasedTextGUI gui) {
+    private void onDeactivate(WindowBasedTextGUI gui, TerminalForm accountDeactivationForm) {
         var response = serverBridge.execute(new DeactivateAccountRequest(token, accountDeactivationForm.json()));
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.Continue);
-            onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+            changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Abort);
         }
     }
 
     private void onCancel() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 }

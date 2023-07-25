@@ -15,35 +15,32 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class ListAutoPaymentsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
     private final String token;
     private final String account;
-    private final TerminalWindow window;
-    private final Panel panel;
 
-    public ListAutoPaymentsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public ListAutoPaymentsView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                                 String token, String account) {
-        onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.account = account;
-        this.panel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Autopayments", panel);
     }
 
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Autopayments", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
                                 "accountNumber",
                                 new TerminalInputPair(
                                         new TerminalText("Account number"),
-                                        new TerminalImmutableTextBox(account)
+                                        new TerminalFixedTextBox(account)
                                 )
                         )
                 )
@@ -52,18 +49,18 @@ public final class ListAutoPaymentsView implements IView {
         if (response.isSuccess()) {
             response.fillAutopayments(
                     (List<List<String>> rows) -> new TerminalAutoPaymentsTable(rows, (List<String> row) -> onRowSelected(row, gui))
-            ).attachTo(panel);
+            ).attachTo(window.panel());
         } else {
-            new TerminalText(response.message()).attachTo(panel);
+            new TerminalText(response.message()).attachTo(window.panel());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(panel);
+        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onReturn() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {
@@ -77,7 +74,7 @@ public final class ListAutoPaymentsView implements IView {
                                     "paymentId",
                                     new TerminalInputPair(
                                             new TerminalText("Payment Id"),
-                                            new TerminalImmutableTextBox(row.get(0))
+                                            new TerminalFixedTextBox(row.get(0))
                                     )
                             )
                     )
@@ -85,7 +82,7 @@ public final class ListAutoPaymentsView implements IView {
             var deleteResponse = serverBridge.execute(new DeleteAutoPaymentRequest(token, form.json()));
             if (deleteResponse.isSuccess()) {
                 MessageDialog.showMessageDialog(gui, "Success", deleteResponse.message(), MessageDialogButton.OK);
-                onChangeView.accept(new ListAutoPaymentsView(onChangeView, onExit, serverBridge, token, account));
+                changeView.accept(new ListAutoPaymentsView(changeView, exitAction, serverBridge, token, account));
             } else {
                 MessageDialog.showMessageDialog(gui, "Failure", deleteResponse.message(), MessageDialogButton.Close);
             }

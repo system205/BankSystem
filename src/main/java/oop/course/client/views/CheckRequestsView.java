@@ -15,40 +15,37 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class CheckRequestsView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
     private final String token;
 
-    public CheckRequestsView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public CheckRequestsView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                              String token) {
-        this.onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
-        this.onExit = onExit;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Requests list", contentPanel);
+        this.exitAction = exitAction;
         this.token = token;
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Requests list", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new GetRequestsRequest(token));
         if (response.isSuccess()) {
             response.fillRequestsTable(
                     (List<List<String>> rows) -> new TerminalBankRequestTable(rows, (List<String> row) -> {})
-            ).attachTo(contentPanel);
+            ).attachTo(window.panel());
         } else {
-            new TerminalText(response.message()).attachTo(contentPanel);
+            new TerminalText(response.message()).attachTo(window.panel());
         }
-        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
+        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);
         window.open();
         window.waitUntilClosed();
     }
 
     private void onReturn() {
-        onChangeView.accept(new AccountsView(onChangeView, onExit, serverBridge, token));
+        changeView.accept(new AccountsView(changeView, exitAction, serverBridge, token));
     }
 }

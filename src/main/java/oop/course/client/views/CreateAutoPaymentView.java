@@ -14,34 +14,31 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class CreateAutoPaymentView implements IView {
-    private final Consumer<IView> onChangeView;
-    private final Runnable onExit;
+    private final Consumer<IView> changeView;
+    private final Runnable exitAction;
     private final ServerBridge serverBridge;
-    private final TerminalWindow window;
-    private final Panel contentPanel;
     private final String token;
     private final String account;
 
-    public CreateAutoPaymentView(Consumer<IView> changeViewHandler, Runnable onExit, ServerBridge serverBridge,
+    public CreateAutoPaymentView(Consumer<IView> changeView, Runnable exitAction, ServerBridge serverBridge,
                                  String token, String accountNumber) {
-        this.onChangeView = changeViewHandler;
+        this.changeView = changeView;
         this.serverBridge = serverBridge;
         this.token = token;
-        this.onExit = onExit;
+        this.exitAction = exitAction;
         this.account = accountNumber;
-        this.contentPanel = new Panel(new LinearLayout(Direction.VERTICAL));
-        this.window = new TerminalWindow("Auto payment", contentPanel);
     }
 
     @Override
     public void show(WindowBasedTextGUI gui) {
+        var window = new TerminalWindow("Auto payment", new Panel(new LinearLayout(Direction.VERTICAL)));
         var form = new TerminalForm(
                 List.of(
                         new TerminalFormKeyValuePair(
                                 "senderNumber",
                                 new TerminalInputPair(
                                         new TerminalText("From"),
-                                        new TerminalImmutableTextBox(account)
+                                        new TerminalFixedTextBox(account)
                                 )
                         ),
                         new TerminalFormKeyValuePair(
@@ -73,10 +70,10 @@ public final class CreateAutoPaymentView implements IView {
                         )
                 )
         );
-        form.attachTo(contentPanel);
+        form.attachTo(window.panel());
 
-        new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)).attachTo(contentPanel);
-        new TerminalButton("Return", this::onReturn).attachTo(contentPanel);
+        new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)).attachTo(window.panel());
+        new TerminalButton("Return", this::onReturn).attachTo(window.panel());
 
         window.addToGui(gui);
         window.open();
@@ -84,14 +81,14 @@ public final class CreateAutoPaymentView implements IView {
     }
 
     private void onReturn() {
-        onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
+        changeView.accept(new AccountActionsView(changeView, exitAction, serverBridge, token, account));
     }
 
     private void onAutoPaymentSetup(WindowBasedTextGUI gui, TerminalForm form) {
         var response = serverBridge.execute(new NewAutoPaymentRequest(token, form.json()));
         if (response.isSuccess()) {
             MessageDialog.showMessageDialog(gui, "Success", response.message(), MessageDialogButton.OK);
-            onChangeView.accept(new AccountActionsView(onChangeView, onExit, serverBridge, token, account));
+            changeView.accept(new AccountActionsView(changeView, exitAction, serverBridge, token, account));
         } else {
             MessageDialog.showMessageDialog(gui, "Failure", response.message(), MessageDialogButton.Close);
         }
