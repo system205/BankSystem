@@ -1,8 +1,7 @@
 package oop.course.client.gui;
 
-import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.TextBox;
+import com.googlecode.lanterna.*;
+import com.googlecode.lanterna.gui2.*;
 
 public final class TerminalFixedTextBox implements TerminalInputBox {
     private final TextBox textBox;

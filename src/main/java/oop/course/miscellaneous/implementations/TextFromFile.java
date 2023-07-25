@@ -19,7 +19,7 @@ public final class TextFromFile implements Source {
                 throw new RuntimeException("File: " + filepath + " was not found or without access");
             }
             return new BufferedReader(
-                    new InputStreamReader(stream)
+                new InputStreamReader(stream)
             ).lines().collect(Collectors.joining("\n"));
         } catch (IOException e) {
             throw new RuntimeException(e);

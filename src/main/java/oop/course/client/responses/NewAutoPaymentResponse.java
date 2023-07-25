@@ -21,8 +21,7 @@ public final class NewAutoPaymentResponse implements Response {
     public String message() {
         if (isSuccess()) {
             return "Successfully created an autopayment";
-        }
-        else {
+        } else {
             return "Could not create an autopayment";
         }
     }

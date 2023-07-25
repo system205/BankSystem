@@ -17,11 +17,11 @@ public final class ConflictResponse implements Response {
     public void print(PrintWriter out) throws IOException {
         log.info("Conflict Response:\n");
         new BaseResponse(
-                409, "Conflict",
-                Map.ofEntries(
-                        Map.entry("Content-Type", "application/json")
-                ),
-                new ResponseMessage(message).json()
+            409, "Conflict",
+            Map.ofEntries(
+                Map.entry("Content-Type", "application/json")
+            ),
+            new ResponseMessage(message).json()
         ).print(out);
     }
 }

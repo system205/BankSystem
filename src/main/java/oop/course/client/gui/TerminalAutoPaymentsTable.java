@@ -1,9 +1,9 @@
 package oop.course.client.gui;
 
-import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.*;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.*;
 
 public final class TerminalAutoPaymentsTable implements TerminalGUIElement {
     private final TerminalTable table;

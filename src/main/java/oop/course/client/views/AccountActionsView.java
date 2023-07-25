@@ -1,17 +1,13 @@
 package oop.course.client.views;
 
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.ServerBridge;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.*;
+import oop.course.client.*;
 import oop.course.client.gui.*;
-import oop.course.client.requests.DeactivateAccountRequest;
+import oop.course.client.requests.*;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.*;
 
 public final class AccountActionsView implements IView {
     private final Consumer<IView> changeView;

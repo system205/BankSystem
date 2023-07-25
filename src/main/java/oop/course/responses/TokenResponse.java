@@ -25,10 +25,10 @@ public final class TokenResponse implements Response {
     @Override
     public void print(PrintWriter out) {
         String token = JWT.create()
-                .withSubject(this.subject)
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + this.duration))
-                .sign(Algorithm.HMAC256(this.secretKey));
+            .withSubject(this.subject)
+            .withIssuedAt(new Date())
+            .withExpiresAt(new Date(System.currentTimeMillis() + this.duration))
+            .sign(Algorithm.HMAC256(this.secretKey));
 
         String body = String.format("{%n\"token\":\"%s\"%n}", token);
 

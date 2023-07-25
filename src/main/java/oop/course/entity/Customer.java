@@ -35,15 +35,15 @@ public final class Customer {
             throw new ConflictException("Email is already presented");
         }
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)"
-                );
-                PreparedStatement roleStatement = this.connection.prepareStatement(
-                        """
-                                INSERT INTO roles (role, customer_id)
-                                VALUES ('user', (SELECT id FROM customer WHERE email = ?))
-                                """
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "INSERT INTO customer (email, name, surname, password) VALUES (?, ?, ?, ?)"
+            );
+            PreparedStatement roleStatement = this.connection.prepareStatement(
+                """
+                    INSERT INTO roles (role, customer_id)
+                    VALUES ('user', (SELECT id FROM customer WHERE email = ?))
+                    """
+            )
         ) {
             statement.setString(1, this.email);
             statement.setString(2, details.stringField("name"));
@@ -71,13 +71,13 @@ public final class Customer {
     public Account account(String id) throws Exception {
         // Check that customer owns the account and then return.
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        """
-                                SELECT 1 FROM customer
-                                INNER JOIN checking_account on customer_id = id
-                                WHERE email = ? AND account_number=?
-                                """
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                """
+                    SELECT 1 FROM customer
+                    INNER JOIN checking_account on customer_id = id
+                    WHERE email = ? AND account_number=?
+                    """
+            )
         ) {
             statement.setString(1, this.email);
             statement.setString(2, id);
@@ -85,7 +85,7 @@ public final class Customer {
             ResultSet result = statement.executeQuery();
             if (!result.next())
                 throw new IllegalStateException(
-                        String.format("The account with number %s is not owned by customer %s", id, this.email)
+                    String.format("The account with number %s is not owned by customer %s", id, this.email)
                 );
 
             return new CheckingAccount(id, this.connection);
@@ -98,9 +98,9 @@ public final class Customer {
         log.trace("Retrieving roles from the database");
 
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT role FROM roles INNER JOIN customer ON id=customer_id WHERE email=?"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT role FROM roles INNER JOIN customer ON id=customer_id WHERE email=?"
+            )
         ) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
@@ -119,10 +119,10 @@ public final class Customer {
         log.trace("Retrieving account from the database");
 
         final String sql = """
-                SELECT account_number FROM customer
-                INNER JOIN checking_account on customer_id = id
-                WHERE email = ? AND active = TRUE
-                """;
+            SELECT account_number FROM customer
+            INNER JOIN checking_account on customer_id = id
+            WHERE email = ? AND active = TRUE
+            """;
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.email);
             ResultSet resultSet = statement.executeQuery();
@@ -130,7 +130,7 @@ public final class Customer {
             List<Account> accounts = new LinkedList<>();
             while (resultSet.next())
                 accounts.add(
-                        new CheckingAccount(resultSet.getString(1), this.connection)
+                    new CheckingAccount(resultSet.getString(1), this.connection)
                 );
 
             log.info("Found {} accounts.", accounts.size());
@@ -146,19 +146,19 @@ public final class Customer {
             throw new IllegalAccessException("Illegal access");
 
         return new Token(
-                JWT.create()
-                        .withSubject(this.email)
-                        .withIssuedAt(new Date())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + duration))
-                        .sign(Algorithm.HMAC256(signingKey))
+            JWT.create()
+                .withSubject(this.email)
+                .withIssuedAt(new Date())
+                .withExpiresAt(new Date(System.currentTimeMillis() + duration))
+                .sign(Algorithm.HMAC256(signingKey))
         );
     }
 
     private String password() throws Exception {
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT password FROM customer WHERE email = ?"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT password FROM customer WHERE email = ?"
+            )
         ) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
@@ -177,12 +177,12 @@ public final class Customer {
     public Offer applyForJob() throws Exception {
         log.info("Try apply for a job");
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "INSERT INTO offers (customer_email, status) VALUES (?, 'pending') RETURNING id"
-                );
-                PreparedStatement checkStatement = this.connection.prepareStatement(
-                        "SELECT 1 FROM offers WHERE customer_email = ?"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "INSERT INTO offers (customer_email, status) VALUES (?, 'pending') RETURNING id"
+            );
+            PreparedStatement checkStatement = this.connection.prepareStatement(
+                "SELECT 1 FROM offers WHERE customer_email = ?"
+            )
         ) {
             checkStatement.setString(1, this.email);
             ResultSet check = checkStatement.executeQuery();
@@ -210,9 +210,9 @@ public final class Customer {
 
     public Offer offer() throws Exception {
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT id FROM offers WHERE customer_email = ?"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT id FROM offers WHERE customer_email = ?"
+            )
         ) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
@@ -228,9 +228,9 @@ public final class Customer {
 
     public boolean exists() throws Exception {
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT COUNT(*) FROM customer WHERE email = ?"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT COUNT(*) FROM customer WHERE email = ?"
+            )
         ) {
             statement.setString(1, this.email);
             ResultSet result = statement.executeQuery();
@@ -248,9 +248,9 @@ public final class Customer {
         boolean correct = this.exists() && password.equals(this.password());
         if (correct)
             log.debug(
-                    "Invalid credentials:\nEmail: {}\nPassword: {}",
-                    this.email,
-                    password
+                "Invalid credentials:\nEmail: {}\nPassword: {}",
+                this.email,
+                password
             );
         else log.debug("Customer credentials are wrong");
 
@@ -259,16 +259,16 @@ public final class Customer {
 
     public void deleteAutopayment(long paymentId) throws Exception {
         String sql = """
-                DELETE FROM autopayments a
-                WHERE a.id = ? AND from_account_id IN
+            DELETE FROM autopayments a
+            WHERE a.id = ? AND from_account_id IN
+            (
+                SELECT c.account_id FROM checking_account c
+                WHERE c.customer_id =
                 (
-                    SELECT c.account_id FROM checking_account c
-                    WHERE c.customer_id =
-                    (
-                        SELECT customer.id FROM customer WHERE email = ?
-                    )
-                );
-                """;
+                    SELECT customer.id FROM customer WHERE email = ?
+                )
+            );
+            """;
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setLong(1, paymentId);
             statement.setString(2, this.email);

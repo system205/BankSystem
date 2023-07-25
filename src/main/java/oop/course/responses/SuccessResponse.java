@@ -23,11 +23,11 @@ public final class SuccessResponse implements Response {
     @Override
     public void print(PrintWriter out) {
         new BaseResponse(
-                200, "OK",
-                Map.ofEntries(
-                        Map.entry("Content-Type", "application/json")
-                ),
-                this.body
+            200, "OK",
+            Map.ofEntries(
+                Map.entry("Content-Type", "application/json")
+            ),
+            this.body
         ).print(out);
     }
 }

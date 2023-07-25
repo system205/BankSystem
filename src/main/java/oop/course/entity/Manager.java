@@ -1,6 +1,6 @@
 package oop.course.entity;
 
-import oop.course.errors.exceptions.InternalErrorException;
+import oop.course.errors.exceptions.*;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -23,10 +23,10 @@ public final class Manager {
             List<CustomerRequest> requests = new LinkedList<>();
             while (resultSet.next())
                 requests.add(
-                        new CustomerRequest(
-                                resultSet.getLong(1),
-                                this.connection
-                        )
+                    new CustomerRequest(
+                        resultSet.getLong(1),
+                        this.connection
+                    )
                 );
 
             log.info("Found {} requests.", requests.size());

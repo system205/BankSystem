@@ -1,9 +1,7 @@
 package oop.course.client.responses;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
 public final class BasicResponse implements Response {
     private final String response;
@@ -49,8 +47,7 @@ public final class BasicResponse implements Response {
         var strings = response.split("\n");
         try {
             return Integer.parseInt(strings[0].split(" ")[1]);
-        }
-        catch (NumberFormatException exception) {
+        } catch (NumberFormatException exception) {
             return 500;
         }
     }

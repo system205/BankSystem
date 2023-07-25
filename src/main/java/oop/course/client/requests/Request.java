@@ -1,9 +1,8 @@
 package oop.course.client.requests;
 
-import oop.course.client.responses.Response;
+import oop.course.client.responses.*;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.io.*;
 
 public interface Request<T extends Response> {
 

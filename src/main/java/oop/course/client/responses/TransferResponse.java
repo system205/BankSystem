@@ -21,8 +21,7 @@ public final class TransferResponse implements Response {
     public String message() {
         if (isSuccess()) {
             return "Successfully transfered money";
-        }
-        else {
+        } else {
             return response.message();
         }
     }

@@ -1,8 +1,8 @@
 package oop.course.client.gui;
 
-import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.*;
 
-import java.util.List;
+import java.util.*;
 
 public final class TerminalForm implements TerminalGUIElement {
     private final List<TerminalFormKeyValuePair> values;

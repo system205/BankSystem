@@ -1,8 +1,8 @@
 package oop.course.client;
 
 
-import oop.course.client.requests.Request;
-import oop.course.client.responses.Response;
+import oop.course.client.requests.*;
+import oop.course.client.responses.*;
 
 public interface ServerBridge {
 

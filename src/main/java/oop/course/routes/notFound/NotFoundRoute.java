@@ -1,9 +1,9 @@
 package oop.course.routes.notFound;
 
-import oop.course.errors.exceptions.NotFoundException;
-import oop.course.requests.Request;
-import oop.course.responses.Response;
-import oop.course.routes.Route;
+import oop.course.errors.exceptions.*;
+import oop.course.requests.*;
+import oop.course.responses.*;
+import oop.course.routes.*;
 
 public final class NotFoundRoute implements Route {
 

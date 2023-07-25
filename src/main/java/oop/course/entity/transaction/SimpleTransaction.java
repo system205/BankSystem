@@ -16,7 +16,7 @@ public final class SimpleTransaction implements Transaction {
     @Override
     public String json() {
         return String.format("{\"from\":\"%s\",%n\"to\":\"%s\",%n\"amount\":\"%s\"}",
-                this.sender, this.receiver, this.amount);
+            this.sender, this.receiver, this.amount);
     }
 
     @Override

@@ -21,9 +21,9 @@ public final class ListRequests implements ProcessMethod {
     public Response act(Request request) throws Exception {
         log.debug("Call manager to list requests");
         return new SuccessResponse(
-                new Manager(
-                        this.connection
-                ).requests()
+            new Manager(
+                this.connection
+            ).requests()
         );
     }
 

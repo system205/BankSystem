@@ -1,11 +1,9 @@
 package oop.course.client.requests;
 
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.LoginResponse;
+import oop.course.client.responses.*;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.util.stream.Collectors;
+import java.io.*;
+import java.util.stream.*;
 
 public final class LoginRequest implements Request<LoginResponse> {
     private final String form;
@@ -25,9 +23,9 @@ public final class LoginRequest implements Request<LoginResponse> {
     @Override
     public LoginResponse response(BufferedReader bufferedReader) {
         return new LoginResponse(
-                new BasicResponse(
-                        bufferedReader.lines().collect(Collectors.joining("\n"))
-                )
+            new BasicResponse(
+                bufferedReader.lines().collect(Collectors.joining("\n"))
+            )
         );
     }
 }

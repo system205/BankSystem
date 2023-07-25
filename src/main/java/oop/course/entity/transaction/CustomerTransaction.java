@@ -20,10 +20,10 @@ public final class CustomerTransaction implements Transaction {
     public String json() {
         if ("income".equals(type)) {
             return String.format("{%n\"type\":\"%s\",%n\"from\":\"%s\",%n\"amount\":\"%s\",%n\"date\":\"%s\"%n}",
-                    this.type, this.anotherNumber, this.amount, this.dateTime);
+                this.type, this.anotherNumber, this.amount, this.dateTime);
         } else if ("outcome".equals(type)) {
             return String.format("{%n\"type\":\"%s\",%n\"from\":\"%s\",%n\"amount\":\"%s\",%n\"date\":\"%s\"%n}",
-                    this.type, this.anotherNumber, this.amount, this.dateTime);
+                this.type, this.anotherNumber, this.amount, this.dateTime);
         } else throw new IllegalStateException("Type of a customer transaction must be either income or outcome");
     }
 

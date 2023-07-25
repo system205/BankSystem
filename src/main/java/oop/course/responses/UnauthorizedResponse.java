@@ -31,13 +31,13 @@ public final class UnauthorizedResponse implements Response {
             authHeader += " realm=\"" + realm + "\"";
         }
         final BaseResponse baseResponse = new BaseResponse(
-                401,
-                "Unauthorized",
-                Map.ofEntries(
-                        Map.entry("WWW-Authenticate", authHeader),
-                        Map.entry("Content-Type", "application/json")
-                ),
-                new ResponseMessage(errorMessage).json()
+            401,
+            "Unauthorized",
+            Map.ofEntries(
+                Map.entry("WWW-Authenticate", authHeader),
+                Map.entry("Content-Type", "application/json")
+            ),
+            new ResponseMessage(errorMessage).json()
         );
         baseResponse.print(out);
     }

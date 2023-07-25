@@ -17,11 +17,11 @@ public final class CreatedResponse implements Response {
     public void print(PrintWriter out) throws IOException {
         log.info("Created Response:\n");
         new BaseResponse(
-                201, "Created",
-                Map.ofEntries(
-                        Map.entry("Content-Type", "application/json")
-                ),
-                new ResponseMessage(message).json()
+            201, "Created",
+            Map.ofEntries(
+                Map.entry("Content-Type", "application/json")
+            ),
+            new ResponseMessage(message).json()
         ).print(out);
     }
 }

@@ -1,9 +1,9 @@
 package oop.course.routes.job.methods;
 
 import oop.course.entity.*;
-import oop.course.requests.Request;
+import oop.course.requests.*;
 import oop.course.responses.*;
-import oop.course.routes.ProcessMethod;
+import oop.course.routes.*;
 
 import java.sql.*;
 
@@ -17,10 +17,10 @@ public final class PutOffer implements ProcessMethod {
     @Override
     public Response act(Request request) throws Exception {
         return new SuccessResponse(
-                new Customer(
-                        this.connection,
-                        new HeaderToken(request.headers()).id()
-                ).applyForJob().json()
+            new Customer(
+                this.connection,
+                new HeaderToken(request.headers()).id()
+            ).applyForJob().json()
         );
     }
 

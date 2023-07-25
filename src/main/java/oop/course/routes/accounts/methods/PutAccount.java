@@ -19,13 +19,13 @@ public final class PutAccount implements ProcessMethod {
     public Response act(Request request) throws Exception {
         // Create and save new account
         Account account = new CheckingAccount(
-                this.connection
+            this.connection
         );
         account.save(
-                new HeaderToken(request.headers()).id()
+            new HeaderToken(request.headers()).id()
         );
         return new SuccessResponse(
-                account.json()
+            account.json()
         );
     }
 

@@ -30,12 +30,12 @@ public final class JsonForm implements Form {
     @Override
     public long longField(String field) throws Exception {
         Matcher matcher = Pattern
-                .compile(String.format(REGEX, field))
-                .matcher(this.source);
+            .compile(String.format(REGEX, field))
+            .matcher(this.source);
         if (matcher.find()) {
             Matcher m = Pattern
-                    .compile(INTEGER_REGEX)
-                    .matcher(matcher.group());
+                .compile(INTEGER_REGEX)
+                .matcher(matcher.group());
             if (m.find()) {
                 final String value = m.group();
                 return Long.parseLong(value.substring(1, value.length() - 1));
@@ -52,12 +52,12 @@ public final class JsonForm implements Form {
     @Override
     public String stringField(String field) throws Exception {
         Matcher matcher = Pattern
-                .compile(String.format(REGEX, field))
-                .matcher(this.source);
+            .compile(String.format(REGEX, field))
+            .matcher(this.source);
         if (matcher.find()) {
             Matcher m = Pattern
-                    .compile(STRING_REGEX)
-                    .matcher(matcher.group());
+                .compile(STRING_REGEX)
+                .matcher(matcher.group());
             if (m.find()) {
                 final String value = m.group();
                 final String result = value.substring(1, value.length() - 1);

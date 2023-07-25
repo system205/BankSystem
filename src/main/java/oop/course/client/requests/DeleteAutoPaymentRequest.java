@@ -1,11 +1,9 @@
 package oop.course.client.requests;
 
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.DeleteAutoPaymentResponse;
+import oop.course.client.responses.*;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.util.stream.Collectors;
+import java.io.*;
+import java.util.stream.*;
 
 public final class DeleteAutoPaymentRequest implements Request<DeleteAutoPaymentResponse> {
     private final String token;

@@ -1,10 +1,7 @@
 package oop.course.client.responses;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
+import java.util.regex.*;
 
 public final class GetOffersResponse implements Response {
     private final Response response;

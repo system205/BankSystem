@@ -47,111 +47,111 @@ public final class Main {
         // Statistics
         final long startTime = System.currentTimeMillis();
         Runtime.getRuntime().addShutdownHook(
-                new Thread(
-                        () -> logger.info("App existed {} ms", System.currentTimeMillis() - startTime)
-                )
+            new Thread(
+                () -> logger.info("App existed {} ms", System.currentTimeMillis() - startTime)
+            )
         );
 
         // Database
         Connection connection = new Postgres(
-                new SimpleNetAddress("127.0.0.1", 5432),
-                new SimpleCredentials("postgres", "postgres"),
-                "bank"
+            new SimpleNetAddress("127.0.0.1", 5432),
+            new SimpleCredentials("postgres", "postgres"),
+            "bank"
         ).connect();
 
         // Initialization before startup
         Admin admin = new Admin(connection);
         new Background(
-                new DatabaseStartUp(
-                        new SimpleSqlExecutor(connection),
-                        new MigrationDirectory(
-                                "migrations"
-                        ).scan()
-                ),
-                admin
+            new DatabaseStartUp(
+                new SimpleSqlExecutor(connection),
+                new MigrationDirectory(
+                    "migrations"
+                ).scan()
+            ),
+            admin
         ).init();
 
         // Processes
         logger.debug("Start creating processes");
 
         final ErrorResponsesProcess errorResponsesProcess =
-                new ErrorResponsesProcess(
-                        new Authorization(
-                                new Fork(
-                                        new MainRoute(),
-                                        new LoginRoute( // /login
-                                                connection,
-                                                new TokenReturn(
-                                                        "mySecretKey",
-                                                        24L * 60 * 60 * 1000,
-                                                        connection
-                                                )
-                                        ),
-                                        new RegisterRoute( // /register
-                                                connection
-                                        ),
-                                        new TransferRoute( // /transfer
-                                                new MakeTransaction(
-                                                        connection
-                                                )
-                                        ),
-                                        new CheckAccountRoute( // /account
-                                                new GetAccount(
-                                                        connection
-                                                ),
-                                                new PutAccount(
-                                                        connection
-                                                ),
-                                                new DeleteAccount(
-                                                        connection
-                                                )
-                                        ),
-                                        new TransactionsRoute( // /transactions
-                                                new GetTransactions(
-                                                        connection
-                                                )
-                                        ),
-                                        new StatementRoute( // /stats
-                                                connection
-                                        ),
-                                        new AutoPaymentRoute( // /autopayments
-                                                new ListAutoPayments(connection),
-                                                new PostAutoPayment(connection),
-                                                new DeleteAutoPayment(connection)
-                                        ),
-                                        new AllAccounts(connection),
-                                        new ManagerFork( // /manager
-                                                new CustomerRequestsRoute(
-                                                        new ListRequests(connection),
-                                                        new PostRequests(connection)
-                                                )
-                                        ),
-                                        new RequestsRoute( // /requests
-                                                new GetRequests(connection),
-                                                new PutRequests(connection)
-                                        ),
-                                        new JobRoute( // /job
-                                                new PutOffer(connection)
-                                        ),
-                                        new AdminFork( // /admin
-                                                new ApplicantsRoute( // / offers
-                                                        new ListApplicants(admin),
-                                                        new PostOffer(connection)
-                                                )
-                                        ),
-                                        new NotFoundRoute()
-                                ),
-                                new GuardedUrl(
-                                        connection,
-                                        new RolesConfiguration(
-                                                Map.ofEntries(
-                                                        entry("/manager", List.of("manager", "admin")),
-                                                        entry("/admin", List.of("admin"))
-                                                )
-                                        )
-                                )
+            new ErrorResponsesProcess(
+                new Authorization(
+                    new Fork(
+                        new MainRoute(),
+                        new LoginRoute( // /login
+                            connection,
+                            new TokenReturn(
+                                "mySecretKey",
+                                24L * 60 * 60 * 1000,
+                                connection
+                            )
+                        ),
+                        new RegisterRoute( // /register
+                            connection
+                        ),
+                        new TransferRoute( // /transfer
+                            new MakeTransaction(
+                                connection
+                            )
+                        ),
+                        new CheckAccountRoute( // /account
+                            new GetAccount(
+                                connection
+                            ),
+                            new PutAccount(
+                                connection
+                            ),
+                            new DeleteAccount(
+                                connection
+                            )
+                        ),
+                        new TransactionsRoute( // /transactions
+                            new GetTransactions(
+                                connection
+                            )
+                        ),
+                        new StatementRoute( // /stats
+                            connection
+                        ),
+                        new AutoPaymentRoute( // /autopayments
+                            new ListAutoPayments(connection),
+                            new PostAutoPayment(connection),
+                            new DeleteAutoPayment(connection)
+                        ),
+                        new AllAccounts(connection),
+                        new ManagerFork( // /manager
+                            new CustomerRequestsRoute(
+                                new ListRequests(connection),
+                                new PostRequests(connection)
+                            )
+                        ),
+                        new RequestsRoute( // /requests
+                            new GetRequests(connection),
+                            new PutRequests(connection)
+                        ),
+                        new JobRoute( // /job
+                            new PutOffer(connection)
+                        ),
+                        new AdminFork( // /admin
+                            new ApplicantsRoute( // / offers
+                                new ListApplicants(admin),
+                                new PostOffer(connection)
+                            )
+                        ),
+                        new NotFoundRoute()
+                    ),
+                    new GuardedUrl(
+                        connection,
+                        new RolesConfiguration(
+                            Map.ofEntries(
+                                entry("/manager", List.of("manager", "admin")),
+                                entry("/admin", List.of("admin"))
+                            )
                         )
-                );
+                    )
+                )
+            );
         logger.debug("All processes are created");
 
         // Start server
@@ -163,9 +163,10 @@ public final class Main {
             while (true) {
                 logger.debug("Waiting for new client");
                 new Thread(
-                        new Server(
-                                serverSocket,
-                                errorResponsesProcess)
+                    new Server(
+                        serverSocket,
+                        errorResponsesProcess
+                    )
                 ).start();
             }
 

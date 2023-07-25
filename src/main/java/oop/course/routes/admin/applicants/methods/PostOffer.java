@@ -1,11 +1,11 @@
 package oop.course.routes.admin.applicants.methods;
 
 import oop.course.entity.*;
+import oop.course.miscellaneous.implementations.*;
+import oop.course.miscellaneous.interfaces.*;
 import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
-import oop.course.miscellaneous.implementations.*;
-import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
@@ -20,10 +20,10 @@ public final class PostOffer implements ProcessMethod {
     public Response act(Request request) throws Exception {
         Form form = new JsonForm(request.body());
         new Customer(
-                this.connection,
-                form.stringField("customerEmail")
+            this.connection,
+            form.stringField("customerEmail")
         ).offer().update(
-                form.stringField("status")
+            form.stringField("status")
         );
         return new SuccessResponse(new ResponseMessage("Offer is review successfully").json());
     }

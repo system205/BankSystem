@@ -1,10 +1,10 @@
 package oop.course.routes.accounts.methods;
 
 import oop.course.entity.*;
+import oop.course.miscellaneous.implementations.*;
 import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
-import oop.course.miscellaneous.implementations.*;
 
 import java.sql.*;
 
@@ -18,13 +18,13 @@ public final class DeleteAccount implements ProcessMethod {
     @Override
     public Response act(Request request) throws Exception {
         new Customer(
-                this.connection,
-                new HeaderToken(request.headers()).id()
+            this.connection,
+            new HeaderToken(request.headers()).id()
         ).account(new JsonForm(request.body())
-                .stringField("accountNumber")
+            .stringField("accountNumber")
         ).deactivate();
         return new SuccessResponse(
-                new ResponseMessage("Account deleted successfully").json()
+            new ResponseMessage("Account deleted successfully").json()
         );
     }
 

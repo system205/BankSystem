@@ -22,10 +22,10 @@ public final class AllAccounts implements Route {
     public Response act(Request request) throws Exception {
         log.debug("Start retrieving all accounts");
         return new SuccessResponse(
-                new Customer(
-                        this.connection,
-                        new HeaderToken(request.headers()).id()
-                ).accounts()
+            new Customer(
+                this.connection,
+                new HeaderToken(request.headers()).id()
+            ).accounts()
         );
     }
 

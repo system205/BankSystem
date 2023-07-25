@@ -1,17 +1,13 @@
 package oop.course.client.views;
 
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.ServerBridge;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.*;
+import oop.course.client.*;
 import oop.course.client.gui.*;
-import oop.course.client.requests.NewAutoPaymentRequest;
+import oop.course.client.requests.*;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.*;
 
 public final class CreateAutoPaymentView implements IView {
     private final Consumer<IView> changeView;
@@ -32,42 +28,42 @@ public final class CreateAutoPaymentView implements IView {
     @Override
     public void show(WindowBasedTextGUI gui) {
         var form = new TerminalForm(
-                List.of(
-                        new TerminalFormKeyValuePair(
-                                "senderNumber",
-                                new TerminalInputPair(
-                                        new TerminalText("From"),
-                                        new TerminalFixedTextBox(account)
-                                )
-                        ),
-                        new TerminalFormKeyValuePair(
-                                "receiverNumber",
-                                new TerminalInputPair(
-                                        new TerminalText("To"),
-                                        new TerminalTextBox()
-                                )
-                        ),
-                        new TerminalFormKeyValuePair(
-                                "amount",
-                                new TerminalInputPair(
-                                        new TerminalText("Amount"),
-                                        new TerminalTextBox()
-                                )
-                        ),
-                        new TerminalFormKeyValuePair(
-                                "period",
-                                new TerminalInputPair(
-                                        new TerminalText("Period"),
-                                        new TerminalTextBox()
-                                )
-                        ),
-                        new TerminalFormKeyValuePair(
-                                "startDate",
-                                new TerminalInputPair(
-                                        new TerminalText("Starting date"),
-                                        new TerminalTextBox())
-                        )
+            List.of(
+                new TerminalFormKeyValuePair(
+                    "senderNumber",
+                    new TerminalInputPair(
+                        new TerminalText("From"),
+                        new TerminalFixedTextBox(account)
+                    )
+                ),
+                new TerminalFormKeyValuePair(
+                    "receiverNumber",
+                    new TerminalInputPair(
+                        new TerminalText("To"),
+                        new TerminalTextBox()
+                    )
+                ),
+                new TerminalFormKeyValuePair(
+                    "amount",
+                    new TerminalInputPair(
+                        new TerminalText("Amount"),
+                        new TerminalTextBox()
+                    )
+                ),
+                new TerminalFormKeyValuePair(
+                    "period",
+                    new TerminalInputPair(
+                        new TerminalText("Period"),
+                        new TerminalTextBox()
+                    )
+                ),
+                new TerminalFormKeyValuePair(
+                    "startDate",
+                    new TerminalInputPair(
+                        new TerminalText("Starting date"),
+                        new TerminalTextBox())
                 )
+            )
         );
 
         var window = new TerminalWindow(

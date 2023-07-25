@@ -1,8 +1,6 @@
 package oop.course.client.responses;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public final class GetRequestsResponse implements Response {
     private final Response response;

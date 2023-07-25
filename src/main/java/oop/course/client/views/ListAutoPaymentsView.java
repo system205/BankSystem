@@ -1,18 +1,13 @@
 package oop.course.client.views;
 
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.ServerBridge;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.*;
+import oop.course.client.*;
 import oop.course.client.gui.*;
-import oop.course.client.requests.DeleteAutoPaymentRequest;
-import oop.course.client.requests.ListAutoPaymentsRequest;
+import oop.course.client.requests.*;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.*;
 
 public final class ListAutoPaymentsView implements IView {
     private final Consumer<IView> changeView;
@@ -34,15 +29,15 @@ public final class ListAutoPaymentsView implements IView {
     @Override
     public void show(WindowBasedTextGUI gui) {
         var form = new TerminalForm(
-                List.of(
-                        new TerminalFormKeyValuePair(
-                                "accountNumber",
-                                new TerminalInputPair(
-                                        new TerminalText("Account number"),
-                                        new TerminalFixedTextBox(account)
-                                )
-                        )
+            List.of(
+                new TerminalFormKeyValuePair(
+                    "accountNumber",
+                    new TerminalInputPair(
+                        new TerminalText("Account number"),
+                        new TerminalFixedTextBox(account)
+                    )
                 )
+            )
         );
         var response = serverBridge.execute(new ListAutoPaymentsRequest(token, form.json()));
         TerminalGUIElement element;
@@ -70,19 +65,19 @@ public final class ListAutoPaymentsView implements IView {
 
     private void onRowSelected(List<String> row, WindowBasedTextGUI gui) {
         var res = MessageDialog.showMessageDialog(gui,
-                "Select an action", "Do you want to cancel the auto-payment?",
-                MessageDialogButton.Yes, MessageDialogButton.No);
+            "Select an action", "Do you want to cancel the auto-payment?",
+            MessageDialogButton.Yes, MessageDialogButton.No);
         if (res == MessageDialogButton.Yes) {
             var form = new TerminalForm(
-                    List.of(
-                            new TerminalFormKeyValuePair(
-                                    "paymentId",
-                                    new TerminalInputPair(
-                                            new TerminalText("Payment Id"),
-                                            new TerminalFixedTextBox(row.get(0))
-                                    )
-                            )
+                List.of(
+                    new TerminalFormKeyValuePair(
+                        "paymentId",
+                        new TerminalInputPair(
+                            new TerminalText("Payment Id"),
+                            new TerminalFixedTextBox(row.get(0))
+                        )
                     )
+                )
             );
             var deleteResponse = serverBridge.execute(new DeleteAutoPaymentRequest(token, form.json()));
             if (deleteResponse.isSuccess()) {

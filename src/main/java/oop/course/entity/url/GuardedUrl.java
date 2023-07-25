@@ -27,8 +27,8 @@ public final class GuardedUrl implements URL {
         }
 
         final Collection<String> roles = new Customer(
-                connection,
-                new HeaderToken(request.headers()).id()
+            connection,
+            new HeaderToken(request.headers()).id()
         ).roles();
 
         for (String role : roles) {

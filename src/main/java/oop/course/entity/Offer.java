@@ -26,27 +26,27 @@ public final class Offer implements JSON {
 
     public void update(String status) throws Exception {
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "UPDATE offers SET status = ? WHERE id = ?"
-                );
-                PreparedStatement checkStatement = this.connection.prepareStatement(
-                        "SELECT status FROM offers WHERE id = ?"
-                );
-                PreparedStatement roleStatement = this.connection.prepareStatement(
-                        """
-                                INSERT INTO roles (role, customer_id)
-                                VALUES
-                                (
-                                    'manager',
-                                    (
-                                        SELECT customer.id
-                                        FROM customer
-                                        INNER JOIN offers ON customer_email = email
-                                        WHERE offers.id = ?
-                                    )
-                                )
-                                """
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "UPDATE offers SET status = ? WHERE id = ?"
+            );
+            PreparedStatement checkStatement = this.connection.prepareStatement(
+                "SELECT status FROM offers WHERE id = ?"
+            );
+            PreparedStatement roleStatement = this.connection.prepareStatement(
+                """
+                    INSERT INTO roles (role, customer_id)
+                    VALUES
+                    (
+                        'manager',
+                        (
+                            SELECT customer.id
+                            FROM customer
+                            INNER JOIN offers ON customer_email = email
+                            WHERE offers.id = ?
+                        )
+                    )
+                    """
+            )
         ) {
             checkStatement.setLong(1, this.id);
             ResultSet check = checkStatement.executeQuery();
@@ -83,7 +83,7 @@ public final class Offer implements JSON {
 
     private Details details() throws Exception {
         try (PreparedStatement statement = this.connection.prepareStatement(
-                "SELECT customer_email, status, created_at FROM offers WHERE id = ?;"
+            "SELECT customer_email, status, created_at FROM offers WHERE id = ?;"
         )) {
             statement.setLong(1, id);
             ResultSet result = statement.executeQuery();
@@ -91,9 +91,9 @@ public final class Offer implements JSON {
             if (!result.next()) throw new IllegalStateException("The offer with id " + this.id + " does not exist");
 
             return new Details(
-                    result.getString(1),
-                    result.getString(2),
-                    result.getTimestamp(3).toLocalDateTime()
+                result.getString(1),
+                result.getString(2),
+                result.getTimestamp(3).toLocalDateTime()
             );
         } catch (SQLException e) {
             throw new InternalErrorException(e);
@@ -114,7 +114,7 @@ public final class Offer implements JSON {
 
         public String json() {
             return String.format("\"customerEmail\":\"%s\",%n,\"status\":\"%s\",%n\"date\":\"%s\"",
-                    this.email, this.status, this.timestamp);
+                this.email, this.status, this.timestamp);
         }
     }
 }

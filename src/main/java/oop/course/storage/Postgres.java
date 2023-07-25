@@ -47,9 +47,9 @@ public final class Postgres implements Connector {
         log.debug("Create postgres connection");
         try {
             Connection connection = DriverManager.getConnection(
-                    String.format("jdbc:postgresql://%s:%s/%s", this.ip, this.port, this.databaseName),
-                    this.user,
-                    this.password
+                String.format("jdbc:postgresql://%s:%s/%s", this.ip, this.port, this.databaseName),
+                this.user,
+                this.password
             );
             connection.setAutoCommit(false);
             log.debug("Turn off auto commit");

@@ -1,6 +1,6 @@
 package oop.course.entity;
 
-import oop.course.entity.account.CheckingAccount;
+import oop.course.entity.account.*;
 import oop.course.errors.exceptions.*;
 import oop.course.miscellaneous.*;
 
@@ -19,42 +19,53 @@ public final class AutoPayment implements JSON {
         this.id = id;
         this.connection = connection;
         this.timer = Executors.newSingleThreadScheduledExecutor(
-                r -> {
-                    Thread thread = Executors.defaultThreadFactory().newThread(r);
-                    thread.setDaemon(true); // to shut down when app is closed
-                    return thread;
-                }
+            r -> {
+                Thread thread = Executors.defaultThreadFactory().newThread(r);
+                thread.setDaemon(true); // to shut down when app is closed
+                return thread;
+            }
         );
+    }
+
+    private static long calculateInitDelay(LocalDateTime startDate, long period) {
+        LocalDateTime now = LocalDateTime.now();
+        if (startDate.isBefore(now)) {
+            long periodsElapsed = startDate.until(now, ChronoUnit.SECONDS) / period;
+            LocalDateTime nextPoint = startDate.plus((periodsElapsed + 1) * period, ChronoUnit.SECONDS);
+            return now.until(nextPoint, ChronoUnit.SECONDS);
+        } else {
+            return now.until(startDate, ChronoUnit.SECONDS);
+        }
     }
 
     public void pay() {
         PaymentDetails details = details();
         final ScheduledFuture<?>[] task = new ScheduledFuture<?>[1];
         task[0] = this.timer.scheduleAtFixedRate(
-                () -> {
-                    try {
-                        if (!active())
-                            task[0].cancel(true);
-                        new CheckingAccount(details.senderNumber, this.connection)
-                                .transfer(details.receiverNumber, details.amount);
-                    } catch (Exception e) {
+            () -> {
+                try {
+                    if (!active())
                         task[0].cancel(true);
-                    }
-                },
-                calculateInitDelay(
-                        details.startDate.toLocalDate().atStartOfDay(),
-                        details.period
-                ),
-                details.period,
-                TimeUnit.SECONDS
+                    new CheckingAccount(details.senderNumber, this.connection)
+                        .transfer(details.receiverNumber, details.amount);
+                } catch (Exception e) {
+                    task[0].cancel(true);
+                }
+            },
+            calculateInitDelay(
+                details.startDate.toLocalDate().atStartOfDay(),
+                details.period
+            ),
+            details.period,
+            TimeUnit.SECONDS
         );
     }
 
     private boolean active() throws Exception {
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT 1 FROM autopayments WHERE id = ?;"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT 1 FROM autopayments WHERE id = ?;"
+            )
         ) {
             statement.setLong(1, this.id);
             ResultSet result = statement.executeQuery();
@@ -66,12 +77,12 @@ public final class AutoPayment implements JSON {
 
     private PaymentDetails details() {
         String sql = """
-                SELECT ca.account_number, c.account_number, amount, start_date, period_in_seconds
-                FROM autopayments
-                INNER JOIN checking_account ca on ca.account_id = autopayments.from_account_id
-                INNER JOIN checking_account c ON c.account_id = autopayments.to_account_id
-                WHERE autopayments.id = ?
-                """;
+            SELECT ca.account_number, c.account_number, amount, start_date, period_in_seconds
+            FROM autopayments
+            INNER JOIN checking_account ca on ca.account_id = autopayments.from_account_id
+            INNER JOIN checking_account c ON c.account_id = autopayments.to_account_id
+            WHERE autopayments.id = ?
+            """;
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setLong(1, this.id);
 
@@ -80,10 +91,10 @@ public final class AutoPayment implements JSON {
                 throw new IllegalStateException("The autopayment with id " + this.id + " does not exist");
 
             return new PaymentDetails(result.getString(1),
-                    result.getString(2),
-                    result.getBigDecimal(3),
-                    result.getDate(4),
-                    result.getLong(5));
+                result.getString(2),
+                result.getBigDecimal(3),
+                result.getDate(4),
+                result.getLong(5));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -112,18 +123,7 @@ public final class AutoPayment implements JSON {
         @Override
         public String json() {
             return String.format("\"sender\":\"%s\",%n\"receiver\":\"%s\",%n\"amount\":\"%s\",%n\"startDate\":\"%s\",%n\"period\":\"%s\"",
-                    this.senderNumber, this.receiverNumber, this.amount, this.startDate, this.period);
-        }
-    }
-
-    private static long calculateInitDelay(LocalDateTime startDate, long period) {
-        LocalDateTime now = LocalDateTime.now();
-        if (startDate.isBefore(now)) {
-            long periodsElapsed = startDate.until(now, ChronoUnit.SECONDS) / period;
-            LocalDateTime nextPoint = startDate.plus((periodsElapsed + 1) * period, ChronoUnit.SECONDS);
-            return now.until(nextPoint, ChronoUnit.SECONDS);
-        } else {
-            return now.until(startDate, ChronoUnit.SECONDS);
+                this.senderNumber, this.receiverNumber, this.amount, this.startDate, this.period);
         }
     }
 }

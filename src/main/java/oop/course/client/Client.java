@@ -13,11 +13,11 @@ public final class Client {
 
     public static void main(String[] args) throws IOException {
         new Client(
-                new TerminalGUI(),
-                new SocketServerBridge(
-                        "127.0.0.1",
-                        6666
-                )
+            new TerminalGUI(),
+            new SocketServerBridge(
+                "127.0.0.1",
+                6666
+            )
         ).run();
     }
 

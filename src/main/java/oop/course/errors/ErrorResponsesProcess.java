@@ -1,13 +1,10 @@
 package oop.course.errors;
 
 import oop.course.errors.exceptions.*;
-import oop.course.responses.ForbiddenResponse;
-import oop.course.routes.Process;
-import oop.course.requests.Request;
-import oop.course.responses.Response;
+import oop.course.requests.*;
 import oop.course.responses.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.routes.Process;
+import org.slf4j.*;
 
 public final class ErrorResponsesProcess implements Process {
     private static final Logger logger = LoggerFactory.getLogger(ErrorResponsesProcess.class);

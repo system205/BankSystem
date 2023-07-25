@@ -21,8 +21,7 @@ public final class DeactivateAccountResponse implements Response {
     public String message() {
         if (isSuccess()) {
             return "Successfully deactivated an account";
-        }
-        else {
+        } else {
             return "Could not deactivate an account";
         }
     }

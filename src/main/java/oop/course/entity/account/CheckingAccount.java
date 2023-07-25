@@ -42,9 +42,9 @@ public final class CheckingAccount implements Account {
 
     private long balance() throws Exception {
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT balance from checking_account where account_number=?"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT balance from checking_account where account_number=?"
+            )
         ) {
             statement.setString(1, this.number);
             ResultSet results = statement.executeQuery();
@@ -66,29 +66,29 @@ public final class CheckingAccount implements Account {
     public Transaction transfer(String accountNumber, BigDecimal amount) throws Exception {
         if (!isActive()) throw new IllegalStateException("Can't transfer from inactive account");
         try (
-                PreparedStatement transactionStatement = this.connection.prepareStatement(
-                        "INSERT INTO transactions (sender_number, receiver_number, amount) VALUES (?, ?, ?)"
-                );
-                PreparedStatement spendStatement = this.connection.prepareStatement(
-                        """
-                                UPDATE checking_account
-                                SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) - ?
-                                WHERE account_number = ?
-                                """
-                );
-                PreparedStatement payStatement = this.connection.prepareStatement(
-                        """
-                                UPDATE checking_account
-                                SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) + ?
-                                WHERE account_number = ?
-                                """
-                );
-                PreparedStatement enoughMoneyStatement = this.connection.prepareStatement(
-                        "SELECT balance FROM checking_account WHERE account_number = ?"
-                );
-                PreparedStatement receiverExists = this.connection.prepareStatement(
-                        "SELECT 1 FROM checking_account WHERE account_number = ?"
-                )
+            PreparedStatement transactionStatement = this.connection.prepareStatement(
+                "INSERT INTO transactions (sender_number, receiver_number, amount) VALUES (?, ?, ?)"
+            );
+            PreparedStatement spendStatement = this.connection.prepareStatement(
+                """
+                    UPDATE checking_account
+                    SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) - ?
+                    WHERE account_number = ?
+                    """
+            );
+            PreparedStatement payStatement = this.connection.prepareStatement(
+                """
+                    UPDATE checking_account
+                    SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) + ?
+                    WHERE account_number = ?
+                    """
+            );
+            PreparedStatement enoughMoneyStatement = this.connection.prepareStatement(
+                "SELECT balance FROM checking_account WHERE account_number = ?"
+            );
+            PreparedStatement receiverExists = this.connection.prepareStatement(
+                "SELECT 1 FROM checking_account WHERE account_number = ?"
+            )
         ) {
             enoughMoneyStatement.setString(1, this.number);
             ResultSet result = enoughMoneyStatement.executeQuery();
@@ -142,18 +142,18 @@ public final class CheckingAccount implements Account {
     @Override
     public void save(String customerEmail) throws Exception {
         try (
-                PreparedStatement accountStatement = this.connection.prepareStatement(
-                        "INSERT INTO checking_account (customer_id, bank_name, account_number) VALUES (?, ?, ?)"
-                );
-                PreparedStatement accountExistsStatement = this.connection.prepareStatement(
-                        "SELECT 1 FROM checking_account WHERE account_number = ?"
-                );
-                PreparedStatement customerStatement = this.connection.prepareStatement(
-                        "SELECT id FROM customer WHERE email=?"
-                );
-                PreparedStatement accountsNumberStatement = this.connection.prepareStatement(
-                        "SELECT COUNT(*) FROM checking_account WHERE customer_id = ? AND active=true"
-                )
+            PreparedStatement accountStatement = this.connection.prepareStatement(
+                "INSERT INTO checking_account (customer_id, bank_name, account_number) VALUES (?, ?, ?)"
+            );
+            PreparedStatement accountExistsStatement = this.connection.prepareStatement(
+                "SELECT 1 FROM checking_account WHERE account_number = ?"
+            );
+            PreparedStatement customerStatement = this.connection.prepareStatement(
+                "SELECT id FROM customer WHERE email=?"
+            );
+            PreparedStatement accountsNumberStatement = this.connection.prepareStatement(
+                "SELECT COUNT(*) FROM checking_account WHERE customer_id = ? AND active=true"
+            )
         ) {
             // Identify customer in DB
             customerStatement.setString(1, customerEmail);
@@ -204,9 +204,9 @@ public final class CheckingAccount implements Account {
             throw new AccountException("Bad request. Type should be withdraw or deposit");
 
         String sql = """
-                INSERT INTO requests (account_number, amount, type, status)
-                VALUES (?, ?, ?, 'pending') RETURNING id
-                """;
+            INSERT INTO requests (account_number, amount, type, status)
+            VALUES (?, ?, ?, 'pending') RETURNING id
+            """;
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             statement.setBigDecimal(2, amount);
@@ -218,8 +218,8 @@ public final class CheckingAccount implements Account {
             this.connection.commit();
 
             return new CustomerRequest(
-                    id,
-                    this.connection
+                id,
+                this.connection
             );
         } catch (SQLException e) {
             log.error("Error when attaching a request of a checking account");
@@ -244,10 +244,10 @@ public final class CheckingAccount implements Account {
             List<CustomerRequest> requests = new LinkedList<>();
             while (result.next()) {
                 requests.add(
-                        new CustomerRequest(
-                                result.getLong(1),
-                                this.connection
-                        )
+                    new CustomerRequest(
+                        result.getLong(1),
+                        this.connection
+                    )
                 );
             }
 
@@ -268,13 +268,13 @@ public final class CheckingAccount implements Account {
     public void withdraw(BigDecimal amount) throws Exception {
         if (!isActive()) throw new IllegalStateException("Can't withdraw from inactive account");
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        """
-                                    UPDATE checking_account
-                                    SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) - ?
-                                    WHERE account_number = ?
-                                """
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                """
+                        UPDATE checking_account
+                        SET balance = (SELECT balance FROM checking_account WHERE account_number = ?) - ?
+                        WHERE account_number = ?
+                    """
+            )
         ) {
             statement.setString(1, this.number);
             statement.setBigDecimal(2, amount);
@@ -295,32 +295,32 @@ public final class CheckingAccount implements Account {
     @Override
     public List<Transaction> transactions() throws Exception {
         return transactions(
-                Timestamp.from(Instant.ofEpochSecond(0)),
-                Timestamp.from(Instant.ofEpochSecond(10000000000L))
+            Timestamp.from(Instant.ofEpochSecond(0)),
+            Timestamp.from(Instant.ofEpochSecond(10000000000L))
         );
     }
 
     private List<Transaction> transactions(Timestamp start, Timestamp end) throws Exception {
         if (!isActive()) throw new IllegalStateException("Can't see transactions of inactive account");
         try (
-                PreparedStatement outcomeStatement = this.connection.prepareStatement(
-                        """
-                                SELECT amount, created_at, receiver_number FROM transactions
-                                WHERE sender_number = ? AND created_at BETWEEN ? AND ?
-                                """
-                );
-                PreparedStatement incomeStatement = this.connection.prepareStatement(
-                        """
-                                SELECT amount, created_at, sender_number FROM transactions
-                                WHERE receiver_number = ? AND created_at BETWEEN ? AND ?
-                                """
-                );
-                PreparedStatement requestsStatement = this.connection.prepareStatement(
-                        """
-                                SELECT type, amount, created_at FROM requests
-                                WHERE account_number = ? AND status = 'approved' AND created_at BETWEEN ? AND ?
-                                """
-                )
+            PreparedStatement outcomeStatement = this.connection.prepareStatement(
+                """
+                    SELECT amount, created_at, receiver_number FROM transactions
+                    WHERE sender_number = ? AND created_at BETWEEN ? AND ?
+                    """
+            );
+            PreparedStatement incomeStatement = this.connection.prepareStatement(
+                """
+                    SELECT amount, created_at, sender_number FROM transactions
+                    WHERE receiver_number = ? AND created_at BETWEEN ? AND ?
+                    """
+            );
+            PreparedStatement requestsStatement = this.connection.prepareStatement(
+                """
+                    SELECT type, amount, created_at FROM requests
+                    WHERE account_number = ? AND status = 'approved' AND created_at BETWEEN ? AND ?
+                    """
+            )
         ) {
             incomeStatement.setString(1, this.number);
             outcomeStatement.setString(1, this.number);
@@ -340,31 +340,31 @@ public final class CheckingAccount implements Account {
             List<Transaction> transactions = new ArrayList<>();
             while (income.next())
                 transactions.add(
-                        new CustomerTransaction(
-                                income.getTimestamp(2).toLocalDateTime(),
-                                income.getBigDecimal(1),
-                                income.getString(3),
-                                "income"
-                        )
+                    new CustomerTransaction(
+                        income.getTimestamp(2).toLocalDateTime(),
+                        income.getBigDecimal(1),
+                        income.getString(3),
+                        "income"
+                    )
                 );
 
             while (outcome.next())
                 transactions.add(
-                        new CustomerTransaction(
-                                outcome.getTimestamp(2).toLocalDateTime(),
-                                outcome.getBigDecimal(1),
-                                outcome.getString(3),
-                                "outcome"
-                        )
+                    new CustomerTransaction(
+                        outcome.getTimestamp(2).toLocalDateTime(),
+                        outcome.getBigDecimal(1),
+                        outcome.getString(3),
+                        "outcome"
+                    )
                 );
 
             while (approvedRequests.next())
                 transactions.add(
-                        new ApprovedRequest(
-                                approvedRequests.getString(1),
-                                approvedRequests.getBigDecimal(2),
-                                approvedRequests.getTimestamp(3).toLocalDateTime()
-                        )
+                    new ApprovedRequest(
+                        approvedRequests.getString(1),
+                        approvedRequests.getBigDecimal(2),
+                        approvedRequests.getTimestamp(3).toLocalDateTime()
+                    )
                 );
 
             return transactions;
@@ -382,22 +382,22 @@ public final class CheckingAccount implements Account {
 
         final List<Transaction> transactions = transactions(startTimestamp, endTimestamp);
         final List<Transaction> previousTransactions = transactions(
-                Timestamp.from(Instant.ofEpochSecond(1)), startTimestamp
+            Timestamp.from(Instant.ofEpochSecond(1)), startTimestamp
         );
 
         final BigDecimal startingBalance =
-                previousTransactions
-                        .stream()
-                        .map(Transaction::balanceChange)
-                        .reduce(BigDecimal::add)
-                        .orElseGet(() -> new BigDecimal(0));
+            previousTransactions
+                .stream()
+                .map(Transaction::balanceChange)
+                .reduce(BigDecimal::add)
+                .orElseGet(() -> new BigDecimal(0));
         final BigDecimal endingBalance =
-                transactions
-                        .stream()
-                        .map(Transaction::balanceChange)
-                        .reduce(BigDecimal::add)
-                        .orElseGet(() -> new BigDecimal(0))
-                        .add(startingBalance);
+            transactions
+                .stream()
+                .map(Transaction::balanceChange)
+                .reduce(BigDecimal::add)
+                .orElseGet(() -> new BigDecimal(0))
+                .add(startingBalance);
 
         return new TransactionStatement(this.number, start, end, transactions, startingBalance, endingBalance);
     }
@@ -405,9 +405,9 @@ public final class CheckingAccount implements Account {
     @Override
     public void deactivate() throws InternalErrorException {
         try (
-                PreparedStatement statement = connection.prepareStatement(
-                        "UPDATE checking_account SET active = false WHERE account_number = ?"
-                )
+            PreparedStatement statement = connection.prepareStatement(
+                "UPDATE checking_account SET active = false WHERE account_number = ?"
+            )
         ) {
             statement.setString(1, this.number);
             statement.execute();
@@ -428,14 +428,14 @@ public final class CheckingAccount implements Account {
         if (!isActive()) throw new IllegalStateException("Can't pay from inactive account");
 
         String sql = """
-                INSERT INTO autopayments (from_account_id, to_account_id, amount, start_date, period_in_seconds)
-                VALUES (
-                    (SELECT account_id FROM checking_account account WHERE account_number = ?),
-                    (SELECT account_id FROM checking_account account WHERE account_number = ?),
-                    ?, ?, ?
-                )
-                RETURNING id;
-                """;
+            INSERT INTO autopayments (from_account_id, to_account_id, amount, start_date, period_in_seconds)
+            VALUES (
+                (SELECT account_id FROM checking_account account WHERE account_number = ?),
+                (SELECT account_id FROM checking_account account WHERE account_number = ?),
+                ?, ?, ?
+            )
+            RETURNING id;
+            """;
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             statement.setString(2, form.stringField("receiverNumber"));
@@ -465,9 +465,9 @@ public final class CheckingAccount implements Account {
         if (!isActive()) throw new InternalErrorException("Can't see autopayments of inactive account");
 
         String sql = """
-                SELECT id FROM autopayments
-                WHERE from_account_id = (SELECT account_id FROM checking_account WHERE account_number = ?)
-                """;
+            SELECT id FROM autopayments
+            WHERE from_account_id = (SELECT account_id FROM checking_account WHERE account_number = ?)
+            """;
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, this.number);
             ResultSet result = statement.executeQuery();
@@ -475,10 +475,10 @@ public final class CheckingAccount implements Account {
             List<AutoPayment> payments = new LinkedList<>();
             while (result.next())
                 payments.add(
-                        new AutoPayment(
-                                result.getLong(1),
-                                this.connection
-                        )
+                    new AutoPayment(
+                        result.getLong(1),
+                        this.connection
+                    )
                 );
 
             return payments;
@@ -490,9 +490,9 @@ public final class CheckingAccount implements Account {
 
     private boolean isActive() throws InternalErrorException {
         try (
-                PreparedStatement statement = this.connection.prepareStatement(
-                        "SELECT active FROM checking_account WHERE account_number = ?"
-                )
+            PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT active FROM checking_account WHERE account_number = ?"
+            )
         ) {
             statement.setString(1, this.number);
 

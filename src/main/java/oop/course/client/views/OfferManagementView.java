@@ -1,18 +1,13 @@
 package oop.course.client.views;
 
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import oop.course.client.ServerBridge;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.*;
+import oop.course.client.*;
 import oop.course.client.gui.*;
-import oop.course.client.requests.GetOffersRequest;
-import oop.course.client.requests.HandleOfferRequest;
+import oop.course.client.requests.*;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.*;
 
 public final class OfferManagementView implements IView {
     private final Consumer<IView> changeView;
@@ -56,28 +51,28 @@ public final class OfferManagementView implements IView {
 
     private void onRowSelected(List<String> offer, WindowBasedTextGUI gui) {
         var res = MessageDialog.showMessageDialog(gui,
-                "Select an action", "Do you want to approve an offer?",
-                MessageDialogButton.Yes, MessageDialogButton.No, MessageDialogButton.Cancel);
+            "Select an action", "Do you want to approve an offer?",
+            MessageDialogButton.Yes, MessageDialogButton.No, MessageDialogButton.Cancel);
         TerminalForm form;
         if (res == MessageDialogButton.Yes) {
             form = new TerminalForm(
-                    List.of(
-                            new TerminalFormKeyValuePair(
-                                    "customerEmail",
-                                    new TerminalInputPair(
-                                            new TerminalText("Customer email"),
-                                            new TerminalFixedTextBox(offer.get(1)
-                                            )
-                                    )
-                            ),
-                            new TerminalFormKeyValuePair(
-                                    "status",
-                                    new TerminalInputPair(
-                                            new TerminalText("Status"),
-                                            new TerminalFixedTextBox("accepted")
-                                    )
+                List.of(
+                    new TerminalFormKeyValuePair(
+                        "customerEmail",
+                        new TerminalInputPair(
+                            new TerminalText("Customer email"),
+                            new TerminalFixedTextBox(offer.get(1)
                             )
+                        )
+                    ),
+                    new TerminalFormKeyValuePair(
+                        "status",
+                        new TerminalInputPair(
+                            new TerminalText("Status"),
+                            new TerminalFixedTextBox("accepted")
+                        )
                     )
+                )
             );
         } else if (res == MessageDialogButton.No) {
             form = new TerminalForm(

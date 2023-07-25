@@ -1,11 +1,8 @@
 package oop.course.client.gui;
 
-import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.gui2.*;
 
-import java.util.List;
+import java.util.*;
 
 public final class TerminalWindow {
     private final BasicWindow window;

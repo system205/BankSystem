@@ -1,15 +1,12 @@
 package oop.course.client;
 
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
-import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import oop.course.client.views.IView;
-import oop.course.client.views.LoginView;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.*;
+import com.googlecode.lanterna.screen.*;
+import com.googlecode.lanterna.terminal.*;
+import oop.course.client.views.*;
 
-import java.io.IOException;
+import java.io.*;
 
 public final class TerminalGUI implements GUI {
     private final Screen screen;

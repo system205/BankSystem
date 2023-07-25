@@ -21,8 +21,7 @@ public final class DeleteAutoPaymentResponse implements Response {
     public String message() {
         if (isSuccess()) {
             return "Successfully deleted an autopayment";
-        }
-        else {
+        } else {
             return "Could not delete an autopayment";
         }
     }

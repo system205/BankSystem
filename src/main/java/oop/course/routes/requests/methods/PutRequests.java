@@ -1,11 +1,11 @@
 package oop.course.routes.requests.methods;
 
 import oop.course.entity.*;
+import oop.course.miscellaneous.implementations.*;
+import oop.course.miscellaneous.interfaces.*;
 import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
-import oop.course.miscellaneous.implementations.*;
-import oop.course.miscellaneous.interfaces.*;
 
 import java.math.*;
 import java.sql.*;
@@ -24,17 +24,17 @@ public final class PutRequests implements ProcessMethod {
         String type = form.stringField("type");
 
         CustomerRequest customerRequest =
-                new Customer(
-                        this.connection,
-                        new HeaderToken(
-                                request.headers()
-                        ).id()
-                ).account(
-                        form.stringField("accountNumber")
-                ).attachRequest(type, amount);
+            new Customer(
+                this.connection,
+                new HeaderToken(
+                    request.headers()
+                ).id()
+            ).account(
+                form.stringField("accountNumber")
+            ).attachRequest(type, amount);
 
         return new SuccessResponse(
-                customerRequest.json()
+            customerRequest.json()
         );
     }
 

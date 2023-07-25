@@ -6,6 +6,7 @@ public final class HandleRequestResponse implements Response {
     public HandleRequestResponse(Response response) {
         this.response = response;
     }
+
     @Override
     public boolean isSuccess() {
         return response.isSuccess();
@@ -20,8 +21,7 @@ public final class HandleRequestResponse implements Response {
     public String message() {
         if (isSuccess()) {
             return "Successfully handled the request";
-        }
-        else {
+        } else {
             return "Could not handle the request";
         }
     }

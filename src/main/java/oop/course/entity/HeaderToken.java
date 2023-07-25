@@ -15,17 +15,17 @@ public final class HeaderToken implements Id<String> {
 
     public HeaderToken(Collection<String> headers) throws Exception {
         this.token = headers.stream()
-                .filter(header -> header.startsWith("Authorization"))
-                .map(s -> s.substring("Authorization: Bearer ".length()))
-                .findFirst()
-                .orElseThrow(() -> new AuthorizationException("There is not authorization when performing a transaction"));
+            .filter(header -> header.startsWith("Authorization"))
+            .map(s -> s.substring("Authorization: Bearer ".length()))
+            .findFirst()
+            .orElseThrow(() -> new AuthorizationException("There is not authorization when performing a transaction"));
     }
 
     @Override
     public String id() throws Exception {
         try {
             DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256("mySecretKey"))
-                    .build().verify(this.token);
+                .build().verify(this.token);
             return decodedJWT.getSubject();
         } catch (JWTVerificationException e) {
             log.error("Issue when verifying token in header");

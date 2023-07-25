@@ -25,7 +25,7 @@ public final class TransactionStatement implements JSON {
         this.startingBalance = startingBalance;
         this.endingBalance = endingBalance;
         log.trace("Transaction statement with params: number: {}, from: {}, to: {}",
-                accountNumber, startDate, endDate);
+            accountNumber, startDate, endDate);
     }
 
 
@@ -37,12 +37,12 @@ public final class TransactionStatement implements JSON {
         }
         String body = "[\n" + String.join(",\n", jsonsAsString) + "\n]";
         return String.format("{%n\"accountNumber\":\"%s\",%n" +
-                        "\"from\":\"%s\",%n" +
-                        "\"to\":\"%s\",%n" +
-                        "\"startingBalance\":\"%s\",%n" +
-                        "\"endingBalance\":\"%s\",%n" +
-                        "\"transactions\":\"%s\"%n}", this.accountNumber, this.startDate, this.endDate,
-                this.startingBalance, this.endingBalance,
-                body);
+                "\"from\":\"%s\",%n" +
+                "\"to\":\"%s\",%n" +
+                "\"startingBalance\":\"%s\",%n" +
+                "\"endingBalance\":\"%s\",%n" +
+                "\"transactions\":\"%s\"%n}", this.accountNumber, this.startDate, this.endDate,
+            this.startingBalance, this.endingBalance,
+            body);
     }
 }

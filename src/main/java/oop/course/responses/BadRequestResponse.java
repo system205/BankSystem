@@ -22,11 +22,11 @@ public final class BadRequestResponse implements Response {
     public void print(PrintWriter out) throws IOException {
         log.error("Bad Request:\n\n");
         new BaseResponse(
-                400, "Bad Request",
-                Map.ofEntries(
-                        Map.entry("Content-Type", "application/json")
-                ),
-                new ResponseMessage(message).json()
+            400, "Bad Request",
+            Map.ofEntries(
+                Map.entry("Content-Type", "application/json")
+            ),
+            new ResponseMessage(message).json()
         ).print(out);
     }
 }

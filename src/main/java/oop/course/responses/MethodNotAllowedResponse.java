@@ -18,10 +18,10 @@ public final class MethodNotAllowedResponse implements Response {
     @Override
     public void print(PrintWriter out) throws IOException {
         new BaseResponse(
-                405, "Method not allowed",
-                Map.ofEntries(
-                        Map.entry("Allow", String.join(", ", this.allowedHeaders))
-                )
+            405, "Method not allowed",
+            Map.ofEntries(
+                Map.entry("Allow", String.join(", ", this.allowedHeaders))
+            )
         ).print(out);
     }
 }

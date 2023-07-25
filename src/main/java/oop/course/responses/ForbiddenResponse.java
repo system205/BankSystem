@@ -17,11 +17,11 @@ public final class ForbiddenResponse implements Response {
     public void print(PrintWriter out) throws IOException {
         log.error("Internal Error Response:\n");
         new BaseResponse(
-                500, "Internal Server Error",
-                Map.ofEntries(
-                        Map.entry("Content-Type", "application/json")
-                ),
-                new ResponseMessage(message).json()
+            500, "Internal Server Error",
+            Map.ofEntries(
+                Map.entry("Content-Type", "application/json")
+            ),
+            new ResponseMessage(message).json()
         ).print(out);
     }
 }

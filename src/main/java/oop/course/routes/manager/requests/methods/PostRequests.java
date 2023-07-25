@@ -1,11 +1,11 @@
 package oop.course.routes.manager.requests.methods;
 
 import oop.course.entity.*;
+import oop.course.miscellaneous.implementations.*;
+import oop.course.miscellaneous.interfaces.*;
 import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
-import oop.course.miscellaneous.implementations.*;
-import oop.course.miscellaneous.interfaces.*;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -29,12 +29,12 @@ public final class PostRequests implements ProcessMethod {
         long id = form.longField("id");
 
         new CustomerRequest(
-                id,
-                this.connection
+            id,
+            this.connection
         ).update(status);
 
         return new SuccessResponse(
-                new ResponseMessage("Updated successfully").json()
+            new ResponseMessage("Updated successfully").json()
         );
     }
 

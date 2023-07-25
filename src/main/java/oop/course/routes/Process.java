@@ -1,7 +1,7 @@
 package oop.course.routes;
 
-import oop.course.requests.Request;
-import oop.course.responses.Response;
+import oop.course.requests.*;
+import oop.course.responses.*;
 
 /**
  * The main unit of the whole system

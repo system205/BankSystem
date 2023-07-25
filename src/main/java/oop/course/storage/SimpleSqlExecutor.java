@@ -1,8 +1,7 @@
 package oop.course.storage;
 
 import oop.course.storage.migrations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import java.sql.*;
 

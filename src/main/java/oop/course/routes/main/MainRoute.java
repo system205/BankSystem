@@ -1,11 +1,9 @@
 package oop.course.routes.main;
 
-import oop.course.requests.Request;
-import oop.course.responses.EmptyResponse;
-import oop.course.responses.Response;
-import oop.course.routes.Route;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import oop.course.requests.*;
+import oop.course.responses.*;
+import oop.course.routes.*;
+import org.slf4j.*;
 
 public final class MainRoute implements Route {
     private final Logger log = LoggerFactory.getLogger(MainRoute.class);

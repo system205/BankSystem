@@ -1,7 +1,7 @@
 package oop.course.server;
 
+import oop.course.requests.*;
 import oop.course.routes.Process;
-import oop.course.requests.HttpRequest;
 import org.slf4j.*;
 
 import java.io.*;
@@ -19,13 +19,13 @@ public final class Server implements Runnable, Closeable {
         try {
             this.socket = client.accept();
             this.out = new PrintWriter(
-                    socket.getOutputStream(),
-                    true
+                socket.getOutputStream(),
+                true
             );
             this.in = new BufferedReader(
-                    new InputStreamReader(
-                            socket.getInputStream()
-                    )
+                new InputStreamReader(
+                    socket.getInputStream()
+                )
             );
             log.info("New client is accepted");
         } catch (IOException e) {

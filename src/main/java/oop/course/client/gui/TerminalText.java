@@ -1,7 +1,6 @@
 package oop.course.client.gui;
 
-import com.googlecode.lanterna.gui2.Label;
-import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.*;
 
 public final class TerminalText implements TerminalGUIElement {
     private final Label textLabel;

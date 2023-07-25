@@ -22,22 +22,22 @@ public final class GetRequests implements ProcessMethod {
     @Override
     public Response act(Request request) throws Exception {
         return new SuccessResponse(
-                new Customer(
-                        this.connection,
-                        new HeaderToken(
-                                request.headers()
-                        ).id()
-                ).accounts()
-                        .stream()
-                        .map(account -> {
-                            try { // return requests of each account
-                                return account.requests();
-                            } catch (Exception e) {
-                                return Collections.<Account>emptyList();
-                            }
-                        })
-                        .flatMap(Collection::stream)
-                        .toList()
+            new Customer(
+                this.connection,
+                new HeaderToken(
+                    request.headers()
+                ).id()
+            ).accounts()
+                .stream()
+                .map(account -> {
+                    try { // return requests of each account
+                        return account.requests();
+                    } catch (Exception e) {
+                        return Collections.<Account>emptyList();
+                    }
+                })
+                .flatMap(Collection::stream)
+                .toList()
         );
     }
 

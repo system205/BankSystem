@@ -1,8 +1,7 @@
 package oop.course.entity;
 
-import oop.course.entity.account.Account;
-import oop.course.entity.account.CheckingAccount;
-import oop.course.errors.exceptions.InternalErrorException;
+import oop.course.entity.account.*;
+import oop.course.errors.exceptions.*;
 import oop.course.miscellaneous.*;
 import org.slf4j.*;
 
@@ -24,18 +23,18 @@ public final class CustomerRequest implements JSON {
     public String json() throws Exception {
         RequestDetails details = details();
         return String.format("{%n\"id\"             :\"%s\",%n" +
-                        "\"accountNumber\"  :\"%s\",%n" +
-                        "\"amount\"         :\"%s\",%n" +
-                        "\"type\"           :\"%s\",%n" +
-                        "\"status\"         :\"%s\" %n}",
-                this.id, details.accountNumber, details.amount, details.type, details.status);
+                "\"accountNumber\"  :\"%s\",%n" +
+                "\"amount\"         :\"%s\",%n" +
+                "\"type\"           :\"%s\",%n" +
+                "\"status\"         :\"%s\" %n}",
+            this.id, details.accountNumber, details.amount, details.type, details.status);
     }
 
     public void update(String status) throws Exception {
         RequestDetails details = details();
         Account account = new CheckingAccount(
-                details.accountNumber,
-                this.connection
+            details.accountNumber,
+            this.connection
         );
 
         if (!details.status.equals("pending"))
@@ -71,10 +70,10 @@ public final class CustomerRequest implements JSON {
             }
 
             return new RequestDetails(
-                    result.getString(1),
-                    result.getBigDecimal(2),
-                    result.getString(3),
-                    result.getString(4)
+                result.getString(1),
+                result.getBigDecimal(2),
+                result.getString(3),
+                result.getString(4)
             );
         } catch (SQLException e) {
             log.error("Error when retrieving a request details");
@@ -118,11 +117,11 @@ public final class CustomerRequest implements JSON {
         @Override
         public String toString() {
             return "{" +
-                    "accountNumber='" + accountNumber + '\'' +
-                    ", amount=" + amount +
-                    ", type='" + type + '\'' +
-                    ", status='" + status + '\'' +
-                    '}';
+                "accountNumber='" + accountNumber + '\'' +
+                ", amount=" + amount +
+                ", type='" + type + '\'' +
+                ", status='" + status + '\'' +
+                '}';
         }
     }
 }

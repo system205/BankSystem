@@ -29,8 +29,7 @@ public final class NewAccountResponse implements Response {
     public String message() {
         if (isSuccess()) {
             return "Successfully create account №" + accountNumber() + " with balance " + accountBalance();
-        }
-        else {
+        } else {
             return "Could not create an account";
         }
     }

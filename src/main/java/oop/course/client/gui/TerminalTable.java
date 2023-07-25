@@ -1,10 +1,10 @@
 package oop.course.client.gui;
 
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.table.Table;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.table.*;
 
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.*;
 
 public final class TerminalTable implements TerminalGUIElement {
     private final Table<String> table;

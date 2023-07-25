@@ -17,7 +17,7 @@ public final class ApprovedRequest implements Transaction {
     @Override
     public String json() {
         return String.format("{%n\"type\":\"%s\",%n\"amount\":\"%s\",\"date\":\"%s\",%n}",
-                this.type, this.amount, this.date);
+            this.type, this.amount, this.date);
     }
 
     @Override

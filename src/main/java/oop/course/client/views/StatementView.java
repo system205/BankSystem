@@ -1,14 +1,11 @@
 package oop.course.client.views;
 
-import com.googlecode.lanterna.gui2.Direction;
-import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.Panel;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
-import oop.course.client.ServerBridge;
+import com.googlecode.lanterna.gui2.*;
+import oop.course.client.*;
 import oop.course.client.gui.*;
-import oop.course.client.requests.StatementRequest;
+import oop.course.client.requests.*;
 
-import java.util.function.Consumer;
+import java.util.function.*;
 
 public final class StatementView implements IView {
     private final Consumer<IView> changeView;

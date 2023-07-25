@@ -21,8 +21,7 @@ public final class CreateRequestResponse implements Response {
     public String message() {
         if (isSuccess()) {
             return "Successfully placed a request";
-        }
-        else {
+        } else {
             return "Could not create a request";
         }
     }

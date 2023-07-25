@@ -1,11 +1,9 @@
 package oop.course.client.requests;
 
-import oop.course.client.responses.BasicResponse;
-import oop.course.client.responses.RegisterResponse;
+import oop.course.client.responses.*;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.util.stream.Collectors;
+import java.io.*;
+import java.util.stream.*;
 
 public final class RegisterRequest implements Request<RegisterResponse> {
     private final String form;

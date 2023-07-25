@@ -1,6 +1,6 @@
 package oop.course.responses;
 
-import oop.course.miscellaneous.JSON;
+import oop.course.miscellaneous.*;
 
 public final class ResponseMessage implements JSON {
     public ResponseMessage(String message) {

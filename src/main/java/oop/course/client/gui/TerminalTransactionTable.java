@@ -1,8 +1,8 @@
 package oop.course.client.gui;
 
-import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.*;
 
-import java.util.List;
+import java.util.*;
 
 public final class TerminalTransactionTable implements TerminalGUIElement {
     private final TerminalTable table;
@@ -10,7 +10,8 @@ public final class TerminalTransactionTable implements TerminalGUIElement {
     public TerminalTransactionTable(List<List<String>> transactions) {
         var columns = new String[]{"Type", "From", "Amount", "Date"};
         String[][] rows = transactions.stream().map(l -> l.toArray(String[]::new)).toArray(String[][]::new);
-        table = new TerminalTable(columns, rows, (List<String> row) -> {});
+        table = new TerminalTable(columns, rows, (List<String> row) -> {
+        });
     }
 
     @Override
