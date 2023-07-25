@@ -4,7 +4,6 @@ package oop.course.client.responses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +14,7 @@ public final class TransactionsResponse implements Response {
         this.response = response;
     }
 
-    public <T> T fillTransactionsTable(Function<List<List<String>>, T> renderer) {
+    public List<List<String>> transactions() {
         List<List<String>> transactions = new ArrayList<>();
 
         Pattern patternType = Pattern.compile("\"" + "type" + "\" *: *\"(.*?)\"");
@@ -49,7 +48,7 @@ public final class TransactionsResponse implements Response {
             }
             transactions.add(Arrays.stream(curTrans).toList());
         }
-        return renderer.apply(transactions);
+        return transactions;
     }
 
     @Override

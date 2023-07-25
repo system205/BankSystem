@@ -45,7 +45,7 @@ public final class TransactionsView implements IView {
         if (!response.isSuccess()) {
             new TerminalText(response.message()).attachTo(window.panel());
         } else {
-            response.fillTransactionsTable(TerminalTransactionTable::new).attachTo(window.panel());
+            new TerminalTransactionTable(response.transactions()).attachTo(window.panel());
         }
         new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);

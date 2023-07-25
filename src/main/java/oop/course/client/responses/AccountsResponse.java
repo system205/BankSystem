@@ -3,7 +3,6 @@ package oop.course.client.responses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 public final class AccountsResponse implements Response {
     private final Response response;
@@ -12,14 +11,14 @@ public final class AccountsResponse implements Response {
         this.response = response;
     }
 
-    public <T> T fillAccountsTable(Function<List<List<String>>, T> renderer) {
+    public List<List<String>> accounts() {
         var numbers = response.values("accountNumber");
         var balances = response.values("balance");
         List<List<String>> res = new ArrayList<>(numbers.length);
         for (int i = 0; i < numbers.length; i++) {
             res.add(Arrays.asList(numbers[i], balances[i]));
         }
-        return renderer.apply(res);
+        return res;
     }
 
     @Override

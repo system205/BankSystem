@@ -33,9 +33,7 @@ public final class OfferManagementView implements IView {
         var window = new TerminalWindow("Account selection", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new GetOffersRequest(token));
         if (response.isSuccess()) {
-            response.fillOffersTable(
-                    (List<List<String>> rows) -> new TerminalOffersTable(rows, (List<String> row) -> onRowSelected(row, gui))
-            ).attachTo(window.panel());
+            new TerminalOffersTable(response.offers(), row -> onRowSelected(row, gui)).attachTo(window.panel());
         } else {
             new TerminalText(response.message()).attachTo(window.panel());
         }

@@ -3,7 +3,6 @@ package oop.course.client.responses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +13,7 @@ public final class GetOffersResponse implements Response {
         this.response = response;
     }
 
-    public <T> T fillOffersTable(Function<List<List<String>>, T> renderer) {
+    public List<List<String>> offers() {
         List<List<String>> offers = new ArrayList<>();
         var basicPattern = "\" *: *\"(.*?)\"";
         Pattern patternId = Pattern.compile("\"" + "id" + basicPattern);
@@ -48,7 +47,7 @@ public final class GetOffersResponse implements Response {
             }
             offers.add(Arrays.stream(offer).toList());
         }
-        return renderer.apply(offers);
+        return offers;
     }
 
     @Override

@@ -11,7 +11,6 @@ import oop.course.client.gui.TerminalText;
 import oop.course.client.gui.TerminalWindow;
 import oop.course.client.requests.GetRequestsRequest;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public final class CheckRequestsView implements IView {
@@ -33,9 +32,7 @@ public final class CheckRequestsView implements IView {
         var window = new TerminalWindow("Requests list", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new GetRequestsRequest(token));
         if (response.isSuccess()) {
-            response.fillRequestsTable(
-                    (List<List<String>> rows) -> new TerminalBankRequestTable(rows, (List<String> row) -> {})
-            ).attachTo(window.panel());
+            new TerminalBankRequestTable(response.requests(), row -> {}).attachTo(window.panel());
         } else {
             new TerminalText(response.message()).attachTo(window.panel());
         }

@@ -3,7 +3,6 @@ package oop.course.client.responses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 public final class GetRequestsResponse implements Response {
     private final Response response;
@@ -12,7 +11,7 @@ public final class GetRequestsResponse implements Response {
         this.response = response;
     }
 
-    public <T> T fillRequestsTable(Function<List<List<String>>, T> renderer) {
+    public List<List<String>> requests() {
         var ids = response.values("id");
         var numbers = response.values("accountNumber");
         var amounts = response.values("amount");
@@ -22,7 +21,7 @@ public final class GetRequestsResponse implements Response {
         for (int i = 0; i < ids.length; i++) {
             res.add(Arrays.asList(ids[i], numbers[i], amounts[i], types[i], statuses[i]));
         }
-        return renderer.apply(res);
+        return res;
     }
 
     @Override

@@ -36,7 +36,7 @@ public final class StatementView implements IView {
         } else {
             new TerminalText("Starting balance for the period: " + response.startingBalance()).attachTo(window.panel());
             new TerminalText("Ending balance for the period: " + response.endingBalance()).attachTo(window.panel());
-            response.fillTransactionsTable(TerminalTransactionTable::new).attachTo(window.panel());
+            new TerminalTransactionTable(response.transactions()).attachTo(window.panel());
         }
         new TerminalButton("Return", this::onReturn).attachTo(window.panel());
         window.addToGui(gui);

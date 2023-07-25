@@ -3,7 +3,6 @@ package oop.course.client.responses;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +13,7 @@ public final class ListAutoPaymentsResponse implements Response {
         this.response = response;
     }
 
-    public <T> T fillAutopayments(Function<List<List<String>>, T> renderer) {
+    public List<List<String>> autopayments() {
         List<List<String>> autoPayments = new ArrayList<>();
         var basicPattern = "\" *: *\"(.*?)\"";
         Pattern patternId = Pattern.compile("\"" + "id" + basicPattern);
@@ -55,7 +54,7 @@ public final class ListAutoPaymentsResponse implements Response {
             }
             autoPayments.add(Arrays.stream(autopayment).toList());
         }
-        return renderer.apply(autoPayments);
+        return autoPayments;
     }
 
     @Override

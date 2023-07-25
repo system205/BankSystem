@@ -37,7 +37,7 @@ public final class AccountsView implements IView {
 
         var resp = serverBridge.execute(new AccountsRequest(token));
         if (resp.isSuccess()) {
-            resp.fillAccountsTable((List<List<String>> rows) -> new TerminalAccountsTable(rows, this::onAccountSelected)).attachTo(window.panel());
+            new TerminalAccountsTable(resp.accounts(), this::onAccountSelected).attachTo(window.panel());
         } else {
             new TerminalText(resp.message()).attachTo(window.panel());
         }

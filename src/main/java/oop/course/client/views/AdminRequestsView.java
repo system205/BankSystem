@@ -33,9 +33,7 @@ public final class AdminRequestsView implements IView {
         var window = new TerminalWindow("Admin requests panel", new Panel(new LinearLayout(Direction.VERTICAL)));
         var response = serverBridge.execute(new ManagerRequestsRequest(token));
         if (response.isSuccess()) {
-            response.fillRequestsTable(
-                    (List<List<String>> rows) -> new TerminalBankRequestTable(rows, (List<String> row) -> onRowSelected(row, gui))
-            ).attachTo(window.panel());
+            new TerminalBankRequestTable(response.requests(), row -> onRowSelected(row, gui)).attachTo(window.panel());
         } else {
             new TerminalText(response.message()).attachTo(window.panel());
         }
