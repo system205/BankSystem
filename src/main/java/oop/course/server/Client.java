@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
-
     private final String ip;
     private final int port;
 
@@ -26,6 +25,17 @@ public class Client {
 
                     {
                       "email": "admin",
+                      "name": "admin",
+                      "surname": "admin",
+                      "password": "123"
+                    }
+                    EOF""";
+
+            String malformed = """
+                    POST /regist HTTP/1.1
+
+                    {
+                      "email": "admin4321",
                       "name": "admin",
                       "surname": "admin",
                       "password": "123"
@@ -223,7 +233,7 @@ public class Client {
                     }               
                     EOF""";
 
-            final String request = transactions;
+            final String request = transfer;
 
             System.out.println("Sent:\n" + request);
             out.println(request);

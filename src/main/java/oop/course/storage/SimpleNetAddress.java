@@ -3,7 +3,6 @@ package oop.course.storage;
 import oop.course.storage.interfaces.*;
 
 public class SimpleNetAddress implements NetAddress {
-
     private final String ip;
     private final int port;
 

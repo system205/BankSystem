@@ -1,6 +1,6 @@
 package oop.course.storage.migrations;
 
-import oop.course.tools.implementations.*;
+import oop.course.miscellaneous.implementations.*;
 
 public class MigrationDirectory {
     private final String path;

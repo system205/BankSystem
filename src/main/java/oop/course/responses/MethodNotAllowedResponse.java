@@ -1,9 +1,7 @@
 package oop.course.responses;
 
-import oop.course.interfaces.Response;
-
 import java.io.*;
-import java.util.Map;
+import java.util.*;
 
 public class MethodNotAllowedResponse implements Response {
     private final String[] allowedHeaders;
@@ -13,15 +11,14 @@ public class MethodNotAllowedResponse implements Response {
     }
 
     public MethodNotAllowedResponse() {
-        this(new String[] {"GET", "HEAD", "PUT", "POST", "DELETE"});
+        this(new String[]{"GET", "HEAD", "PUT", "POST", "DELETE"});
     }
 
 
     @Override
     public void print(PrintWriter out) throws IOException {
         new BaseResponse(
-                405,
-                "Method not allowed",
+                405, "Method not allowed",
                 Map.ofEntries(
                         Map.entry("Allow", String.join(", ", this.allowedHeaders))
                 )

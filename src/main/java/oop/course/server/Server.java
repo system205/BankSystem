@@ -1,7 +1,7 @@
 package oop.course.server;
 
-import oop.course.implementations.*;
-import oop.course.interfaces.Process;
+import oop.course.routes.Process;
+import oop.course.requests.HttpRequest;
 import org.slf4j.*;
 
 import java.io.*;
@@ -40,9 +40,7 @@ public class Server implements Runnable, Closeable {
     public void run() {
         try {
             log.debug("Start client processing");
-            this.process.act(
-                    new HttpRequest(in)
-            ).print(out);
+            this.process.act(new HttpRequest(in)).print(out);
         } catch (Exception e) {
             log.error("Unhandled error when processing a client", e);
         } finally {

@@ -1,7 +1,7 @@
 package oop.course.entity;
 
-import oop.course.interfaces.*;
-import oop.course.tools.*;
+import oop.course.entity.transaction.*;
+import oop.course.miscellaneous.*;
 import org.slf4j.*;
 
 import java.math.*;
@@ -30,7 +30,7 @@ public class TransactionStatement implements JSON {
 
 
     @Override
-    public String json() throws Exception{
+    public String json() throws Exception {
         ArrayList<String> jsonsAsString = new ArrayList<>();
         for (JSON json : this.transactions) {
             jsonsAsString.add(json.json());

@@ -1,9 +1,9 @@
 package oop.course.entity;
 
-import oop.course.exceptions.InternalErrorException;
-import oop.course.implementations.*;
-import oop.course.interfaces.*;
-import oop.course.tools.*;
+import oop.course.entity.account.Account;
+import oop.course.entity.account.CheckingAccount;
+import oop.course.errors.exceptions.InternalErrorException;
+import oop.course.miscellaneous.*;
 import org.slf4j.*;
 
 import java.math.*;
@@ -17,7 +17,7 @@ public class CustomerRequest implements JSON {
     public CustomerRequest(long id, Connection connection) {
         this.id = id;
         this.connection = connection;
-        log.debug("Created new customer request");
+        log.trace("Created new customer request");
     }
 
     @Override
@@ -37,16 +37,16 @@ public class CustomerRequest implements JSON {
                 details.accountNumber,
                 this.connection
         );
-        if (!details.status.equals("pending")) {
+
+        if (!details.status.equals("pending"))
             throw new IllegalStateException("Only pending requests must be considered");
-        }
-        log.debug("Considering customer request: {}", details);
+
         if ("approved".equals(status)) {
-            String type = details.type;
-            log.info("The customer's request {} is approved. Start {}ing", this.id, type);
-            if ("deposit".equals(type)) {
+            log.info("The customer's request {} is approved. Start {}ing", this.id, details.type);
+
+            if ("deposit".equals(details.type)) {
                 account.deposit(details.amount);
-            } else if ("withdraw".equals(type))
+            } else if ("withdraw".equals(details.type))
                 account.withdraw(details.amount);
             else throw new IllegalStateException("type of a request can't be anything but withdraw or deposit");
         } else if ("denied".equals(status)) {
@@ -55,6 +55,7 @@ public class CustomerRequest implements JSON {
             log.error("New status of a request must be approved or denied.");
             throw new IllegalStateException("Bad Request. Type must be either approved or denied");
         }
+
         updateStatus(status);
     }
 
@@ -63,10 +64,12 @@ public class CustomerRequest implements JSON {
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setLong(1, this.id);
             ResultSet result = statement.executeQuery();
+
             if (!result.next()) {
                 log.debug("Requests details with id {} was not found.", this.id);
                 throw new IllegalStateException("Not found details of request by id");
             }
+
             return new RequestDetails(
                     result.getString(1),
                     result.getBigDecimal(2),
@@ -74,7 +77,7 @@ public class CustomerRequest implements JSON {
                     result.getString(4)
             );
         } catch (SQLException e) {
-            log.error("Error when retrieving a request details", e);
+            log.error("Error when retrieving a request details");
             throw new InternalErrorException(e);
         }
     }
@@ -84,16 +87,15 @@ public class CustomerRequest implements JSON {
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             statement.setString(1, status);
             statement.setLong(2, this.id);
-            log.debug("Executing: {}", sql);
             statement.execute();
             this.connection.commit();
         } catch (SQLException e) {
+            log.error("Error when updating the status of a customer's request");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
                 throw new InternalErrorException(ex);
             }
-            log.error("Error when updating the status of a customer's request", e);
             throw new InternalErrorException(e);
         }
     }

@@ -1,15 +1,12 @@
 package oop.course.responses;
 
-import oop.course.interfaces.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class BaseResponse implements Response {
-    private final Logger log = LoggerFactory.getLogger(BaseResponse.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseResponse.class);
     private final int statusCode;
     private final String name;
     private final Map<String, Object> headers;
@@ -40,9 +37,8 @@ public class BaseResponse implements Response {
 
         if (!headers.isEmpty()) {
             for (Map.Entry<String, Object> entry : headers.entrySet()) {
-                sb.append(entry.getKey()).append(": ").append(entry.getValue());
+                sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
             }
-            sb.append("\n");
         }
         sb.append("\n");
         if (!body.isEmpty()) {

@@ -1,12 +1,9 @@
 package oop.course.responses;
 
-import oop.course.interfaces.*;
 import org.slf4j.*;
 
 import java.io.*;
-import java.util.Map;
-
-import static java.util.Map.entry;
+import java.util.*;
 
 public class UnauthorizedResponse implements Response {
     /**
@@ -21,7 +18,7 @@ public class UnauthorizedResponse implements Response {
         this.errorMessage = errorMessage;
     }
 
-    private final Logger log = LoggerFactory.getLogger(UnauthorizedResponse.class);
+    private static final Logger log = LoggerFactory.getLogger(UnauthorizedResponse.class);
     private final String realm;
     private final String authScheme;
     private final String errorMessage;
@@ -29,20 +26,19 @@ public class UnauthorizedResponse implements Response {
     @Override
     public void print(PrintWriter out) throws IOException {
         log.info("Unauthorized Response: \n");
+        String authHeader = authScheme;
+        if (!realm.isEmpty()) {
+            authHeader += " realm=\"" + realm + "\"";
+        }
         final BaseResponse baseResponse = new BaseResponse(
                 401,
                 "Unauthorized",
                 Map.ofEntries(
-                        entry("WWW-Authenticate", authScheme + " realm=\"" + realm + "\""),
-                        entry("Content-Type", "application/json")
+                        Map.entry("WWW-Authenticate", authHeader),
+                        Map.entry("Content-Type", "application/json")
                 ),
                 new ResponseMessage(errorMessage).json()
         );
         baseResponse.print(out);
-//        String responseText =
-//                "HTTP/1.1 401 Unauthorized\n" +
-//                "WWW-Authenticate: " + authScheme + " realm=\"" + realm + "\"";
-//        log.info("Sent response:\n\n" + responseText);
-//        out.println(responseText);
     }
 }

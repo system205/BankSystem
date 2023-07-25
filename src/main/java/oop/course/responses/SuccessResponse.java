@@ -1,7 +1,6 @@
 package oop.course.responses;
 
-import oop.course.interfaces.*;
-import oop.course.tools.*;
+import oop.course.miscellaneous.*;
 
 import java.io.*;
 import java.util.*;
@@ -25,7 +24,10 @@ public class SuccessResponse implements Response {
     public void print(PrintWriter out) {
         new BaseResponse(
                 200, "OK",
-                Map.ofEntries(Map.entry("Content-Type", "application/json")), this.body
+                Map.ofEntries(
+                        Map.entry("Content-Type", "application/json")
+                ),
+                this.body
         ).print(out);
     }
 }

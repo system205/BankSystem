@@ -1,8 +1,11 @@
 package oop.course.storage.migrations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DatabaseStartUp implements Initializer {
 
-
+    private static final Logger log = LoggerFactory.getLogger(DatabaseStartUp.class);
     private final Sql[] sqls;
     private final SqlExecutor executor;
 
@@ -13,10 +16,10 @@ public class DatabaseStartUp implements Initializer {
 
     @Override
     public void init() {
-        System.out.println("Start migrating");
+        log.debug("Start migrating");
         for (Sql sql : this.sqls) {
             this.executor.perform(sql.query());
         }
-        System.out.println("Migration finished. Database is initialized");
+        log.debug("Migration finished. Database is initialized");
     }
 }

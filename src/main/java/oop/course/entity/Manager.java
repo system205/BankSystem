@@ -1,6 +1,6 @@
 package oop.course.entity;
 
-import oop.course.exceptions.InternalErrorException;
+import oop.course.errors.exceptions.InternalErrorException;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -8,11 +8,9 @@ import java.util.*;
 
 public class Manager {
     private static final Logger log = LoggerFactory.getLogger(Manager.class);
-    private final String email;
     private final Connection connection;
 
-    public Manager(String id, Connection connection) {
-        this.email = id;
+    public Manager(Connection connection) {
         this.connection = connection;
     }
 
@@ -21,7 +19,7 @@ public class Manager {
         final String sql = "SELECT id FROM requests WHERE status = 'pending'";
         try (PreparedStatement statement = this.connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
-            log.debug("Executing: {}", sql);
+
             List<CustomerRequest> requests = new LinkedList<>();
             while (resultSet.next())
                 requests.add(
@@ -30,6 +28,7 @@ public class Manager {
                                 this.connection
                         )
                 );
+
             log.info("Found {} requests.", requests.size());
             return requests;
         } catch (SQLException e) {

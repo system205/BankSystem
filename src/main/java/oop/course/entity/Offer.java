@@ -1,7 +1,7 @@
 package oop.course.entity;
 
-import oop.course.exceptions.InternalErrorException;
-import oop.course.tools.*;
+import oop.course.errors.exceptions.*;
+import oop.course.miscellaneous.*;
 import org.slf4j.*;
 
 import java.sql.*;
@@ -25,14 +25,29 @@ public class Offer implements JSON {
     }
 
     public void update(String status) throws Exception {
-        try (PreparedStatement statement = this.connection.prepareStatement(
-                "UPDATE offers SET status = ? WHERE id = ?"
-        ); PreparedStatement checkStatement = this.connection.prepareStatement(
-                "SELECT status FROM offers WHERE id = ?"
-        ); PreparedStatement roleStatement = this.connection.prepareStatement(
-                "INSERT INTO roles (role, customer_id) VALUES ('manager', " +
-                        "(SELECT customer.id FROM customer INNER JOIN offers ON customer_email=email WHERE offers.id = ?))"
-        )) {
+        try (
+                PreparedStatement statement = this.connection.prepareStatement(
+                        "UPDATE offers SET status = ? WHERE id = ?"
+                );
+                PreparedStatement checkStatement = this.connection.prepareStatement(
+                        "SELECT status FROM offers WHERE id = ?"
+                );
+                PreparedStatement roleStatement = this.connection.prepareStatement(
+                        """
+                                INSERT INTO roles (role, customer_id)
+                                VALUES
+                                (
+                                    'manager',
+                                    (
+                                        SELECT customer.id
+                                        FROM customer
+                                        INNER JOIN offers ON customer_email = email
+                                        WHERE offers.id = ?
+                                    )
+                                )
+                                """
+                )
+        ) {
             checkStatement.setLong(1, this.id);
             ResultSet check = checkStatement.executeQuery();
             check.next();
@@ -50,13 +65,13 @@ public class Offer implements JSON {
                 roleStatement.executeUpdate();
             } else if (status.equals("rejected")) {
                 log.trace("Rejected state");
-            } else
+            } else {
                 throw new IllegalStateException("New status must be either accepted or rejected");
+            }
 
             this.connection.commit();
-            log.info("The status of offer {} is now rejected", this.id);
         } catch (SQLException e) {
-            log.error("Error when updating the status of an Offer", e);
+            log.error("Error when updating the status of an Offer");
             try {
                 this.connection.rollback();
             } catch (SQLException ex) {
@@ -72,10 +87,14 @@ public class Offer implements JSON {
         )) {
             statement.setLong(1, id);
             ResultSet result = statement.executeQuery();
+
             if (!result.next()) throw new IllegalStateException("The offer with id " + this.id + " does not exist");
-            return new Details(result.getString(1),
+
+            return new Details(
+                    result.getString(1),
                     result.getString(2),
-                    result.getTimestamp(3).toLocalDateTime());
+                    result.getTimestamp(3).toLocalDateTime()
+            );
         } catch (SQLException e) {
             throw new InternalErrorException(e);
         }

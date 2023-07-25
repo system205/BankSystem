@@ -1,7 +1,6 @@
 package oop.course.auth;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class that for each url says whether the user is allowed to access it
@@ -9,9 +8,10 @@ import java.util.Map;
 public class RolesConfiguration {
     /**
      * Map that contains all urls that are intended for specific roles.
-     * If a url is for everyone, then it should not be here.
+     * If an url is for everyone, then it should not be here.
      */
     private final Map<String, List<String>> allowedRoles;
+
     public RolesConfiguration(Map<String, List<String>> allowedRoles) {
         this.allowedRoles = allowedRoles;
     }
