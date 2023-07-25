@@ -60,6 +60,7 @@ public final class CreateRequestView implements IView {
         var window = new TerminalWindow(
             "Create request",
             new Panel(new LinearLayout(Direction.VERTICAL)),
+            form,
             new TerminalButton("Create", () -> onCreate(gui, form)),
             new TerminalButton("Cancel", this::onCancel)
         );
