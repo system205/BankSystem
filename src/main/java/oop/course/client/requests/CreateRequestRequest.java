@@ -8,20 +8,22 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class CreateRequestRequest implements Request<CreateRequestResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
+    private final String form;
 
     public CreateRequestRequest(String token, String form) {
-        base = new JsonRequest(
-                new AuthorizedRequest(
-                        new BasicHttpRequest(Method.PUT, "/requests"),
-                        token),
-                form
-        );
+        this.token = token;
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new AuthorizedRequest(
+                new BasicHttpRequest(Method.PUT, "/requests"),
+                token),
+            form
+        ).send(printWriter);
     }
 
     @Override

@@ -8,21 +8,23 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class TransferRequest implements Request<TransferResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
+    private final String form;
 
     public TransferRequest(String token, String form) {
-        base = new JsonRequest(
-                new AuthorizedRequest(
-                        new BasicHttpRequest(Method.PUT, "/transfer"),
-                        token
-                ),
-                form
-        );
+        this.token = token;
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new AuthorizedRequest(
+                new BasicHttpRequest(Method.PUT, "/transfer"),
+                token
+            ),
+            form
+        ).send(printWriter);
     }
 
     @Override

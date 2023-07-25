@@ -8,18 +8,18 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class GetOffersRequest implements Request<GetOffersResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
 
     public GetOffersRequest(String token) {
-        base = new AuthorizedRequest(
-                new BasicHttpRequest(Method.GET, "/admin/offers"),
-                token
-        );
+        this.token = token;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new AuthorizedRequest(
+            new BasicHttpRequest(Method.GET, "/admin/offers"),
+            token
+        ).send(printWriter);
     }
 
     @Override

@@ -8,18 +8,18 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class LoginRequest implements Request<LoginResponse> {
-    private final Request<BasicResponse> base;
+    private final String form;
 
     public LoginRequest(String form) {
-        this.base = new JsonRequest(
-                new BasicHttpRequest(Method.POST, "/login"),
-                form
-        );
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new BasicHttpRequest(Method.POST, "/login"),
+            form
+        ).send(printWriter);
     }
 
     @Override

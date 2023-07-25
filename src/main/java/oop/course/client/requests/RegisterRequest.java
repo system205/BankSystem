@@ -8,18 +8,18 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class RegisterRequest implements Request<RegisterResponse> {
-    private final Request<BasicResponse> base;
+    private final String form;
 
     public RegisterRequest(String form) {
-        base = new JsonRequest(
-                new BasicHttpRequest(Method.POST, "/register"),
-                form
-        );
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new BasicHttpRequest(Method.POST, "/register"),
+            form
+        ).send(printWriter);
     }
 
     @Override

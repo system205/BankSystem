@@ -8,18 +8,18 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class NewAccountRequest implements Request<NewAccountResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
 
     public NewAccountRequest(String token) {
-        base = new AuthorizedRequest(
-                new BasicHttpRequest(Method.PUT, "/account"),
-                token
-        );
+        this.token = token;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new AuthorizedRequest(
+            new BasicHttpRequest(Method.PUT, "/account"),
+            token
+        ).send(printWriter);
     }
 
     @Override

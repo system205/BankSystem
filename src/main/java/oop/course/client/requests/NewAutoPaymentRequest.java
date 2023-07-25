@@ -8,21 +8,23 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class NewAutoPaymentRequest implements Request<NewAutoPaymentResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
+    private final String form;
 
     public NewAutoPaymentRequest(String token, String form) {
-        base = new JsonRequest(
-                new AuthorizedRequest(
-                        new BasicHttpRequest(Method.POST, "/autopayments"),
-                        token
-                ),
-                form
-        );
+        this.token = token;
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new AuthorizedRequest(
+                new BasicHttpRequest(Method.POST, "/autopayments"),
+                token
+            ),
+            form
+        ).send(printWriter);
     }
 
     @Override

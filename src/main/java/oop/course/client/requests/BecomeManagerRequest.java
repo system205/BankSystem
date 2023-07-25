@@ -8,18 +8,18 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class BecomeManagerRequest implements Request<BecomeManagerResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
 
     public BecomeManagerRequest(String token) {
-        base = new AuthorizedRequest(
-                new BasicHttpRequest(Method.PUT, "/job"),
-                token
-        );
+        this.token = token;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new AuthorizedRequest(
+            new BasicHttpRequest(Method.PUT, "/job"),
+            token
+        ).send(printWriter);
     }
 
     @Override

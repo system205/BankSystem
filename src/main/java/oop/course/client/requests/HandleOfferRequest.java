@@ -8,21 +8,23 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class HandleOfferRequest implements Request<HandleOfferResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
+    private final String form;
 
     public HandleOfferRequest(String token, String form) {
-        base = new JsonRequest(
-                new AuthorizedRequest(
-                        new BasicHttpRequest(Method.POST, "/admin/offers"),
-                        token
-                ),
-                form
-        );
+        this.token = token;
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new AuthorizedRequest(
+                new BasicHttpRequest(Method.POST, "/admin/offers"),
+                token
+            ),
+            form
+        ).send(printWriter);
     }
 
     @Override

@@ -8,20 +8,22 @@ import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
 public final class DeactivateAccountRequest implements Request<DeactivateAccountResponse> {
-    private final Request<BasicResponse> base;
+    private final String token;
+    private final String form;
 
     public DeactivateAccountRequest(String token, String form) {
-        base = new JsonRequest(
-                new AuthorizedRequest(
-                        new BasicHttpRequest(Method.DELETE, "/account"),
-                        token),
-                form
-        );
+        this.token = token;
+        this.form = form;
     }
 
     @Override
     public void send(PrintWriter printWriter) {
-        base.send(printWriter);
+        new JsonRequest(
+            new AuthorizedRequest(
+                new BasicHttpRequest(Method.DELETE, "/account"),
+                token),
+            form
+        ).send(printWriter);
     }
 
     @Override
