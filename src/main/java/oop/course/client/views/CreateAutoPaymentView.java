@@ -73,6 +73,7 @@ public final class CreateAutoPaymentView implements IView {
         var window = new TerminalWindow(
             "Auto payment",
             new Panel(new LinearLayout(Direction.VERTICAL)),
+            form,
             new TerminalButton("Set up", () -> onAutoPaymentSetup(gui, form)),
             new TerminalButton("Return", this::onReturn)
         );
