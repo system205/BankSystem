@@ -5,7 +5,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-public class CreatedResponse implements Response {
+public final class CreatedResponse implements Response {
     private static final Logger log = LoggerFactory.getLogger(CreatedResponse.class);
     private final String message;
 

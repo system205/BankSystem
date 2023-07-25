@@ -8,7 +8,7 @@ import oop.course.miscellaneous.implementations.*;
 
 import java.sql.*;
 
-public class ListAutoPayments implements ProcessMethod {
+public final class ListAutoPayments implements ProcessMethod {
     private final Connection connection;
 
     public ListAutoPayments(Connection connection) {

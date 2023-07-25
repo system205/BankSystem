@@ -5,7 +5,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-public class BadRequestResponse implements Response {
+public final class BadRequestResponse implements Response {
     private final Logger log = LoggerFactory.getLogger(BadRequestResponse.class);
 
     final String message;

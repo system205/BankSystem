@@ -9,7 +9,7 @@ import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
-public class DeleteAutoPayment implements ProcessMethod {
+public final class DeleteAutoPayment implements ProcessMethod {
     private final Connection connection;
 
     public DeleteAutoPayment(Connection connection) {

@@ -5,7 +5,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-public class ConflictResponse implements Response {
+public final class ConflictResponse implements Response {
     private static final Logger log = LoggerFactory.getLogger(ConflictResponse.class);
     private final String message;
 

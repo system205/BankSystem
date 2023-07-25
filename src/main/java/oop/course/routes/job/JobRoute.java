@@ -6,7 +6,7 @@ import oop.course.responses.*;
 import oop.course.routes.*;
 import org.slf4j.*;
 
-public class JobRoute implements Route {
+public final class JobRoute implements Route {
     private final ProcessMethod[] processes;
     private static final Logger log = LoggerFactory.getLogger(JobRoute.class);
 

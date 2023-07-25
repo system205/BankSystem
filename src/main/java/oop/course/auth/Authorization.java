@@ -9,7 +9,7 @@ import org.slf4j.*;
 /**
  * This class is responsible for checking whether a user with the given role can access the given url
  */
-public class Authorization implements Process {
+public final class Authorization implements Process {
     private static final Logger logger = LoggerFactory.getLogger(Authorization.class);
     private final Process next;
     private final GuardedUrl guardedUrl;

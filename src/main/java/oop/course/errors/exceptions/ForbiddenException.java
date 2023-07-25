@@ -1,6 +1,6 @@
 package oop.course.errors.exceptions;
 
-public class ForbiddenException extends Exception {
+public final class ForbiddenException extends Exception {
     public ForbiddenException() {
     }
 

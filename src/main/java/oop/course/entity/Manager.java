@@ -6,7 +6,7 @@ import org.slf4j.*;
 import java.sql.*;
 import java.util.*;
 
-public class Manager {
+public final class Manager {
     private static final Logger log = LoggerFactory.getLogger(Manager.class);
     private final Connection connection;
 

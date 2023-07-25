@@ -8,7 +8,7 @@ import org.slf4j.*;
 
 import java.sql.*;
 
-public class ListRequests implements ProcessMethod {
+public final class ListRequests implements ProcessMethod {
     private static final Logger log = LoggerFactory.getLogger(ListRequests.class);
     private final Connection connection;
 

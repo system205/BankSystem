@@ -3,7 +3,10 @@ package oop.course.server;
 import java.io.*;
 import java.net.*;
 
-public class Client {
+/**
+ * Testing class
+ */
+public final class Client {
     private final String ip;
     private final int port;
 

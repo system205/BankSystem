@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-public class SimpleSqlExecutor implements SqlExecutor {
+public final class SimpleSqlExecutor implements SqlExecutor {
     private static final Logger log = LoggerFactory.getLogger(SimpleSqlExecutor.class);
 
     private final Connection connection;

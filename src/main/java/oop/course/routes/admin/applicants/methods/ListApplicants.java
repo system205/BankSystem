@@ -5,7 +5,7 @@ import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
 
-public class ListApplicants implements ProcessMethod {
+public final class ListApplicants implements ProcessMethod {
     private final Admin admin;
 
     public ListApplicants(Admin admin) {

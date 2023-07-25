@@ -6,7 +6,7 @@ import oop.course.responses.*;
 import oop.course.routes.*;
 import org.slf4j.*;
 
-public class CustomerRequestsRoute implements Route {
+public final class CustomerRequestsRoute implements Route {
     private static final Logger log = LoggerFactory.getLogger(CustomerRequestsRoute.class);
     private final ProcessMethod[] processes;
 

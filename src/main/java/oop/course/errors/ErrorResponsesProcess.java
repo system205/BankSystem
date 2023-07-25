@@ -9,7 +9,7 @@ import oop.course.responses.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ErrorResponsesProcess implements Process {
+public final class ErrorResponsesProcess implements Process {
     private static final Logger logger = LoggerFactory.getLogger(ErrorResponsesProcess.class);
     private final Process next;
 
@@ -39,8 +39,7 @@ public class ErrorResponsesProcess implements Process {
         } catch (MethodNotAllowedException e) {
             logger.error(e.getMessage(), e);
             return new MethodNotAllowedResponse();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new InternalErrorResponse(e.getMessage());
         }

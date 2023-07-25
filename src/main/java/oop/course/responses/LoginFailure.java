@@ -2,7 +2,7 @@ package oop.course.responses;
 
 import java.io.*;
 
-public class LoginFailure implements Response {
+public final class LoginFailure implements Response {
     private final String message;
 
     public LoginFailure(String message) {

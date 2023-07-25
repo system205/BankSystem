@@ -5,7 +5,7 @@ import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
 
-public class CheckAccountRoute implements Route {
+public final class CheckAccountRoute implements Route {
 
     private final ProcessMethod[] next;
 

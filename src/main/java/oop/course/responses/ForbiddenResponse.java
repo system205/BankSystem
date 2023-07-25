@@ -5,7 +5,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-public class ForbiddenResponse implements Response {
+public final class ForbiddenResponse implements Response {
     private static final Logger log = LoggerFactory.getLogger(ForbiddenResponse.class);
     final String message;
 

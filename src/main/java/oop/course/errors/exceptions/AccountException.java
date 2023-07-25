@@ -1,6 +1,6 @@
 package oop.course.errors.exceptions;
 
-public class AccountException extends Exception {
+public final class AccountException extends Exception {
     public AccountException() {
     }
 

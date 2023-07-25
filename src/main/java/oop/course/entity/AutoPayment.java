@@ -10,7 +10,7 @@ import java.time.*;
 import java.time.temporal.*;
 import java.util.concurrent.*;
 
-public class AutoPayment implements JSON {
+public final class AutoPayment implements JSON {
     private final long id;
     private final Connection connection;
     private final ScheduledExecutorService timer;
@@ -85,7 +85,7 @@ public class AutoPayment implements JSON {
                     result.getDate(4),
                     result.getLong(5));
         } catch (SQLException e) {
-            throw new RuntimeException(e); // TODO
+            throw new RuntimeException(e);
         }
     }
 

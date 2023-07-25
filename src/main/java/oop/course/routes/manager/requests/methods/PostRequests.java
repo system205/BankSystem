@@ -10,7 +10,7 @@ import org.slf4j.*;
 
 import java.sql.*;
 
-public class PostRequests implements ProcessMethod {
+public final class PostRequests implements ProcessMethod {
     private static final Logger log = LoggerFactory.getLogger(PostRequests.class);
     private final Connection connection;
 

@@ -2,7 +2,7 @@ package oop.course.storage.migrations;
 
 import oop.course.miscellaneous.interfaces.*;
 
-public class Table implements Sql {
+public final class Table implements Sql {
     private final Source source;
 
     public Table(Source source) {

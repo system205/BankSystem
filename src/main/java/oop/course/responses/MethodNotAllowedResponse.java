@@ -3,7 +3,7 @@ package oop.course.responses;
 import java.io.*;
 import java.util.*;
 
-public class MethodNotAllowedResponse implements Response {
+public final class MethodNotAllowedResponse implements Response {
     private final String[] allowedHeaders;
 
     public MethodNotAllowedResponse(String[] allowedHeaders) {

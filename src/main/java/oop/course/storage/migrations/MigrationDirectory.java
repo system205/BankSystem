@@ -2,7 +2,7 @@ package oop.course.storage.migrations;
 
 import oop.course.miscellaneous.implementations.*;
 
-public class MigrationDirectory {
+public final class MigrationDirectory {
     private final String path;
 
     public MigrationDirectory(String path) {

@@ -5,7 +5,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-public class UnauthorizedResponse implements Response {
+public final class UnauthorizedResponse implements Response {
     /**
      * Should have the following structure:
      * HTTP/1.1 401 Unauthorized

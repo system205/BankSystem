@@ -10,7 +10,7 @@ import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
-public class MakeTransaction implements ProcessMethod {
+public final class MakeTransaction implements ProcessMethod {
     private final Connection connection;
 
     public MakeTransaction(Connection connection) {

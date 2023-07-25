@@ -4,7 +4,7 @@ import oop.course.errors.exceptions.*;
 import oop.course.requests.*;
 import oop.course.responses.*;
 
-public class Fork implements Process {
+public final class Fork implements Process {
     private final Route[] routes;
 
     public Fork(Route... routes) {

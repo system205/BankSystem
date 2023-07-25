@@ -8,7 +8,7 @@ import oop.course.miscellaneous.implementations.*;
 
 import java.sql.*;
 
-public class GetAccount implements ProcessMethod {
+public final class GetAccount implements ProcessMethod {
     private final Connection connection;
 
     public GetAccount(Connection connection) {

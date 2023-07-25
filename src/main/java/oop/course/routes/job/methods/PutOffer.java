@@ -7,7 +7,7 @@ import oop.course.routes.ProcessMethod;
 
 import java.sql.*;
 
-public class PutOffer implements ProcessMethod {
+public final class PutOffer implements ProcessMethod {
     private final Connection connection;
 
     public PutOffer(Connection connection) {

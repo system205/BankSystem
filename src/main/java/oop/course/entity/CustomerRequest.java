@@ -9,7 +9,7 @@ import org.slf4j.*;
 import java.math.*;
 import java.sql.*;
 
-public class CustomerRequest implements JSON {
+public final class CustomerRequest implements JSON {
     private static final Logger log = LoggerFactory.getLogger(CustomerRequest.class);
     private final long id;
     private final Connection connection;

@@ -9,7 +9,7 @@ import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
-public class GetTransactions implements ProcessMethod {
+public final class GetTransactions implements ProcessMethod {
     private final Connection connection;
 
     public GetTransactions(Connection connection) {

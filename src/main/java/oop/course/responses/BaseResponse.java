@@ -5,7 +5,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-public class BaseResponse implements Response {
+public final class BaseResponse implements Response {
     private static final Logger log = LoggerFactory.getLogger(BaseResponse.class);
     private final int statusCode;
     private final String name;

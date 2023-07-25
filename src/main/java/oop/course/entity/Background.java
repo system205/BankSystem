@@ -3,7 +3,7 @@ package oop.course.entity;
 import oop.course.storage.migrations.*;
 import org.slf4j.*;
 
-public class Background implements Initializer {
+public final class Background implements Initializer {
     private static final Logger log = LoggerFactory.getLogger(Background.class);
     private final Initializer[] inits;
 

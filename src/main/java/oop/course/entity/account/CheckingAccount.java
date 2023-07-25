@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * A simple bank account
  */
-public class CheckingAccount implements Account {
+public final class CheckingAccount implements Account {
     private static final Logger log = LoggerFactory.getLogger(CheckingAccount.class);
     private final String number;
     private final Connection connection;

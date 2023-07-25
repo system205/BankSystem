@@ -7,7 +7,7 @@ import oop.course.routes.Route;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MainRoute implements Route {
+public final class MainRoute implements Route {
     private final Logger log = LoggerFactory.getLogger(MainRoute.class);
 
     @Override

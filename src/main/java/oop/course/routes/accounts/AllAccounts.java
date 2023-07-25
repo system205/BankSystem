@@ -8,7 +8,7 @@ import org.slf4j.*;
 
 import java.sql.*;
 
-public class AllAccounts implements Route {
+public final class AllAccounts implements Route {
     private static final Logger log = LoggerFactory.getLogger(AllAccounts.class);
 
     private final Connection connection;

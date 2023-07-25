@@ -2,7 +2,7 @@ package oop.course.entity.transaction;
 
 import java.math.*;
 
-public class SimpleTransaction implements Transaction {
+public final class SimpleTransaction implements Transaction {
     private final String sender;
     private final String receiver;
     private final BigDecimal amount;

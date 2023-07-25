@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * List the request of all customer's accounts
  */
-public class GetRequests implements ProcessMethod {
+public final class GetRequests implements ProcessMethod {
     private final Connection connection;
 
     public GetRequests(Connection connection) {

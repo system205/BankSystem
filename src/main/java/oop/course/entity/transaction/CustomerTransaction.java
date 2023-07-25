@@ -3,7 +3,7 @@ package oop.course.entity.transaction;
 import java.math.*;
 import java.time.*;
 
-public class CustomerTransaction implements Transaction {
+public final class CustomerTransaction implements Transaction {
     private final LocalDateTime dateTime;
     private final BigDecimal amount;
     private final String type;

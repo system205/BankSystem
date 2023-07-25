@@ -5,7 +5,7 @@ import oop.course.miscellaneous.interfaces.*;
 import java.io.*;
 import java.util.stream.*;
 
-public class TextFromFile implements Source {
+public final class TextFromFile implements Source {
     private final String filepath;
 
     public TextFromFile(String filepath) {

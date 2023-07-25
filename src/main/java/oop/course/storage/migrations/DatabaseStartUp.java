@@ -3,7 +3,7 @@ package oop.course.storage.migrations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DatabaseStartUp implements Initializer {
+public final class DatabaseStartUp implements Initializer {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseStartUp.class);
     private final Sql[] sqls;

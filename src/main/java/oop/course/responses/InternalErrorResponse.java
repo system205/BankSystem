@@ -5,7 +5,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-public class InternalErrorResponse implements Response {
+public final class InternalErrorResponse implements Response {
     private static final Logger log = LoggerFactory.getLogger(InternalErrorResponse.class);
     private final String message;
 

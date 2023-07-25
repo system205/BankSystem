@@ -2,7 +2,7 @@ package oop.course.entity;
 
 import oop.course.miscellaneous.*;
 
-public class Token implements JSON {
+public final class Token implements JSON {
     private final String value;
 
     public Token(String value) {

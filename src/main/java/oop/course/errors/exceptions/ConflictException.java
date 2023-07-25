@@ -1,6 +1,6 @@
 package oop.course.errors.exceptions;
 
-public class ConflictException extends Exception {
+public final class ConflictException extends Exception {
     public ConflictException() {
     }
 

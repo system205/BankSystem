@@ -3,7 +3,7 @@ package oop.course.entity.transaction;
 import java.math.*;
 import java.time.*;
 
-public class ApprovedRequest implements Transaction {
+public final class ApprovedRequest implements Transaction {
     private final String type;
     private final BigDecimal amount;
     private final LocalDateTime date;

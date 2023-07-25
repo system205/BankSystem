@@ -2,7 +2,7 @@ package oop.course.responses;
 
 import java.io.*;
 
-public class EmptyResponse implements Response {
+public final class EmptyResponse implements Response {
     /**
      * Response that behaves without data
      */

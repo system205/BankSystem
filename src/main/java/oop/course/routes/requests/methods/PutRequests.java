@@ -10,7 +10,7 @@ import oop.course.miscellaneous.interfaces.*;
 import java.math.*;
 import java.sql.*;
 
-public class PutRequests implements ProcessMethod {
+public final class PutRequests implements ProcessMethod {
     private final Connection connection;
 
     public PutRequests(Connection connection) {

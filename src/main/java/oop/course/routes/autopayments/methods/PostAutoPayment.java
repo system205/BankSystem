@@ -9,7 +9,7 @@ import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
-public class PostAutoPayment implements ProcessMethod {
+public final class PostAutoPayment implements ProcessMethod {
     private final Connection connection;
 
     public PostAutoPayment(Connection connection) {

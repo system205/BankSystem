@@ -8,7 +8,7 @@ import java.math.*;
 import java.time.*;
 import java.util.*;
 
-public class TransactionStatement implements JSON {
+public final class TransactionStatement implements JSON {
     private static final Logger log = LoggerFactory.getLogger(TransactionStatement.class);
     private final String accountNumber;
     private final LocalDate startDate;

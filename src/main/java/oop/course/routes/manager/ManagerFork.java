@@ -7,7 +7,7 @@ import oop.course.responses.*;
 import oop.course.routes.*;
 import org.slf4j.*;
 
-public class ManagerFork implements Route {
+public final class ManagerFork implements Route {
     private static final Logger log = LoggerFactory.getLogger(ManagerFork.class);
     private final Route[] routes;
 

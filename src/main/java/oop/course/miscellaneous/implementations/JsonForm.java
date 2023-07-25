@@ -8,7 +8,7 @@ import org.slf4j.*;
 import java.math.*;
 import java.util.regex.*;
 
-public class JsonForm implements Form {
+public final class JsonForm implements Form {
     private static final Logger log = LoggerFactory.getLogger(JsonForm.class);
     private final String source;
     private static final String REGEX = "\"%s\" *: *\"[^\"]*\"";

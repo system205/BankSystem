@@ -8,7 +8,7 @@ import oop.course.miscellaneous.implementations.*;
 
 import java.sql.*;
 
-public class DeleteAccount implements ProcessMethod {
+public final class DeleteAccount implements ProcessMethod {
     private final Connection connection;
 
     public DeleteAccount(Connection connection) {

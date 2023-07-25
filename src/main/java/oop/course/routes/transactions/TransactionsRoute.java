@@ -5,7 +5,7 @@ import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
 
-public class TransactionsRoute implements Route {
+public final class TransactionsRoute implements Route {
     private final ProcessMethod[] processes;
 
     public TransactionsRoute(ProcessMethod... methods) {

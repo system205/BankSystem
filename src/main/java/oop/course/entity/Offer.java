@@ -7,7 +7,7 @@ import org.slf4j.*;
 import java.sql.*;
 import java.time.*;
 
-public class Offer implements JSON {
+public final class Offer implements JSON {
     private static final Logger log = LoggerFactory.getLogger(Offer.class);
     private final long id;
     private final Connection connection;

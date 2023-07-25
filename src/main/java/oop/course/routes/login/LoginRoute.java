@@ -12,7 +12,7 @@ import org.slf4j.*;
 
 import java.sql.*;
 
-public class LoginRoute implements Route {
+public final class LoginRoute implements Route {
     private final Process next;
     private final Connection connection;
     private final Logger log = LoggerFactory.getLogger(LoginRoute.class);

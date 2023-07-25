@@ -5,7 +5,7 @@ import org.slf4j.*;
 
 import java.sql.*;
 
-public class Postgres implements Connector {
+public final class Postgres implements Connector {
     private static final Logger log = LoggerFactory.getLogger(Postgres.class);
     private static final String NAME = "postgres";
 

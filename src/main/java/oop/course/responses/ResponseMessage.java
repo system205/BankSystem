@@ -2,7 +2,7 @@ package oop.course.responses;
 
 import oop.course.miscellaneous.JSON;
 
-public class ResponseMessage implements JSON {
+public final class ResponseMessage implements JSON {
     public ResponseMessage(String message) {
         this.message = message;
     }

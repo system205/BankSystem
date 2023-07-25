@@ -1,6 +1,6 @@
 package oop.course.errors.exceptions;
 
-public class NotFoundException extends Exception {
+public final class NotFoundException extends Exception {
     public NotFoundException() {
     }
 

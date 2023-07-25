@@ -40,7 +40,7 @@ import java.util.*;
 
 import static java.util.Map.*;
 
-public class Main {
+public final class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {

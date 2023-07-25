@@ -6,8 +6,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.util.*;
 
-// TODO - should I throw an exception if accessing well formatted headers, but at the same time the request line is malformed?
-public class HttpRequest implements Request {
+public final class HttpRequest implements Request {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
     private final LinkedList<String> data;
 

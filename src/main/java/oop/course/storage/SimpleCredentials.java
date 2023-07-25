@@ -3,7 +3,7 @@ package oop.course.storage;
 import oop.course.storage.interfaces.*;
 import oop.course.miscellaneous.interfaces.*;
 
-public class SimpleCredentials implements Credentials {
+public final class SimpleCredentials implements Credentials {
     private final String username;
     private final String password;
 

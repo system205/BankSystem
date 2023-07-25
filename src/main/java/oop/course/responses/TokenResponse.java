@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.*;
 import java.io.*;
 import java.util.*;
 
-public class TokenResponse implements Response {
+public final class TokenResponse implements Response {
     private final String subject;
     private final String secretKey;
     private final long duration;

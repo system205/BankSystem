@@ -7,7 +7,7 @@ import org.slf4j.*;
 import java.io.*;
 import java.net.*;
 
-public class Server implements Runnable, Closeable {
+public final class Server implements Runnable, Closeable {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final Socket socket;
     private final PrintWriter out;

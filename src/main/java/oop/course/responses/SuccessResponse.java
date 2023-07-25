@@ -5,7 +5,7 @@ import oop.course.miscellaneous.*;
 import java.io.*;
 import java.util.*;
 
-public class SuccessResponse implements Response {
+public final class SuccessResponse implements Response {
     private final String body;
 
     public SuccessResponse(String json) {

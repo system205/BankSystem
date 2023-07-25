@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.Date;
 import java.util.*;
 
-public class Customer {
+public final class Customer {
     private static final Logger log = LoggerFactory.getLogger(Customer.class);
     private final String email;
     private final Connection connection;

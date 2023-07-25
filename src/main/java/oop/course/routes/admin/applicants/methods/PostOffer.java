@@ -9,7 +9,7 @@ import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
-public class PostOffer implements ProcessMethod {
+public final class PostOffer implements ProcessMethod {
     private final Connection connection;
 
     public PostOffer(Connection connection) {

@@ -6,7 +6,7 @@ import oop.course.responses.Response;
 import oop.course.routes.ProcessMethod;
 import oop.course.routes.Route;
 
-public class TransferRoute implements Route {
+public final class TransferRoute implements Route {
     private final ProcessMethod[] next;
 
     public TransferRoute(ProcessMethod... processes) {

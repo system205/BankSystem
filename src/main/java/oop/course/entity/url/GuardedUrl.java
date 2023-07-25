@@ -9,7 +9,7 @@ import org.slf4j.*;
 import java.sql.*;
 import java.util.*;
 
-public class GuardedUrl implements URL {
+public final class GuardedUrl implements URL {
     private static final Logger logger = LoggerFactory.getLogger(GuardedUrl.class);
     private final Connection connection;
     private final RolesConfiguration rolesConfiguration;

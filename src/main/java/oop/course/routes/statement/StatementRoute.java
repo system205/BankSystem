@@ -11,7 +11,7 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.*;
 
-public class StatementRoute implements Route {
+public final class StatementRoute implements Route {
     private final Connection connection;
 
     public StatementRoute(Connection connection) {

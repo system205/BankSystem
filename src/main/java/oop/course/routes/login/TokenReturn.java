@@ -9,7 +9,7 @@ import oop.course.miscellaneous.interfaces.*;
 
 import java.sql.*;
 
-public class TokenReturn implements Process {
+public final class TokenReturn implements Process {
     private final String secretKey;
     private final Connection connection;
     private final long expiration;

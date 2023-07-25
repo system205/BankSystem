@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-public class RegisterRoute implements Route {
+public final class RegisterRoute implements Route {
     private static final Logger log = LoggerFactory.getLogger(RegisterRoute.class);
 
     private final Connection connection;

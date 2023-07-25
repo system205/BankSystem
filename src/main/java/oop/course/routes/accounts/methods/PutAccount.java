@@ -8,7 +8,7 @@ import oop.course.routes.*;
 
 import java.sql.*;
 
-public class PutAccount implements ProcessMethod {
+public final class PutAccount implements ProcessMethod {
     private final Connection connection;
 
     public PutAccount(Connection connection) {

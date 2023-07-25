@@ -8,7 +8,7 @@ import org.slf4j.*;
 import java.sql.*;
 import java.util.*;
 
-public class Admin implements Initializer {
+public final class Admin implements Initializer {
     private static final Logger log = LoggerFactory.getLogger(Admin.class);
     private final Connection connection;
 

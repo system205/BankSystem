@@ -5,7 +5,7 @@ import oop.course.requests.*;
 import oop.course.responses.*;
 import oop.course.routes.*;
 
-public class AutoPaymentRoute implements Route {
+public final class AutoPaymentRoute implements Route {
     private final ProcessMethod[] processes;
 
     public AutoPaymentRoute(ProcessMethod... methods) {
