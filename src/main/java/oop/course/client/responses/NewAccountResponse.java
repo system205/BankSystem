@@ -28,7 +28,7 @@ public final class NewAccountResponse implements Response {
     @Override
     public String message() {
         if (isSuccess()) {
-            return "Successfully create account №" + accountNumber() + "with balance " + accountBalance();
+            return "Successfully create account №" + accountNumber() + " with balance " + accountBalance();
         }
         else {
             return "Could not create an account";
