@@ -19,7 +19,12 @@ public final class TransferResponse implements Response {
 
     @Override
     public String message() {
-        return response.message();
+        if (isSuccess()) {
+            return "Successfully transfered money";
+        }
+        else {
+            return response.message();
+        }
     }
 
     @Override
