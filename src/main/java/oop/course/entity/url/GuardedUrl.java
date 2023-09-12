@@ -36,6 +36,7 @@ public final class GuardedUrl implements URL {
                 return url;
             }
         }
+
         logger.debug("User with roles {} is not allowed to go to {}", roles, url);
         throw new ForbiddenException(String.format("User with roles %s is not allowed to go to %s", roles, url));
     }

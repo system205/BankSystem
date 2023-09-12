@@ -33,7 +33,7 @@ public final class GetRequests implements ProcessMethod {
                     try { // return requests of each account
                         return account.requests();
                     } catch (Exception e) {
-                        return Collections.<Account>emptyList();
+                        throw new RuntimeException(e);
                     }
                 })
                 .flatMap(Collection::stream)
